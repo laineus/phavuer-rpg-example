@@ -50,8 +50,6 @@ export default class Field {
       const { alpha, color } = parseArgb(darkness)
       this._renderDarkness(alpha, color, lights, this._getExposures(tilemap))
     }
-    const sun = getValueByProperties(tilemap.properties, 'sun')
-    if (sun) this._generateSunLight()
     const particles = getValueByProperties(tilemap.properties, 'particles')
     if (particles) this._generateParticles(parseArgb(particles).color)
     this.images = tilemap.images.map(data => this._getImage(data))
@@ -59,10 +57,10 @@ export default class Field {
     this.layers.forEach(layer => layer.setCollision(collides))
     this.layers[this.layers.length - 1].setDepth(DEPTH.TOP)
     scene.physics.add.collider(this.layers, scene.substances)
-    this.gates = this._getObjects(tilemap, 'gate').map(this._toAreaData).map(gate => new Gate(scene, gate.key, gate.x, gate.y, gate.zone_x, gate.zone_y, gate.zone_width, gate.zone_height).setId(gate.id))
-    this.areas = this._getObjects(tilemap, 'area').map(this._toAreaData).map(area => new Area(scene, area.zone_x, area.zone_y, area.zone_width, area.zone_height).setId(area.id))
-    this.charas = this._getObjects(tilemap, 'chara').map(data => new Character(scene, data.x, data.y, data.name).setR((data.rotation + 90) * (Math.PI / 180)).setId(data.id))
-    this.objects = this._getObjects(tilemap, 'object').map(data => new Substance(scene, data.x, data.y, data.name).setId(data.id))
+    this.gates = this._getObjects(tilemap, 'Gate').map(this._toAreaData).map(gate => new Gate(scene, gate.key, gate.x, gate.y, gate.zone_x, gate.zone_y, gate.zone_width, gate.zone_height).setId(gate.id))
+    this.areas = this._getObjects(tilemap, 'Area').map(this._toAreaData).map(area => new Area(scene, area.zone_x, area.zone_y, area.zone_width, area.zone_height).setId(area.id))
+    this.charas = this._getObjects(tilemap, 'Character').map(data => new Character(scene, data.x, data.y, data.name).setR((data.rotation + 90) * (Math.PI / 180)).setId(data.id))
+    this.objects = this._getObjects(tilemap, 'Substance').map(data => new Substance(scene, data.x, data.y, data.name).setId(data.id))
   }
   update (time) {
     this.animationTiles.forEach(setting => {
@@ -121,19 +119,6 @@ export default class Field {
       })
     })
     return top
-  }
-  _generateSunLight () {
-    const sun1 = this.scene.add.sprite(30, -70, 'sun_light').setDepth(DEPTH.SUN_LIGHT).setBlendMode(Phaser.BlendModes.OVERLAY).setOrigin(0.5, 0).setScale(1.4, 10).setRotation(-1.1).setAlpha(0.6)
-    const sun2 = this.scene.add.sprite(-70, -70, 'sun_light').setDepth(DEPTH.SUN_LIGHT).setBlendMode(Phaser.BlendModes.OVERLAY).setOrigin(0.5, 0).setScale(0.8, 10).setRotation(-0.8).setAlpha(0.6)
-    const sun3 = this.scene.add.sprite(-70, 30, 'sun_light').setDepth(DEPTH.SUN_LIGHT).setBlendMode(Phaser.BlendModes.OVERLAY).setOrigin(0.5, 0).setScale(0.4, 10).setRotation(-0.5).setAlpha(0.6)
-    const suns = [sun1, sun2, sun3]
-    suns.forEach(sun => {
-      this.scene.add.tween({
-        targets: sun, duration: Math.randomInt(400, 700),
-        scaleX: sun.scaleX + 0.02, alpha: 0.8,
-        yoyo: true, loop: -1
-      })
-    })
   }
   _generateLights (tilemap) {
     const lights = this._getTileSettingsByType(tilemap, 'light')
