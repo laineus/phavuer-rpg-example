@@ -31,18 +31,21 @@ export default class Field {
     this.width = tilemap.widthInPixels
     this.height = tilemap.heightInPixels
     const tilesets = this._getTilesets(tilemap)
-    tilemap.layers.push(this._generateTopLayer(tilemap))
-    this.animationTiles = this._getAllTileSettings(tilemap).filter(v => 'animation' in v.setting).map(v => {
+    const animationTileSettings = this._getAllTileSettings(tilemap).filter(v => 'animation' in v.setting)
+    this.animationTiles = animationTileSettings.map(v => {
       const targets = tilemap.layers.filter(v => v.visible).map(l => l.data.flat()).flat().filter(tile => tile.index === v.id)
       const max = Math.sum(...v.setting.animation.map(v => v.duration))
       return { targets, animations: v.setting.animation, max }
     })
+    const animationTileIds = animationTileSettings.map(v => v.id)
     this.layers = tilemap.layers.map((layer, i) => {
+      if (!layer.visible) return
       const dynamicFlag = getValueByProperties(layer.properties, 'dynamic')
-      const allAnimTiles = this.animationTiles.map(v => v.targets).flat()
-      const hasAnimTile = layer.data.flat().some(v => allAnimTiles.includes(v))
+      const hasAnimTile = layer.data.flat().some(v => animationTileIds.includes(v.index))
       const typeName = dynamicFlag || hasAnimTile ? 'createDynamicLayer' : 'createStaticLayer'
-      return layer.visible ? tilemap[typeName](i, tilesets, 0, 0).setDepth(DEPTH.GROUND + this._getLayerIndexByName(layer.name)) : null
+      const depthSetting = getValueByProperties(layer.properties, 'depth')
+      const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + this._getLayerIndexByName(layer.name)
+      return tilemap[typeName](i, tilesets, 0, 0).setDepth(depth)
     }).filter(Boolean)
     const lights = this._generateLights(tilemap)
     const darkness = getValueByProperties(tilemap.properties, 'darkness')
@@ -55,7 +58,6 @@ export default class Field {
     this.images = tilemap.images.map(data => this._getImage(data))
     const collides = this._getTileIdsByType(tilemap, 'collides')
     this.layers.forEach(layer => layer.setCollision(collides))
-    this.layers[this.layers.length - 1].setDepth(DEPTH.TOP)
     scene.physics.add.collider(this.layers, scene.substances)
     this.gates = this._getObjects(tilemap, 'Gate').map(this._toAreaData).map(gate => new Gate(scene, gate.key, gate.x, gate.y, gate.zone_x, gate.zone_y, gate.zone_width, gate.zone_height).setId(gate.id))
     this.areas = this._getObjects(tilemap, 'Area').map(this._toAreaData).map(area => new Area(scene, area.zone_x, area.zone_y, area.zone_width, area.zone_height).setId(area.id))
@@ -88,16 +90,6 @@ export default class Field {
     return this.layers.some(layer => {
       const tile = layer.getTileAt(tileX, tileY)
       return tile && tile.collides
-    })
-  }
-  displayDebug () {
-    const debugGraphics = this.scene.add.graphics().setAlpha(0.75)
-    this.layers.forEach(layer => {
-      layer.renderDebug(debugGraphics, {
-        tileColor: null,
-        collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-        faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-      })
     })
   }
   // private

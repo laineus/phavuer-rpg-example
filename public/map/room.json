@@ -38,6 +38,15 @@
          "type":"collides"
         }, 
         {
+         "animation":[
+                {
+                 "duration":100,
+                 "tileid":8
+                }, 
+                {
+                 "duration":100,
+                 "tileid":9
+                }],
          "id":8,
          "type":"collides"
         }, 

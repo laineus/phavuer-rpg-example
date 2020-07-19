@@ -27,6 +27,12 @@
          "id":15,
          "name":"objects",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"depth",
+                 "type":"string",
+                 "value":"TOP"
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":32,
@@ -97,7 +103,7 @@
                 {
                  "height":0,
                  "id":16,
-                 "name":"",
+                 "name":"player",
                  "point":true,
                  "rotation":0,
                  "type":"Character",
