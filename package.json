@@ -1,0 +1,35 @@
+{
+  "name": "rpg-template",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Laineus",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack-dev-server --mode development --host 0.0.0.0",
+    "build": "webpack --mode production",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "moment": "^2.24.0",
+    "phaser": "^3.22"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "image-size": "^0.8.3",
+    "imagemin": "^7.0.1",
+    "imagemin-pngquant": "^9.0.0",
+    "tile-extruder": "^2.0.3",
+    "webpack": "^4.27.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10",
+    "write-file-webpack-plugin": "^4.5.1"
+  }
+}
