@@ -1,10 +1,10 @@
 import 'phaser'
-import './util/extendNativeClassFunctions'
-import BootScene from './class/BootScene'
-import GameScene from './scenes/GameScene'
-import UIScene from './scenes/UIScene'
-import config from './data/config'
-import storage from './data/storage'
+import '@/util/extendNativeClassFunctions'
+import BootScene from '@/scenes/BootScene'
+import GameScene from '@/scenes/GameScene'
+import UIScene from '@/scenes/UIScene'
+import config from '@/data/config'
+import storage from '@/data/storage'
 
 location.query = location.search.substr(1).split('&').filter(Boolean).reduce((obj, v) => {
   const arr = v.split('=')

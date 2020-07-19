@@ -1,8 +1,8 @@
-import Area from './Area'
-import Gate from './Gate'
-import Character from './Character'
-import Substance from './Substance'
-import config from '../data/config'
+import Area from '@/gameObjects/Area'
+import Gate from '@/gameObjects/Gate'
+import Character from '@/gameObjects/Character'
+import Substance from '@/gameObjects/Substance'
+import config from '@/data/config'
 export const DEPTH = {
   GROUND: 0,
   PARTICLES: 100000,

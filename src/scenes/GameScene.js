@@ -1,11 +1,11 @@
-import Player from '@/class/Player'
+import Player from '@/gameObjects/Player'
 import Field from '@/class/Field'
 import maps from '@/data/maps'
 import assets from '@/data/assets'
 import storage from '@/data/storage'
 import downloadBySource from '@/util/downloadBySource'
-import Character from '@/class/Character'
-import Substance from '@/class/Substance'
+import Character from '@/gameObjects/Character'
+import Substance from '@/gameObjects/Substance'
 export default class GameScene extends Phaser.Scene {
   constructor () {
     super({ key: 'Game', active: false })

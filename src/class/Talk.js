@@ -1,6 +1,6 @@
-import config from '../data/config'
-import SpeachBubble from './SpeachBubble'
-import Character from './Character'
+import config from '@/data/config'
+import SpeachBubble from '@/class/SpeachBubble'
+import Character from '@/gameObjects/Character'
 export default class Talk extends Phaser.GameObjects.Container {
   constructor (scene, events, { angle = true } = {}, callback) {
     super(scene)

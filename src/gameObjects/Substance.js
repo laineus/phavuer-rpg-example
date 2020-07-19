@@ -1,4 +1,4 @@
-import config from '../data/config'
+import config from '@/data/config'
 export default class Substance extends Phaser.GameObjects.Container {
   constructor (scene, x, y, key = null, { width, height } = {}) {
     super(scene, x, y)
