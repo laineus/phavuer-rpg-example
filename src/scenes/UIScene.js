@@ -7,7 +7,7 @@ import downloadBySource from '@/util/downloadBySource'
 import Talk from '@/class/Talk'
 import Select from '@/ui/Select'
 import Menu from '@/class/Menu'
-import VirtualStick from '@/class/VirtualStick'
+import VirtualStick from '@/ui/VirtualStick'
 import AudioController from '@/class/AudioController'
 const SPEED = {
   fast: 200,
