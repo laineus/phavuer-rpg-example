@@ -31,6 +31,11 @@ module.exports = (_env, argv) => ({
       }
     ]
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   devServer: {
     contentBase: path.resolve(__dirname, 'public'),
     port: 8080

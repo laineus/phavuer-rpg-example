@@ -1,8 +1,8 @@
 import 'phaser'
 import './util/extendNativeClassFunctions'
 import BootScene from './class/BootScene'
-import GameScene from './class/GameScene'
-import UIScene from './class/UIScene'
+import GameScene from './scenes/GameScene'
+import UIScene from './scenes/UIScene'
 import config from './data/config'
 import storage from './data/storage'
 
