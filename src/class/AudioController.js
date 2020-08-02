@@ -1,28 +1,26 @@
-import setting from '../data/setting'
 export default class {
   constructor (scene) {
     this.scene = scene
-    this.setting = setting
+    this.seVolume = 100
+    this.bgmVolume = 100
     this.currentBgm = null
-    this.sceneVolume = 1
   }
-  get seVolume () {
-    return this.setting.state.se / 100
+  // SE
+  setSeVolume (value) {
+    this.seVolume = Math.fix(value, 0, 100)
+    return this
   }
   se (name) {
     this.scene.sound.play(`se/${name}`, { volume: this.seVolume })
   }
-  get bgmVolume () {
-    return this.setting.state.bgm / 100
-  }
-  updateBgmVolume () {
+  // BGM
+  setBgmVolume (value) {
+    this.bgmVolume = Math.fix(value, 0, 100)
+    // Update volume for existing BGM
     this.scene.sound.sounds.filter(sound => sound.key.startsWith('bgm')).forEach(bgm => {
-      bgm.volume = this.bgmVolume * this.sceneVolume
+      bgm.volume = this.bgmVolume
     })
-  }
-  setSceneVolume (volume) {
-    this.sceneVolume = volume
-    this.updateBgmVolume()
+    return this
   }
   setBgm (name) {
     if (!name) {

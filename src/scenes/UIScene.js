@@ -21,7 +21,7 @@ export default class UIScene extends Phaser.Scene {
   create (payload = {}) {
     this.storage = storage
     this.setting = setting
-    this.audio = new AudioController(this)
+    this.audio = new AudioController(this).setSeVolume(setting.state.se).setBgmVolume(setting.state.bgm)
     this.input.keyboard.on('keydown_S', this.snapShot.bind(this))
     // this.menuButton = this.getMenuButton((70).byRight, (35).byBottom)
     // this.add.existing(this.menuButton)
