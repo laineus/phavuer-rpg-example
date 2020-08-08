@@ -27,6 +27,7 @@ export default class Field {
     scene.add.existing(this)
     this.scene = scene
     this.name = mapKey
+    this.data = scene.cache.tilemap.get(mapKey).data
     const tilemap = new Phaser.Tilemaps.ParseToTilemap(scene, mapKey)
     this.width = tilemap.widthInPixels
     this.height = tilemap.heightInPixels
@@ -44,7 +45,8 @@ export default class Field {
       const hasAnimTile = layer.data.flat().some(v => animationTileIds.includes(v.index))
       const typeName = dynamicFlag || hasAnimTile ? 'createDynamicLayer' : 'createStaticLayer'
       const depthSetting = getValueByProperties(layer.properties, 'depth')
-      const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + this._getLayerIndexByName(layer.name)
+      const layerIndex = this.data.layers.findIndex(v => v.name === name)
+      const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + layerIndex
       return tilemap[typeName](i, tilesets, 0, 0).setDepth(depth)
     }).filter(Boolean)
     const lights = this._generateLights(tilemap)
@@ -55,7 +57,7 @@ export default class Field {
     }
     const particles = getValueByProperties(tilemap.properties, 'particles')
     if (particles) this._generateParticles(parseArgb(particles).color)
-    this.images = tilemap.images.map(data => this._getImage(data))
+    this.images = tilemap.images.filter(data => data.visible).map(data => this._getImage(data))
     const collides = this._getTileIdsByType(tilemap, 'collides')
     this.layers.forEach(layer => layer.setCollision(collides))
     scene.physics.add.collider(this.layers, scene.substances)
@@ -176,9 +178,6 @@ export default class Field {
   _getTileIdsByType (tilemap, type) {
     return this._getTileSettingsByType(tilemap, type).map(v => v.id)
   }
-  _getLayerIndexByName (name) {
-    return this.scene.cache.tilemap.get(this.name).data.layers.findIndex(v => v.name === name)
-  }
   getObjectsByType (tilemap, type) {
     return tilemap.objects.map(v => v.objects).flat().filter(v => v.type === type)
   }
@@ -209,11 +208,12 @@ export default class Field {
     return expLayer ? expLayer.objects : []
   }
   _getImage (data) {
-    const originalData = this.scene.cache.tilemap.get(this.name).data.layers.find(v => {
+    const layerIndex = this.data.layers.findIndex(v => {
       return v.image === data.image && (v.offsetx || v.x) === data.x && (v.offsety || v.y) === data.y
     })
+    const originalData = this.data.layers[layerIndex]
     const image = data.image.split('/').slice(-1)[0].split('.')[0]
-    const sprite = this.scene.add.sprite(data.x, data.y, `tileset/${image}`).setOrigin(0, 0).setDepth(DEPTH.GROUND + this._getLayerIndexByName(data.name)).setAlpha(data.alpha)
+    const sprite = this.scene.add.sprite(data.x, data.y, `tileset/${image}`).setOrigin(0, 0).setDepth(DEPTH.GROUND + layerIndex).setAlpha(data.alpha)
     if (originalData.tintcolor) sprite.setTint(originalData.tintcolor.toColorInt)
     const blend = getValueByProperties(data.properties, 'blend')
     if (blend) sprite.setBlendMode(Phaser.BlendModes[blend])
@@ -221,9 +221,7 @@ export default class Field {
     if (depth) {
       depth === 'SUBSTANCE' ? sprite.setDepth(data.y + (sprite.height * 0.8)) : sprite.setDepth(DEPTH[depth] + 1)
     }
-    const anim = getValueByProperties(data.properties, 'animation')
-    if (anim === 'cloud') this.scene.add.tween({ targets: sprite, duration: 100000, x: sprite.x - 1200 })
-    if (anim === 'cloud_slow') this.scene.add.tween({ targets: sprite, duration: 200000, x: sprite.x - 1200 })
+    sprite.id = originalData.id
     sprite.name = data.name
     return sprite
   }
