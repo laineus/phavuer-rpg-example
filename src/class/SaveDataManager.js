@@ -13,7 +13,10 @@ export default class SaveDataManager {
   }
   init () {
     this.lastSnapshot = null
-    this.setState(defaultState())
+    this.setState(this.getDefaultState())
+  }
+  getDefaultState () {
+    return Object.assign({}, defaultState)
   }
   loadSetting () {
     appStorage.getItem(`${STORAGE_KEY}_last_saved_number`).then(savedNumber => {
@@ -90,7 +93,7 @@ export default class SaveDataManager {
       shouldBeDeleted.forEach(k => delete data[k])
       shouldContinueToFix.forEach(k => row(origin[k], data[k]))
     }
-    row(defaultState(), data)
+    row(this.getDefaultState(), data)
     return data
   }
 }

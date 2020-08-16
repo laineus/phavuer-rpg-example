@@ -1,3 +1,4 @@
+import defaultSetting from '../data/defaultSetting'
 export default class CommonSetting {
   constructor () {
     this.state = this.getDefaultSetting()
@@ -19,11 +20,6 @@ export default class CommonSetting {
     localStorage.setItem('setting', json)
   }
   getDefaultSetting () {
-    return {
-      bgm: 100,
-      se: 100,
-      controller: 0,
-      lang: 'ja'
-    }
+    return Object.assign({}, defaultSetting)
   }
 }
