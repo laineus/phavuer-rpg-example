@@ -31,8 +31,8 @@ export default class Field {
     const tilemap = new Phaser.Tilemaps.ParseToTilemap(scene, mapKey)
     this.width = tilemap.widthInPixels
     this.height = tilemap.heightInPixels
-    const tilesets = this._getTilesets(tilemap)
-    const animationTileSettings = this._getAllTileSettings(tilemap).filter(v => 'animation' in v.setting)
+    const tilesets = this.getTilesets(tilemap)
+    const animationTileSettings = this.getAllTileSettings(tilemap).filter(v => 'animation' in v.setting)
     this.animationTiles = animationTileSettings.map(v => {
       const targets = tilemap.layers.filter(v => v.visible).map(l => l.data.flat()).flat().filter(tile => tile.index === v.id)
       const max = Math.sum(...v.setting.animation.map(v => v.duration))
@@ -49,16 +49,16 @@ export default class Field {
       const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + layerIndex
       return tilemap[typeName](i, tilesets, 0, 0).setDepth(depth)
     }).filter(Boolean)
-    const lights = this._generateLights(tilemap)
+    const lights = this.generateLights(tilemap)
     const darkness = getValueByProperties(tilemap.properties, 'darkness')
     if (darkness) {
       const { alpha, color } = parseArgb(darkness)
-      this._renderDarkness(alpha, color, lights, this._getExposures(tilemap))
+      this.renderDarkness(alpha, color, lights, this.getExposures(tilemap))
     }
     const particles = getValueByProperties(tilemap.properties, 'particles')
-    if (particles) this._generateParticles(parseArgb(particles).color)
-    this.images = tilemap.images.filter(data => data.visible).map(data => this._getImage(data))
-    const collides = this._getTileIdsByType(tilemap, 'collides')
+    if (particles) this.generateParticles(parseArgb(particles).color)
+    this.images = tilemap.images.filter(data => data.visible).map(data => this.getImage(data))
+    const collides = this.getTileSettingsByType(tilemap, 'collides').map(v => v.id)
     this.layers.forEach(layer => layer.setCollision(collides))
     scene.physics.add.collider(this.layers, scene.substances)
     this.objects = [
@@ -95,27 +95,30 @@ export default class Field {
     })
   }
   // private
-  _getAllTileSettings (tilemap) {
+  getAllTileSettings (tilemap) {
     return tilemap.tilesets.map(set => {
       return this.scene.cache.json.get(set.name).tiles.map(v => {
         return { id: v.id + set.firstgid, setting: v }
       })
     }).flat()
   }
-  _generateTopLayer (tilemap) {
-    const visibleLayers = tilemap.layers.filter(v => v.visible).reverse()
-    const topTileIds = this._getTileIdsByType(tilemap, 'top')
-    const top = new Phaser.Tilemaps.LayerData({ name: 'topLayer', width: tilemap.width, height: tilemap.height })
-    top.data = tilemap.height.toArray().map(y => {
-      return tilemap.width.toArray().map(x => {
-        const found = visibleLayers.find(v => topTileIds.includes(v.data[y][x].index))
-        return new Phaser.Tilemaps.Tile(top, (found ? found.data[y][x].index : -1), x, y, 32, 32, 32, 32).setFlip(found && found.data[y][x].flipX, found && found.data[y][x].flipY)
-      })
-    })
-    return top
+  getTilesets (tilemap) {
+    return tilemap.tilesets.map(tileset => tilemap.addTilesetImage(tileset.name, `tileset/${tileset.name}`, 32, 32, 1, 2))
   }
-  _generateLights (tilemap) {
-    const lights = this._getTileSettingsByType(tilemap, 'light')
+  getTileSettingsByType (tilemap, type) {
+    return this.getAllTileSettings(tilemap).filter(tile => tile.setting.type && tile.setting.type.split(',').includes(type)).map(tile => {
+      const properties = tile.setting.properties ? tile.setting.properties.reduce((obj, v) => {
+        obj[v.name] = v.value
+        return obj
+      }, {}) : {}
+      return { id: tile.id, properties }
+    })
+  }
+  getObjectsByType (tilemap, type) {
+    return tilemap.objects.map(v => v.objects).flat().filter(v => v.type === type)
+  }
+  generateLights (tilemap) {
+    const lights = this.getTileSettingsByType(tilemap, 'light')
     const lightTiles = this.layers.map(layer => {
       return layer.layer.data.map(row => {
         return row.filter(tile => lights.map(v => v.id).includes(tile.index))
@@ -137,7 +140,7 @@ export default class Field {
     })
     return sprite
   }
-  _generateParticles (color) {
+  generateParticles (color) {
     const particles = this.scene.add.particles('light')
     particles.setDepth(DEPTH.PARTICLES)
     particles.createEmitter({
@@ -154,7 +157,7 @@ export default class Field {
       frequency: 20
     })
   }
-  _renderDarkness (alpha, color, lights = [], exposures = []) {
+  renderDarkness (alpha, color, lights = [], exposures = []) {
     const posAndSize = [0, 0, this.width, this.height]
     const dark = this.scene.add.renderTexture(...posAndSize).fill(color, alpha, ...posAndSize).setOrigin(0.0).setDepth(DEPTH.DARKNESS)
     const brush = this.scene.add.image(0, 0, 'light').setScale(3, 3)
@@ -162,24 +165,6 @@ export default class Field {
     exposures.forEach(exp => dark.erase(brush, exp.x, exp.y, 1))
     brush.destroy()
     return dark
-  }
-  _getTilesets (tilemap) {
-    return tilemap.tilesets.map(tileset => tilemap.addTilesetImage(tileset.name, `tileset/${tileset.name}`, 32, 32, 1, 2))
-  }
-  _getTileSettingsByType (tilemap, type) {
-    return this._getAllTileSettings(tilemap).filter(tile => tile.setting.type && tile.setting.type.split(',').includes(type)).map(tile => {
-      const properties = tile.setting.properties ? tile.setting.properties.reduce((obj, v) => {
-        obj[v.name] = v.value
-        return obj
-      }, {}) : {}
-      return { id: tile.id, properties }
-    })
-  }
-  _getTileIdsByType (tilemap, type) {
-    return this._getTileSettingsByType(tilemap, type).map(v => v.id)
-  }
-  getObjectsByType (tilemap, type) {
-    return tilemap.objects.map(v => v.objects).flat().filter(v => v.type === type)
   }
   generateGates (tilemap) {
     return this.getObjectsByType(tilemap, 'Gate').map(data => {
@@ -203,11 +188,11 @@ export default class Field {
       return new Substance(this.scene, data.x, data.y, data.name).setId(data.id)
     })
   }
-  _getExposures (tilemap) {
+  getExposures (tilemap) {
     const expLayer = tilemap.objects.find(l => l.name === 'exposure')
     return expLayer ? expLayer.objects : []
   }
-  _getImage (data) {
+  getImage (data) {
     const layerIndex = this.data.layers.findIndex(v => {
       return v.image === data.image && (v.offsetx || v.x) === data.x && (v.offsety || v.y) === data.y
     })
@@ -241,6 +226,6 @@ export default class Field {
       accelerationY: 300,
       frequency: 20
     })
-    this._renderDarkness(0.3, config.COLORS.black)
+    this.renderDarkness(0.3, config.COLORS.black)
   }
 }
