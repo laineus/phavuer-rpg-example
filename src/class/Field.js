@@ -45,7 +45,7 @@ export default class Field {
       const hasAnimTile = layer.data.flat().some(v => animationTileIds.includes(v.index))
       const typeName = dynamicFlag || hasAnimTile ? 'createDynamicLayer' : 'createStaticLayer'
       const depthSetting = getValueByProperties(layer.properties, 'depth')
-      const layerIndex = this.data.layers.findIndex(v => v.name === name)
+      const layerIndex = this.data.layers.findIndex(v => v.name === layer.name)
       const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + layerIndex
       return tilemap[typeName](i, tilesets, 0, 0).setDepth(depth)
     }).filter(Boolean)
