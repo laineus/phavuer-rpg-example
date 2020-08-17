@@ -28,6 +28,12 @@ module.exports = (_env, argv) => ({
             ['env', { targets: { node: 'current' } }]
           ]
         }
+      },
+      {
+        test: /\.js$/,
+        exclude: '/node_modules/',
+        loader: 'eslint-loader',
+        enforce: 'pre'
       }
     ]
   },
