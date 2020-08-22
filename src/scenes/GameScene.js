@@ -32,19 +32,24 @@ export default class GameScene extends Phaser.Scene {
     this.frame++
     if (this.event.update) this.event.update(this)
     this.map.update(time)
-    if (this.touchMode && !this.ui.eventMode) {
-      const x = Math.fix(this.player.x + this.ui.virtualStick.velocityX, 0, this.map.width)
-      const y = Math.fix(this.player.y + this.ui.virtualStick.velocityY, 0, this.map.height)
-      this.player.setTargetPosition(x, y)
-    }
-    const activePointer = this.input.manager.pointers.find(v => v.isDown)
-    if (activePointer) {
-      if (this.ui.eventMode || this.touchMode) return
-      const worldX = activePointer.x + this.camera.scrollX
-      const worldY = activePointer.y + this.camera.scrollY
-      if (this.map.isCollides(worldX.toTile, worldY.toTile)) return
-      this.player.setTargetPosition(worldX, worldY)
-    }
+    if (this.ui.eventMode) return
+    // A. Use virtual stick or Tap screen to walk
+    // this.ui.controller.touchMode ? this.walkWithStick() : this.walkOnTap()
+    // B. Use virtual stick or WASD
+    this.walkWithStick()
+  }
+  walkWithStick () {
+    const x = Math.fix(this.player.x + this.ui.controller.velocityX, 0, this.map.width)
+    const y = Math.fix(this.player.y + this.ui.controller.velocityY, 0, this.map.height)
+    this.player.setTargetPosition(x, y)
+  }
+  walkOnTap () {
+    const activePointer = this.ui.controller.activePointer
+    if (!activePointer) return
+    const worldX = activePointer.x + this.camera.scrollX
+    const worldY = activePointer.y + this.camera.scrollY
+    if (this.map.isCollides(worldX.toTile, worldY.toTile)) return
+    this.player.setTargetPosition(worldX, worldY)
   }
   get ui () {
     return this.scene.get('UI')

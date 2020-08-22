@@ -8,6 +8,7 @@ import Talk from '@/class/Talk'
 import Select from '@/ui/Select'
 import Menu from '@/class/Menu'
 import VirtualStick from '@/ui/VirtualStick'
+import Controller from '@/class/Controller'
 import AudioController from '@/class/AudioController'
 const SPEED = {
   fast: 200,
@@ -22,7 +23,8 @@ export default class UIScene extends Phaser.Scene {
     this.storage = storage
     this.setting = setting
     this.audio = new AudioController(this).setSeVolume(setting.state.se).setBgmVolume(setting.state.bgm)
-    this.input.keyboard.on('keydown_S', this.snapShot.bind(this))
+    this.controller = new Controller(this)
+    // this.input.keyboard.on('keydown_S', this.snapShot.bind(this))
     // this.menuButton = this.getMenuButton((70).byRight, (35).byBottom)
     // this.add.existing(this.menuButton)
     this.blocker = this.add.rectangle(0, 0, config.WIDTH, config.HEIGHT).setInteractive().setOrigin(0, 0).setVisible(false)
