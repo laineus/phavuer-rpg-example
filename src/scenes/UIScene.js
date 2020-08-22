@@ -7,7 +7,6 @@ import downloadBySource from '@/util/downloadBySource'
 import Talk from '@/class/Talk'
 import Select from '@/ui/Select'
 import Menu from '@/class/Menu'
-import VirtualStick from '@/ui/VirtualStick'
 import Controller from '@/class/Controller'
 import AudioController from '@/class/AudioController'
 const SPEED = {
@@ -29,7 +28,6 @@ export default class UIScene extends Phaser.Scene {
     // this.add.existing(this.menuButton)
     this.blocker = this.add.rectangle(0, 0, config.WIDTH, config.HEIGHT).setInteractive().setOrigin(0, 0).setVisible(false)
     this.add.existing(this.blocker)
-    this.virtualStick = new VirtualStick(this, 100, (160).byBottom).setVisible(this.touchMode)
     this.checkButton = this.getCheckButton().setVisible(false)
     this.eventMode = false
   }
@@ -39,7 +37,6 @@ export default class UIScene extends Phaser.Scene {
       this.sec = sec
       this.storage.state.sec += 1
     }
-    this.virtualStick.setVisible(this.controllable && this.touchMode)
     this.checkButton.setVisible(this.controllable && this.touchMode && this.gameScene.nearestCheckable)
     if (this.gameScene.nearestCheckable) {
       this.checkButton.icon.setFrame(this.gameScene.nearestCheckable.balloon.key === 'bubble_talk' ? 0 : 1)
