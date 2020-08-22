@@ -1,4 +1,4 @@
-import config from '../data/config'
+import config from '@/data/config'
 export default class Radio extends Phaser.GameObjects.Container {
   constructor (scene, x, y, list) {
     super(scene, x, y)

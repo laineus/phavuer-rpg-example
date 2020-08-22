@@ -1,5 +1,5 @@
-import { lineBreak } from '../util/stringFunctions'
-import config from '../data/config'
+import { lineBreak } from '@/util/stringFunctions'
+import config from '@/data/config'
 const left = [[32, 10], [335, 0], [360, 65], [335, 105], [190, 102], [189, 110], [196, 122], [178, 110], [176, 101], [18, 94], [0, 40]]
 const points = {
   left,

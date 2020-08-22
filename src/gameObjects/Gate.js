@@ -1,4 +1,4 @@
-import Area from './Area'
+import Area from '@/gameObjects/Area'
 export default class Gate extends Area {
   constructor (scene, key, x, y, zoneX, zoneY, zoneWidth, zoneHeight) {
     super(scene, zoneX, zoneY, zoneWidth, zoneHeight)

@@ -1,7 +1,7 @@
 import moment from 'moment'
-import defaultState from '../data/defaultState'
-import { encrypt, decrypt } from '../util/encryption'
-import AppStorage from './AppStorage'
+import defaultState from '@/data/defaultState'
+import { encrypt, decrypt } from '@/util/encryption'
+import AppStorage from '@/class/AppStorage'
 const appStorage = new AppStorage()
 const STORAGE_KEY = 'data'
 // const SHIFT = 11

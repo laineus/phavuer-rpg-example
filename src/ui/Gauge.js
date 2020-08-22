@@ -1,4 +1,4 @@
-import config from '../data/config'
+import config from '@/data/config'
 export default class Gauge extends Phaser.GameObjects.Container {
   constructor (scene, width, height, { value = null, valueMax = 100, color = config.COLORS.theme, blood = false } = {}) {
     super(scene)

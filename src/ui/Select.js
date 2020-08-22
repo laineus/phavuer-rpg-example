@@ -1,5 +1,5 @@
-import Button from './Button'
-import config from '../data/config'
+import Button from '@/ui/Button'
+import config from '@/data/config'
 const WIDTH = 240
 const HEIGHT = 40
 const MERGIN = 15

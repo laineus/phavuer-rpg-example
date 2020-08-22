@@ -1,2 +1,2 @@
-import CommonSetting from '../class/CommonSetting'
+import CommonSetting from '@/class/CommonSetting'
 export default new CommonSetting()

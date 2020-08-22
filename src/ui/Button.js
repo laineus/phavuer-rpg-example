@@ -1,5 +1,5 @@
-import Box from './Box'
-import config from '../data/config'
+import Box from '@/ui/Box'
+import config from '@/data/config'
 export default class Button extends Phaser.GameObjects.Container {
   constructor (scene, x, y, text, width = 120, height = 80, { align = 'center', fontSize = 16 } = {}) {
     super(scene, x, y)

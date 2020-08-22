@@ -1,5 +1,5 @@
-import Gauge from './Gauge'
-import config from '../data/config'
+import Gauge from '@/ui/Gauge'
+import config from '@/data/config'
 export default class Slider extends Gauge {
   constructor (scene, x, y, width, height, option) {
     super(scene, width, height, option)

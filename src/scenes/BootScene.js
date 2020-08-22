@@ -1,5 +1,5 @@
-import loadAssets from '../util/loadAssets'
-import registerAnims from '../util/registerAnims'
+import loadAssets from '@/util/loadAssets'
+import registerAnims from '@/util/registerAnims'
 export default class BootScene extends Phaser.Scene {
   constructor () {
     super({ key: 'Boot', active: true })

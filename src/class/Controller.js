@@ -1,4 +1,4 @@
-import VirtualStick from './VirtualStick'
+import VirtualStick from '@/class/VirtualStick'
 import WasdController from '@/class/WasdController'
 export default class Controller {
   constructor (scene) {

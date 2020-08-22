@@ -1,4 +1,4 @@
-import Character from './Character'
+import Character from '@/gameObjects/Character'
 export default class Friend extends Character {
   constructor (scene, x, y, key, option) {
     super(scene, x, y, key, option)

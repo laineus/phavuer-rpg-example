@@ -1,5 +1,5 @@
-import Character from './Character'
-import config from '../data/config'
+import Character from '@/gameObjects/Character'
+import config from '@/data/config'
 export default class Player extends Character {
   constructor (scene, x, y) {
     super(scene, x, y, 'player', { width: config.TILE_SIZE, height: config.TILE_SIZE })

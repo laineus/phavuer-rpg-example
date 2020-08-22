@@ -1,11 +1,11 @@
-import storage from '../data/storage'
-import config from '../data/config'
-import chapters from '../data/chapters'
-import MenuSave from './MenuSave'
-import MenuSetting from './MenuSetting'
-import Button from './Button'
-import { slideIn, slideOut, fadeIn, fadeOut } from '../util/animations'
-import UICloseButton from './UICloseButton'
+import storage from '@/data/storage'
+import config from '@/data/config'
+import chapters from '@/data/chapters'
+import MenuSave from '@/class/MenuSave'
+import MenuSetting from '@/class/MenuSetting'
+import Button from '@/class/Button'
+import { slideIn, slideOut, fadeIn, fadeOut } from '@/util/animations'
+import UICloseButton from '@/class/UICloseButton'
 export default class TitleScene extends Phaser.Scene {
   constructor () {
     super({ key: 'Title', active: false })

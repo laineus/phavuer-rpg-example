@@ -1,2 +1,2 @@
-import SaveDataManager from '../class/SaveDataManager'
+import SaveDataManager from '@/class/SaveDataManager'
 export default new SaveDataManager()

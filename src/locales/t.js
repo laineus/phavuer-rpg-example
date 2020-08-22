@@ -1,5 +1,5 @@
-import locales from './index'
-import setting from '../data/setting'
+import locales from '@/locales/index'
+import setting from '@/data/setting'
 export default (key, values) => {
   const locale = locales[setting.state.lang]
   const text = key.split('.').reduce((obj, k) => obj && obj[k], locale)

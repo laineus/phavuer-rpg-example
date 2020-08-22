@@ -1,4 +1,4 @@
-import defaultSetting from '../data/defaultSetting'
+import defaultSetting from '@/data/defaultSetting'
 export default class CommonSetting {
   constructor () {
     this.state = this.getDefaultSetting()
