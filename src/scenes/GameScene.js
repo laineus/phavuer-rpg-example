@@ -6,6 +6,7 @@ import storage from '@/data/storage'
 import downloadBySource from '@/util/downloadBySource'
 import Character from '@/gameObjects/Character'
 import Substance from '@/gameObjects/Substance'
+import config from '@/data/config'
 export default class GameScene extends Phaser.Scene {
   constructor () {
     super({ key: 'Game', active: false })
@@ -33,10 +34,11 @@ export default class GameScene extends Phaser.Scene {
     if (this.event.update) this.event.update(this)
     this.map.update(time)
     if (this.ui.eventMode) return
-    // A. Use virtual stick or Tap screen to walk
-    // this.ui.controller.touchMode ? this.walkWithStick() : this.walkOnTap()
-    // B. Use virtual stick or WASD
-    this.walkWithStick()
+    if (this.ui.controller.touchMode) {
+      this.walkWithStick()
+    } else {
+      config.WALK_MODE_PC === 0 ? this.walkOnTap() : this.walkWithStick()
+    }
   }
   walkWithStick () {
     const x = Math.fix(this.player.x + this.ui.controller.velocityX, 0, this.map.width)
