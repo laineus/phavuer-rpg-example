@@ -5,12 +5,7 @@ export default {
     // *
     ...assetData.sprites.filter(v => v.length === 2),
     // tileset/*
-    ['tileset/room', './img/map/extruded_tilesets/room.png'],
-    ['tileset/town', './img/map/extruded_tilesets/town.png'],
-    ['tileset/forest', './img/map/extruded_tilesets/forest.png'],
-    ['tileset/underpass', './img/map/extruded_tilesets/underpass.png'],
-    ['tileset/catacomb', './img/map/extruded_tilesets/catacomb.png'],
-    ['tileset/temple', './img/map/extruded_tilesets/temple.png'],
+    ...assetData.tilesets.map(v => [v[0], v[1].replace('map/tilesets', 'map/extruded_tilesets')]),
     ...assetData.tilesetImages
   ],
   audio: [
@@ -18,10 +13,10 @@ export default {
     ...assetData.bgm
   ],
   json: [
-    ...assetData.tilesetTiles
+    ...assetData.tilesetTileJsons
   ],
   tilemapTiledJSON: [
-    ...assetData.tilesetMaps
+    ...assetData.tilesetMapJsons
   ],
   spritesheet: [
     // *
