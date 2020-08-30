@@ -5,7 +5,6 @@ const path = require('path')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 const TileSetPlugin = require('./build/TileSetPlugin')
 const AssetPlugin = require('./build/AssetPlugin')
-const CharaSpritePlugin = require('./build/CharaSpritePlugin')
 
 module.exports = (_env, argv) => ({
   entry: {
@@ -55,7 +54,6 @@ module.exports = (_env, argv) => ({
     }),
     new TileSetPlugin(),
     new AssetPlugin(),
-    new CharaSpritePlugin(),
     new webpack.ProvidePlugin({
       t: [path.resolve(__dirname, 'src/locales/t'), 'default']
     })

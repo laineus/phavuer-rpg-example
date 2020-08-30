@@ -27,14 +27,15 @@ module.exports = class {
           fs.readdir(dir, (_, files) => {
             const spriteSheetSettings = getSttings(dir)
             const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
-              const key = `${setting.prefix}${file.split('.')[0]}`
+              const fileWithoutExt = file.split('.')[0]
+              const key = `${setting.prefix}${fileWithoutExt}`
               const path = `.${setting.dir}/${file}`
               const sameKeyRow = list.find(v => v[0] === key)
               if (sameKeyRow) {
                 // Apend file if existing same key
                 sameKeyRow.splice(1, 1, [sameKeyRow[1], path].flat())
               } else {
-                const spriteSheetSetting = spriteSheetSettings && spriteSheetSettings.find(v => v[0] === key)
+                const spriteSheetSetting = spriteSheetSettings && spriteSheetSettings.find(v => v[0] === fileWithoutExt)
                 const spriteSheetOption = spriteSheetSetting && getSpriteSheetOption(`${dir}/${file}`, spriteSheetSetting[1], spriteSheetSetting[2])
                 list.push(spriteSheetOption ? [key, path, spriteSheetOption] : [key, path])
               }

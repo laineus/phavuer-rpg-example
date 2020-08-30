@@ -1,5 +1,5 @@
 import assetData from 'assetData'
-import charaSpriteData from 'charaSpriteData'
+assetData.charaSprites.forEach(console.log)
 export default {
   image: [
     // *
@@ -27,6 +27,6 @@ export default {
     // *
     ...assetData.sprites.filter(v => v.length === 3),
     // chara_sprite/*
-    ...charaSpriteData
+    ...assetData.charaSprites.filter(v => v.length === 3)
   ]
 }
