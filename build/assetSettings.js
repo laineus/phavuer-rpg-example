@@ -1,5 +1,5 @@
 module.exports = [
-  { key: 'images', prefix: '', dir: '/img', rule: /^\w+\.png$/ },
+  { key: 'sprites', prefix: '', dir: '/img/sprites', rule: /^\w+\.png$/ },
   { key: 'tilesetImages', prefix: 'tileset/', dir: '/img/map/images', rule: /^\w+\.png$/ },
   { key: 'tilesetTiles', prefix: '', dir: '/map', rule: /^\w+\D\.json$/ },
   { key: 'tilesetMaps', prefix: '', dir: '/map', rule: /^\w+\d+\.json$/ },

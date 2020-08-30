@@ -3,7 +3,7 @@ import charaSpriteData from 'charaSpriteData'
 export default {
   image: [
     // *
-    ...assetData.images,
+    ...assetData.sprites,
     // tileset/*
     ['tileset/room', './img/map/extruded_tilesets/room.png'],
     ['tileset/town', './img/map/extruded_tilesets/town.png'],

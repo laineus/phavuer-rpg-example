@@ -15,5 +15,5 @@ export default {
     black: 0x000000,
     soy: 0xFFEEBB
   },
-  WALK_MODE_PC: 1 // 0: Tap screen to walk, 1: WASD
+  WALK_MODE_PC: 0 // 0: Tap screen to walk, 1: WASD
 }
