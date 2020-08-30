@@ -1,4 +1,5 @@
 const fs = require('fs')
+const sizeOf = require('image-size')
 
 const ASSET_SETTINGS = require('./assetSettings')
 
@@ -7,6 +8,13 @@ const getSttings = dir => {
   if (!fs.existsSync(pathToSettings)) return null
   const settingsJson = fs.readFileSync(pathToSettings, 'utf8')
   return JSON.parse(settingsJson)
+}
+const getSpriteSheetOption = (filePath, numOfX, numOfY) => {
+  const { width, height } = sizeOf(filePath)
+  const frameWidth = Math.round(width / numOfX)
+  const frameHeight = Math.round(height / numOfY)
+  const endFrame = numOfX * numOfY
+  return { frameWidth, frameHeight, endFrame }
 }
 
 module.exports = class {
@@ -17,13 +25,19 @@ module.exports = class {
         return new Promise(resolve => {
           const dir = `./public/${setting.dir}`
           fs.readdir(dir, (_, files) => {
-            const settings = getSttings(dir)
-            console.log(settings)
+            const spriteSheetSettings = getSttings(dir)
             const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
               const key = `${setting.prefix}${file.split('.')[0]}`
               const path = `.${setting.dir}/${file}`
-              const found = list.find(v => v[0] === key)
-              found ? found.splice(1, 1, [found[1], path].flat()) : list.push([key, path])
+              const sameKeyRow = list.find(v => v[0] === key)
+              if (sameKeyRow) {
+                // Apend file if existing same key
+                sameKeyRow.splice(1, 1, [sameKeyRow[1], path].flat())
+              } else {
+                const spriteSheetSetting = spriteSheetSettings && spriteSheetSettings.find(v => v[0] === key)
+                const spriteSheetOption = spriteSheetSetting && getSpriteSheetOption(`${dir}/${file}`, spriteSheetSetting[1], spriteSheetSetting[2])
+                list.push(spriteSheetOption ? [key, path, spriteSheetOption] : [key, path])
+              }
               return list
             }, [])
             resolve({ key: setting.key, list })
