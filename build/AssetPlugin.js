@@ -41,15 +41,18 @@ module.exports = class {
               }
               return list
             }, [])
-            resolve({ key: setting.key, list })
+            if (setting.callback) setting.callback(list)
+            resolve({ type: setting.type, list })
           })
         })
       })
       Promise.all(promises).then(results => {
         const object = results.reduce((obj, v) => {
-          obj[v.key] = v.list
+          obj[v.type] = obj[v.type] ? obj[v.type].concat(v.list) : [...v.list]
           return obj
         }, {})
+        object.spritesheet = object.image.filter(v => v.length === 3)
+        object.image = object.image.filter(v => v.length === 2)
         compiler.options.externals.assetData = JSON.stringify(object)
         console.log('End: Asset')
       })
