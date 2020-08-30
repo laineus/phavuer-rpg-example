@@ -53,7 +53,7 @@ module.exports = class {
         }, {})
         object.spritesheet = object.image.filter(v => v.length === 3)
         object.image = object.image.filter(v => v.length === 2)
-        compiler.options.externals.assetData = JSON.stringify(object)
+        compiler.options.externals.assets = JSON.stringify(object)
         console.log('End: Asset')
       })
     })
