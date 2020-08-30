@@ -2,13 +2,23 @@ const fs = require('fs')
 
 const ASSET_SETTINGS = require('./assetSettings')
 
+const getSttings = dir => {
+  const pathToSettings = `${dir}/settings.json`
+  if (!fs.existsSync(pathToSettings)) return null
+  const settingsJson = fs.readFileSync(pathToSettings, 'utf8')
+  return JSON.parse(settingsJson)
+}
+
 module.exports = class {
   apply (compiler) {
     compiler.hooks.afterEnvironment.tap('Asset', () => {
       console.log('Begin: Asset')
       const promises = ASSET_SETTINGS.map(setting => {
         return new Promise(resolve => {
-          fs.readdir(`./public/${setting.dir}`, (_, files) => {
+          const dir = `./public/${setting.dir}`
+          fs.readdir(dir, (_, files) => {
+            const settings = getSttings(dir)
+            console.log(settings)
             const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
               const key = `${setting.prefix}${file.split('.')[0]}`
               const path = `.${setting.dir}/${file}`
