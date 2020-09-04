@@ -19,7 +19,6 @@ const getSpriteSheetOption = (filePath, numOfX, numOfY) => {
 }
 
 const getAssetsData = () => {
-  console.log('Begin: Asset')
   const promises = ASSET_SETTINGS.map(setting => {
     return new Promise(resolve => {
       const dir = `./public/${setting.dir}`
@@ -52,7 +51,6 @@ const getAssetsData = () => {
     }, {})
     object.spritesheet = object.image.filter(v => v.length === 3)
     object.image = object.image.filter(v => v.length === 2)
-    console.log('End: Asset')
     return object
   })
 }
@@ -60,19 +58,24 @@ const getAssetsData = () => {
 module.exports = class {
   apply (compiler) {
     compiler.hooks.afterEnvironment.tap('Asset', () => {
+      console.log('AssetsPlugin: Initializing...')
       getAssetsData().then(data => {
         compiler.options.externals.assets = JSON.stringify(data)
+        fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
+        console.log('AssetsPlugin: Initialized!')
       })
     })
     compiler.hooks.afterCompile.tap('Asset', compilation => {
-      compilation.fileDependencies.add(path.resolve('./src/ts.txt'))
-      fs.watch('./public/img/sprites', (event, filename) => {
+      compilation.fileDependencies.add(path.resolve('./.assets.json'))
+      fs.watch('./public/img/sprites', (event, f) => {
         if (event !== 'rename') return
         const assetsModule = compilation.modules.find(v => v.userRequest === 'assets')
         if (!assetsModule) return
+        console.log('AssetsPlugin: Updating...')
         getAssetsData().then(data => {
           assetsModule.request = JSON.stringify(data)
-          console.log('updated')
+          fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
+          console.log('AssetsPlugin: Updated!')
         })
       })
     })
