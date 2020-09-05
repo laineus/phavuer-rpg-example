@@ -6,7 +6,8 @@ const defaultSettings = {
   documentRoot: '/public',
   importName: 'assets',
   spriteSheetSettingsFileName: 'settings.json',
-  jsonOutputPath: './.assets.json'
+  jsonOutputPath: './.assets.json',
+  useAbsoluteUrl: true
 }
 
 module.exports = class {
@@ -16,18 +17,14 @@ module.exports = class {
     this.updateFlg = false
   }
   apply (compiler) {
-    compiler.hooks.afterEnvironment.tap('Asset', this.afterEnvironment.bind(this, compiler))
-    compiler.hooks.afterCompile.tap('Asset', this.afterCompile.bind(this))
+    compiler.hooks.afterEnvironment.tap('AssetsPlugin', this.afterEnvironment.bind(this, compiler))
+    compiler.hooks.afterCompile.tap('AssetsPlugin', this.afterCompile.bind(this))
   }
   afterEnvironment (compiler) {
-    console.log('AssetsPlugin: Initializing...')
-    const data = this.getAssetsData()
-    compiler.options.externals[this.settings.importName] = JSON.stringify(data)
-    this.saveJsonFile(data)
-    console.log('AssetsPlugin: Initialized!')
+    compiler.options.externals[this.settings.importName] = this.updateAssetsModule()
   }
   afterCompile (compilation) {
-    // Watch the JSON file under Webpack
+    // Make Webpack Watch the JSON file
     compilation.fileDependencies.add(path.resolve(this.settings.jsonOutputPath))
     // Watch depended directories
     this.patterns.map(v => `.${this.settings.documentRoot}${v.dir}`).forEach(dir => {
@@ -35,20 +32,21 @@ module.exports = class {
         this.updateFlg = this.updateFlg || event === 'rename'
       })
     })
+    // Do polling with a flag because [fs.watch] detects event twice for one update
     setInterval(() => {
       if (this.updateFlg) {
         const assetsModule = compilation.modules.find(v => v.userRequest === this.settings.importName)
-        if (assetsModule) this.updateAssets(assetsModule)
+        if (assetsModule) assetsModule.request = this.updateAssetsModule()
         this.updateFlg = false
       }
     }, 1000)
   }
-  updateAssets (assetsModule) {
-    console.log('AssetsPlugin: Updating...')
+  updateAssetsModule () {
+    console.log('AssetsPlugin: Loading...')
     const data = this.getAssetsData()
-    assetsModule.request = JSON.stringify(data)
     this.saveJsonFile(data)
-    console.log('AssetsPlugin: Updated!')
+    console.log('AssetsPlugin: Completed!')
+    return JSON.stringify(data)
   }
   saveJsonFile (data) {
     fs.writeFileSync(this.settings.jsonOutputPath, JSON.stringify(data, null, '  '))
@@ -59,16 +57,16 @@ module.exports = class {
       const fileNames = fs.readdirSync(dir)
       const spriteSheetSettings = this.getSpriteSheetSettings(dir)
       const list = fileNames.filter(fileName => pattern.rule.test(fileName)).reduce((list, fileName) => {
-        const key = `${pattern.prefix}${fileName.split('.')[0]}`
-        const path = `.${pattern.dir}/${fileName}`
-        const sameKeyRow = list.find(v => v[0] === key)
+        const assetKeyName = `${pattern.prefix}${fileName.split('.')[0]}`
+        const url = `${this.settings.useAbsoluteUrl ? '' : '.'}${pattern.dir}/${fileName}`
+        const sameKeyRow = list.find(v => v[0] === assetKeyName)
         if (sameKeyRow) {
-          // Apend file if existing same key
-          sameKeyRow.splice(1, 1, [sameKeyRow[1], path].flat())
+          // Append the file if existing same key
+          sameKeyRow.splice(1, 1, [sameKeyRow[1], url].flat())
         } else {
           const spriteSheetSetting = spriteSheetSettings && spriteSheetSettings.find(v => v[0] === fileName)
           const spriteSheetOption = spriteSheetSetting && this.getSpriteSheetOption(`${dir}/${fileName}`, spriteSheetSetting[1], spriteSheetSetting[2])
-          list.push(spriteSheetOption ? [key, path, spriteSheetOption] : [key, path])
+          list.push(spriteSheetOption ? [assetKeyName, url, spriteSheetOption] : [assetKeyName, url])
         }
         return list
       }, [])
