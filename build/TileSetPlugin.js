@@ -6,10 +6,13 @@ const fs = require('fs')
 const plugins = [
   imageminPngquant()
 ]
+const defaultSettings = {
+  minify: true
+}
 
 module.exports = class {
   constructor (settings) {
-    this.settings = settings
+    this.settings = { ...defaultSettings, ...settings }
   }
   apply (compiler) {
     const inputDir = this.settings.input
@@ -49,7 +52,7 @@ module.exports = class {
     const inputDir = this.settings.input
     const outputDir = this.settings.output
     extrudeTilesetToBuffer(size, size, `${inputDir}/${file}`).then(buffer => {
-      imagemin.buffer(buffer, { plugins }).then(minifiedBuffer => {
+      imagemin.buffer(buffer, this.settings.minify ? { plugins } : {}).then(minifiedBuffer => {
         fs.writeFileSync(`${outputDir}/${file}`, minifiedBuffer)
       })
     })
