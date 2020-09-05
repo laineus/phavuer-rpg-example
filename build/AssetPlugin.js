@@ -2,7 +2,11 @@ const fs = require('fs')
 const sizeOf = require('image-size')
 const path = require('path')
 
-const getSttings = dir => {
+const defaultSettings = {
+  documentRoot: 'public'
+}
+
+const getSpriteSheetSttings = dir => {
   const pathToSettings = `${dir}/settings.json`
   if (!fs.existsSync(pathToSettings)) return null
   const settingsJson = fs.readFileSync(pathToSettings, 'utf8')
@@ -21,7 +25,7 @@ const getAssetsData = patterns => {
     return new Promise(resolve => {
       const dir = `./public/${setting.dir}`
       fs.readdir(dir, (_, files) => {
-        const spriteSheetSettings = getSttings(dir)
+        const spriteSheetSettings = getSpriteSheetSttings(dir)
         const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
           const fileWithoutExt = file.split('.')[0]
           const key = `${setting.prefix}${fileWithoutExt}`
@@ -42,20 +46,22 @@ const getAssetsData = patterns => {
       })
     })
   })
-  return Promise.all(promises).then(results => {
-    const object = results.reduce((obj, v) => {
+  const makeAssetsData = resultsForEachDir => {
+    const object = resultsForEachDir.reduce((obj, v) => {
       obj[v.type] = obj[v.type] ? obj[v.type].concat(v.list) : [...v.list]
       return obj
     }, {})
     object.spritesheet = object.image.filter(v => v.length === 3)
     object.image = object.image.filter(v => v.length === 2)
-    return object
-  })
+    return object    
+  }
+  return Promise.all(promises).then(makeAssetsData)
 }
 
 module.exports = class {
-  constructor (patterns) {
+  constructor (patterns, settings) {
     this.patterns = patterns
+    this.settings = { ...defaultSettings, ...settings }
   }
   apply (compiler) {
     compiler.hooks.afterEnvironment.tap('Asset', this.afterEnvironment.bind(this, compiler))
