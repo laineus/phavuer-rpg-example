@@ -6,6 +6,8 @@ const WriteFilePlugin = require('write-file-webpack-plugin')
 const TileSetPlugin = require('./build/TileSetPlugin')
 const AssetPlugin = require('./build/AssetPlugin')
 
+const assetSettings = require('./build/assetSettings')
+
 module.exports = (_env, argv) => ({
   entry: {
     app: './src/index.js',
@@ -53,7 +55,7 @@ module.exports = (_env, argv) => ({
       'typeof WEBGL_RENDERER': JSON.stringify(true)
     }),
     new TileSetPlugin(),
-    new AssetPlugin(),
+    new AssetPlugin(assetSettings),
     new webpack.ProvidePlugin({
       t: [path.resolve(__dirname, 'src/locales/t'), 'default']
     })

@@ -2,8 +2,6 @@ const fs = require('fs')
 const sizeOf = require('image-size')
 const path = require('path')
 
-const ASSET_SETTINGS = require('./assetSettings')
-
 const getSttings = dir => {
   const pathToSettings = `${dir}/settings.json`
   if (!fs.existsSync(pathToSettings)) return null
@@ -18,8 +16,8 @@ const getSpriteSheetOption = (filePath, numOfX, numOfY) => {
   return { frameWidth, frameHeight, endFrame }
 }
 
-const getAssetsData = () => {
-  const promises = ASSET_SETTINGS.map(setting => {
+const getAssetsData = patterns => {
+  const promises = patterns.map(setting => {
     return new Promise(resolve => {
       const dir = `./public/${setting.dir}`
       fs.readdir(dir, (_, files) => {
@@ -56,27 +54,32 @@ const getAssetsData = () => {
 }
 
 module.exports = class {
+  constructor (patterns) {
+    this.patterns = patterns
+  }
   apply (compiler) {
-    compiler.hooks.afterEnvironment.tap('Asset', () => {
-      console.log('AssetsPlugin: Initializing...')
-      getAssetsData().then(data => {
-        compiler.options.externals.assets = JSON.stringify(data)
-        fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
-        console.log('AssetsPlugin: Initialized!')
-      })
+    compiler.hooks.afterEnvironment.tap('Asset', this.afterEnvironment.bind(this, compiler))
+    compiler.hooks.afterCompile.tap('Asset', this.afterCompile.bind(this))
+  }
+  afterEnvironment (compiler) {
+    console.log('AssetsPlugin: Initializing...')
+    getAssetsData(this.patterns).then(data => {
+      compiler.options.externals.assets = JSON.stringify(data)
+      fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
+      console.log('AssetsPlugin: Initialized!')
     })
-    compiler.hooks.afterCompile.tap('Asset', compilation => {
-      compilation.fileDependencies.add(path.resolve('./.assets.json'))
-      fs.watch('./public/img/sprites', (event, f) => {
-        if (event !== 'rename') return
-        const assetsModule = compilation.modules.find(v => v.userRequest === 'assets')
-        if (!assetsModule) return
-        console.log('AssetsPlugin: Updating...')
-        getAssetsData().then(data => {
-          assetsModule.request = JSON.stringify(data)
-          fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
-          console.log('AssetsPlugin: Updated!')
-        })
+  }
+  afterCompile (compilation) {
+    compilation.fileDependencies.add(path.resolve('./.assets.json'))
+    fs.watch('./public/img/sprites', event => {
+      if (event !== 'rename') return
+      const assetsModule = compilation.modules.find(v => v.userRequest === 'assets')
+      if (!assetsModule) return
+      console.log('AssetsPlugin: Updating...')
+      getAssetsData(this.patterns).then(data => {
+        assetsModule.request = JSON.stringify(data)
+        fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
+        console.log('AssetsPlugin: Updated!')
       })
     })
   }
