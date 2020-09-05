@@ -21,30 +21,27 @@ const getSpriteSheetOption = (filePath, numOfX, numOfY) => {
 }
 
 const getAssetsData = patterns => {
-  const promises = patterns.map(setting => {
-    return new Promise(resolve => {
-      const dir = `./public/${setting.dir}`
-      fs.readdir(dir, (_, files) => {
-        const spriteSheetSettings = getSpriteSheetSttings(dir)
-        const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
-          const fileWithoutExt = file.split('.')[0]
-          const key = `${setting.prefix}${fileWithoutExt}`
-          const path = `.${setting.dir}/${file}`
-          const sameKeyRow = list.find(v => v[0] === key)
-          if (sameKeyRow) {
-            // Apend file if existing same key
-            sameKeyRow.splice(1, 1, [sameKeyRow[1], path].flat())
-          } else {
-            const spriteSheetSetting = spriteSheetSettings && spriteSheetSettings.find(v => v[0] === fileWithoutExt)
-            const spriteSheetOption = spriteSheetSetting && getSpriteSheetOption(`${dir}/${file}`, spriteSheetSetting[1], spriteSheetSetting[2])
-            list.push(spriteSheetOption ? [key, path, spriteSheetOption] : [key, path])
-          }
-          return list
-        }, [])
-        if (setting.callback) setting.callback(list)
-        resolve({ type: setting.type, list })
-      })
-    })
+  const results = patterns.map(setting => {
+    const dir = `./public/${setting.dir}`
+    const files = fs.readdirSync(dir)
+    const spriteSheetSettings = getSpriteSheetSttings(dir)
+    const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
+      const fileWithoutExt = file.split('.')[0]
+      const key = `${setting.prefix}${fileWithoutExt}`
+      const path = `.${setting.dir}/${file}`
+      const sameKeyRow = list.find(v => v[0] === key)
+      if (sameKeyRow) {
+        // Apend file if existing same key
+        sameKeyRow.splice(1, 1, [sameKeyRow[1], path].flat())
+      } else {
+        const spriteSheetSetting = spriteSheetSettings && spriteSheetSettings.find(v => v[0] === fileWithoutExt)
+        const spriteSheetOption = spriteSheetSetting && getSpriteSheetOption(`${dir}/${file}`, spriteSheetSetting[1], spriteSheetSetting[2])
+        list.push(spriteSheetOption ? [key, path, spriteSheetOption] : [key, path])
+      }
+      return list
+    }, [])
+    if (setting.callback) setting.callback(list)
+    return { type: setting.type, list }
   })
   const makeAssetsData = resultsForEachDir => {
     const object = resultsForEachDir.reduce((obj, v) => {
@@ -55,7 +52,7 @@ const getAssetsData = patterns => {
     object.image = object.image.filter(v => v.length === 2)
     return object    
   }
-  return Promise.all(promises).then(makeAssetsData)
+  return makeAssetsData(results)
 }
 
 module.exports = class {
@@ -69,11 +66,10 @@ module.exports = class {
   }
   afterEnvironment (compiler) {
     console.log('AssetsPlugin: Initializing...')
-    getAssetsData(this.patterns).then(data => {
-      compiler.options.externals.assets = JSON.stringify(data)
-      fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
-      console.log('AssetsPlugin: Initialized!')
-    })
+    const data = getAssetsData(this.patterns)
+    compiler.options.externals.assets = JSON.stringify(data)
+    fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
+    console.log('AssetsPlugin: Initialized!')
   }
   afterCompile (compilation) {
     compilation.fileDependencies.add(path.resolve('./.assets.json'))
@@ -82,11 +78,10 @@ module.exports = class {
       const assetsModule = compilation.modules.find(v => v.userRequest === 'assets')
       if (!assetsModule) return
       console.log('AssetsPlugin: Updating...')
-      getAssetsData(this.patterns).then(data => {
-        assetsModule.request = JSON.stringify(data)
-        fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
-        console.log('AssetsPlugin: Updated!')
-      })
+      const data = getAssetsData(this.patterns)
+      assetsModule.request = JSON.stringify(data)
+      fs.writeFileSync('./.assets.json', JSON.stringify(data, null, '  '))
+      console.log('AssetsPlugin: Updated!')
     })
   }
 }
