@@ -21,14 +21,14 @@ const getSpriteSheetOption = (filePath, numOfX, numOfY) => {
 }
 
 const getAssetsData = patterns => {
-  const results = patterns.map(setting => {
-    const dir = `./public/${setting.dir}`
+  const data = patterns.reduce((result, pattern) => {
+    const dir = `./public/${pattern.dir}`
     const files = fs.readdirSync(dir)
     const spriteSheetSettings = getSpriteSheetSttings(dir)
-    const list = files.filter(file => setting.rule.test(file)).reduce((list, file) => {
+    const list = files.filter(file => pattern.rule.test(file)).reduce((list, file) => {
       const fileWithoutExt = file.split('.')[0]
-      const key = `${setting.prefix}${fileWithoutExt}`
-      const path = `.${setting.dir}/${file}`
+      const key = `${pattern.prefix}${fileWithoutExt}`
+      const path = `.${pattern.dir}/${file}`
       const sameKeyRow = list.find(v => v[0] === key)
       if (sameKeyRow) {
         // Apend file if existing same key
@@ -40,19 +40,13 @@ const getAssetsData = patterns => {
       }
       return list
     }, [])
-    if (setting.callback) setting.callback(list)
-    return { type: setting.type, list }
-  })
-  const makeAssetsData = resultsForEachDir => {
-    const object = resultsForEachDir.reduce((obj, v) => {
-      obj[v.type] = obj[v.type] ? obj[v.type].concat(v.list) : [...v.list]
-      return obj
-    }, {})
-    object.spritesheet = object.image.filter(v => v.length === 3)
-    object.image = object.image.filter(v => v.length === 2)
-    return object    
-  }
-  return makeAssetsData(results)
+    if (pattern.callback) pattern.callback(list)
+    result[pattern.type] = result[pattern.type] ? result[pattern.type].concat(list) : [...list]
+    return result
+  }, {})
+  data.spritesheet = data.image.filter(v => v.length === 3)
+  data.image = data.image.filter(v => v.length === 2)
+  return data
 }
 
 module.exports = class {
