@@ -4,9 +4,9 @@ const webpack = require('webpack')
 const path = require('path')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 const TileSetPlugin = require('./build/TileSetPlugin')
-const AssetPlugin = require('./build/AssetPlugin')
+const AssetPlugin = require('phaser-assets-webpack-plugin')
 
-const assetSettings = require('./build/assetSettings')
+const assetSettings = require('./assetSettings')
 
 module.exports = (_env, argv) => ({
   entry: {
