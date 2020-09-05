@@ -13,6 +13,7 @@ module.exports = class {
   constructor (patterns, settings) {
     this.patterns = patterns
     this.settings = { ...defaultSettings, ...settings }
+    this.updateFlg = false
   }
   apply (compiler) {
     compiler.hooks.afterEnvironment.tap('Asset', this.afterEnvironment.bind(this, compiler))
@@ -22,21 +23,35 @@ module.exports = class {
     console.log('AssetsPlugin: Initializing...')
     const data = this.getAssetsData()
     compiler.options.externals[this.settings.importName] = JSON.stringify(data)
-    fs.writeFileSync(this.settings.jsonOutputPath, JSON.stringify(data, null, '  '))
+    this.saveJsonFile(data)
     console.log('AssetsPlugin: Initialized!')
   }
   afterCompile (compilation) {
+    // Watch the JSON file under Webpack
     compilation.fileDependencies.add(path.resolve(this.settings.jsonOutputPath))
-    fs.watch(`.${this.settings.documentRoot}/img/sprites`, event => {
-      if (event !== 'rename') return
-      const assetsModule = compilation.modules.find(v => v.userRequest === this.settings.importName)
-      if (!assetsModule) return
-      console.log('AssetsPlugin: Updating...')
-      const data = this.getAssetsData()
-      assetsModule.request = JSON.stringify(data)
-      fs.writeFileSync(this.settings.jsonOutputPath, JSON.stringify(data, null, '  '))
-      console.log('AssetsPlugin: Updated!')
+    // Watch depended directories
+    this.patterns.map(v => `.${this.settings.documentRoot}${v.dir}`).forEach(dir => {
+      fs.watch(dir, event => {
+        this.updateFlg = this.updateFlg || event === 'rename'
+      })
     })
+    setInterval(() => {
+      if (this.updateFlg) {
+        const assetsModule = compilation.modules.find(v => v.userRequest === this.settings.importName)
+        if (assetsModule) this.updateAssets(assetsModule)
+        this.updateFlg = false
+      }
+    }, 1000)
+  }
+  updateAssets (assetsModule) {
+    console.log('AssetsPlugin: Updating...')
+    const data = this.getAssetsData()
+    assetsModule.request = JSON.stringify(data)
+    this.saveJsonFile(data)
+    console.log('AssetsPlugin: Updated!')
+  }
+  saveJsonFile (data) {
+    fs.writeFileSync(this.settings.jsonOutputPath, JSON.stringify(data, null, '  '))
   }
   getAssetsData () {
     const data = this.patterns.reduce((result, pattern) => {
