@@ -45,7 +45,7 @@ module.exports = class {
     console.log('AssetsPlugin: Loading...')
     const data = this.getAssetsData()
     this.saveJsonFile(data)
-    console.log('AssetsPlugin: Completed!')
+    console.log('AssetsPlugin: Complete!')
     return JSON.stringify(data)
   }
   saveJsonFile (data) {
