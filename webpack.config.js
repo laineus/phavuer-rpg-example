@@ -54,7 +54,7 @@ module.exports = (_env, argv) => ({
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true)
     }),
-    new TileSetPlugin(),
+    new TileSetPlugin({ size: 32, input: './public/img/map/tilesets', output: './public/img/map/extruded_tilesets' }),
     new AssetPlugin(assetSettings),
     new webpack.ProvidePlugin({
       t: [path.resolve(__dirname, 'src/locales/t'), 'default']

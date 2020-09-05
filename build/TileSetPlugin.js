@@ -7,34 +7,34 @@ const plugins = [
   imageminPngquant()
 ]
 
-const TILE_SIZE = 32
-const DIR = './public/img/map'
-const ORIGINAL = `${DIR}/tilesets`
-const EXTRUDED = `${DIR}/extruded_tilesets`
-
 module.exports = class {
+  constructor (settings) {
+    this.settings = settings
+  }
   apply (compiler) {
+    const inputDir = this.settings.input
+    const outputDir = this.settings.output
     compiler.hooks.afterEnvironment.tap('TileSet', () => {
       console.log('TileSetPlugin: Extruding...')
-      fs.readdir(ORIGINAL, (_, files) => {
+      fs.readdir(inputDir, (_, files) => {
         const promises = files.map(async file => {
           this.extrude(file)
         })
         Promise.all(promises).then(() => {
           console.log('TileSetPlugin: Complete!')
           const modifiedFiles = []
-          fs.watch(ORIGINAL, (_, file) => {
+          fs.watch(inputDir, (_, file) => {
             if (!modifiedFiles.includes(file)) modifiedFiles.push(file)
           })
           setInterval(() => {
             modifiedFiles.forEach(file => {
-              if (fs.existsSync(`${ORIGINAL}/${file}`)) {
+              if (fs.existsSync(`${inputDir}/${file}`)) {
                 console.log(`TileSetPlugin: Updating ${file}`)
                 this.extrude(file)
                 console.log('TileSetPlugin: Complete!')
-              } else if (fs.existsSync(`${EXTRUDED}/${file}`)) {
+              } else if (fs.existsSync(`${outputDir}/${file}`)) {
                 console.log(`TileSetPlugin: Deleting ${file}`)
-                fs.unlinkSync(`${EXTRUDED}/${file}`)
+                fs.unlinkSync(`${outputDir}/${file}`)
                 console.log('TileSetPlugin: Complete!')
               }
             })
@@ -45,9 +45,12 @@ module.exports = class {
     })
   }
   extrude (file) {
-    extrudeTilesetToBuffer(TILE_SIZE, TILE_SIZE, `${ORIGINAL}/${file}`).then(buffer => {
+    const size = this.settings.size
+    const inputDir = this.settings.input
+    const outputDir = this.settings.output
+    extrudeTilesetToBuffer(size, size, `${inputDir}/${file}`).then(buffer => {
       imagemin.buffer(buffer, { plugins }).then(minifiedBuffer => {
-        fs.writeFileSync(`${EXTRUDED}/${file}`, minifiedBuffer)
+        fs.writeFileSync(`${outputDir}/${file}`, minifiedBuffer)
       })
     })
   }
