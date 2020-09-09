@@ -6595,7 +6595,16 @@ thunky@^1.0.2:
   resolved "https://registry.yarnpkg.com/thunky/-/thunky-1.1.0.tgz#5abaf714a9405db0504732bbccd2cedd9ef9537d"
   integrity sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==
 
-tile-extruder@^2.0.3:
+tile-extrude-webpack-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/tile-extrude-webpack-plugin/-/tile-extrude-webpack-plugin-1.0.0.tgz#edf588272f66ddb60b32c4b323cc6334249bc33a"
+  integrity sha512-hMOHMJR0fyqBmMTvhd4zynQmJCM4xGEJfxdCb5RGkbl7QD+5p31TdQxwQM1anDOlncwN6fTn+zVce6rwCdYsXw==
+  dependencies:
+    imagemin "^7.0.1"
+    imagemin-pngquant "^9.0.0"
+    tile-extruder "^2.0.6"
+
+tile-extruder@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/tile-extruder/-/tile-extruder-2.0.6.tgz#296f068b196553b75c97d33062db50ef31d91101"
   integrity sha512-gRlDSKP9qtAyugtNf02WC0fe9aE9e/Rqd5jm5e9ORuKvxbTAIekNNnClIt8YoSYxAOYAyzijO3BKW5OE4nmrFA==

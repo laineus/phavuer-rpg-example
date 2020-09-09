@@ -3,8 +3,8 @@
 const webpack = require('webpack')
 const path = require('path')
 const WriteFilePlugin = require('write-file-webpack-plugin')
-const TileSetPlugin = require('./build/TileSetPlugin')
-const AssetPlugin = require('phaser-assets-webpack-plugin')
+const TileExtrudeWebpackPlugin = require('tile-extrude-webpack-plugin')
+const PhaserAssetsWebpackPlugin = require('phaser-assets-webpack-plugin')
 
 const assetSettings = require('./assetSettings')
 
@@ -54,8 +54,8 @@ module.exports = (_env, argv) => ({
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true)
     }),
-    new TileSetPlugin({ size: 32, input: './public/img/map/tilesets', output: './public/img/map/extruded_tilesets' }),
-    new AssetPlugin(assetSettings),
+    new TileExtrudeWebpackPlugin({ size: 32, input: './public/img/map/tilesets', output: './public/img/map/extruded_tilesets' }),
+    new PhaserAssetsWebpackPlugin(assetSettings),
     new webpack.ProvidePlugin({
       t: [path.resolve(__dirname, 'src/locales/t'), 'default']
     })
