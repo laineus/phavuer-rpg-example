@@ -1,4 +1,5 @@
 import Substance from '@/gameObjects/Substance'
+import RandomWalkModule from '@/gameObjects/RandomWalkModule'
 import animationModules from '@/gameObjects/animationModules'
 import TweetBubble from '@/class/TweetBubble'
 import assets from 'assets'
@@ -29,7 +30,7 @@ export default class Character extends Substance {
     super.preUpdate()
     this._walkToTargetPosition()
     this._calcRotation()
-    this._randomWalk()
+    if (this.randomWalkModule) this.randomWalkModule.update()
     this._collideWall()
     this.tweetBubble.setPosition(this.x, this.y - 60)
     this.updateAnim()
@@ -127,9 +128,6 @@ export default class Character extends Substance {
   get walking () {
     return this.velocity > 1
   }
-  get movingHorizontal () {
-    return Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)
-  }
   _calcRotation () {
     if (!this.walking) return
     this.r = Math.atan2(this.body.velocity.y, this.body.velocity.x)
@@ -159,35 +157,14 @@ export default class Character extends Substance {
     return this
   }
   setRandomWalk (bool, { speed, range = 50 } = {}) {
-    this.randomWalk = bool
-    this.randomWalkRange = Math.round(range / 2)
+    this.randomWalkModule = bool ? new RandomWalkModule(this.scene, this, range) : null
     if (speed) this.setSpeed(speed)
-    this.setNextRandomWalkDelay()
     return this
-  }
-  setNextRandomWalkDelay () {
-    this.randomWalkDelay = Math.randomInt(100, 200)
   }
   setTalking (bool) {
     this.talking = bool
     if (bool) this.stopWalk()
     return this
-  }
-  _randomWalk () {
-    if (!this.randomWalk || this.talking) return
-    if (!this.walking || !this.body.blocked.none) this.randomWalkDelay--
-    if (this.randomWalkDelay <= 0) {
-      const pos = this._tryToGetRandomPosition()
-      if (pos) this.setTargetPosition(pos.x, pos.y)
-      this.setNextRandomWalkDelay()
-    }
-  }
-  _tryToGetRandomPosition (count = 10) {
-    if (!count) return null
-    const x = this.x + Math.randomInt(-this.randomWalkRange, this.randomWalkRange)
-    const y = this.y + Math.randomInt(-this.randomWalkRange, this.randomWalkRange)
-    const collides = this.scene.map.isCollides(x.toTile, y.toTile)
-    return collides ? this._tryToGetRandomPosition(count - 1) : { x, y }
   }
   _collideWall () {
     if (this.walking) {
