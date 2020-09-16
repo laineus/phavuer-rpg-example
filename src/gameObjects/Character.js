@@ -1,11 +1,19 @@
 import Substance from '@/gameObjects/Substance'
+import animationModules from '@/gameObjects/animationModules'
 import TweetBubble from '@/class/TweetBubble'
 import assets from 'assets'
-const angleData = {
-  down: { frame: 1, r: Math.PI / 2 },
-  left: { frame: 4, r: Math.PI },
-  right: { frame: 7, r: 0 },
-  up: { frame: 10, r: Math.PI / -2 }
+const angleRadian = {
+  down: Math.PI / 2,
+  left: Math.PI,
+  right: 0,
+  up: Math.PI / -2
+}
+const getAnimationModule = spriteKey => {
+  const frameLength = assets.spritesheet.find(v => v[0] === spriteKey)[2].endFrame + 1
+  switch (frameLength) {
+    case 12: return animationModules.Character
+    case 3: return animationModules.Boss
+  }
 }
 export default class Character extends Substance {
   constructor (scene, x, y, key, option) {
@@ -21,10 +29,19 @@ export default class Character extends Substance {
     super.preUpdate()
     this._walkToTargetPosition()
     this._calcRotation()
-    this._updateAnimation()
     this._randomWalk()
     this._collideWall()
     this.tweetBubble.setPosition(this.x, this.y - 60)
+    this.updateAnim()
+  }
+  initImage (key, width, height) {
+    super.initImage(key, width, height)
+    const AnimationModule = getAnimationModule(this.spriteKey)
+    this.animationModule = AnimationModule && new AnimationModule(this.scene, key, this.image)
+    return this
+  }
+  updateAnim () {
+    if (this.animationModule) this.animationModule.update(this.r, this.velocity)
   }
   setDisplayName (name) {
     this.displayName = name
@@ -104,8 +121,11 @@ export default class Character extends Substance {
   get diffToFollowingDistance () {
     return Math.hypot(this.diffToFollowingX, this.diffToFollowingY)
   }
+  get velocity () {
+    return Math.hypot(this.body.velocity.x, this.body.velocity.y)
+  }
   get walking () {
-    return Math.hypot(this.body.velocity.x, this.body.velocity.y) > 1
+    return this.velocity > 1
   }
   get movingHorizontal () {
     return Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)
@@ -133,42 +153,9 @@ export default class Character extends Substance {
       this.stopWalk()
     }
   }
-  _updateAnimation () {
-    if (!this.walking) {
-      if (this.frameLength === 3) this.image.anims.play(this._waitAnimName, true)
-      if (this.frameLength === 12) this.image.setFrame(this.angleFrame)
-    } else {
-      this.image.anims.play(this._animName, true)
-      if (this.frameLength === 6) this.image.setScale(this.body.velocity.x < 0 ? 1 : -1, 1)
-    }
-  }
-  get frameLength () {
-    return assets.spritesheet.find(v => v[0] === this.spriteKey)[2].endFrame
-  }
-  get _waitAnimName () {
-    return `${this.key}_waiting`
-  }
-  get _animName () {
-    if (this.frameLength === 12) {
-      return `${this.key}_walk_${this.angleKey}`
-    }
-    return this._waitAnimName
-  }
-  get angleKey () {
-    const x = Math.cos(this.r)
-    const y = Math.sin(this.r)
-    if (Math.abs(x) > Math.abs(y)) {
-      return x < 0 ? 'left' : 'right'
-    } else {
-      return y < 0 ? 'up' : 'down'
-    }
-  }
-  get angleFrame () {
-    return angleData[this.angleKey].frame
-  }
   setR (value) {
-    this.r = typeof value === 'string' ? angleData[value].r : value
-    this._updateAnimation()
+    this.r = typeof value === 'string' ? angleRadian[value] : value
+    this.updateAnim()
     return this
   }
   setRandomWalk (bool, { speed, range = 50 } = {}) {
