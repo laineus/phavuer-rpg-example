@@ -37,7 +37,7 @@ export default class Character extends Substance {
   initImage (key, width, height) {
     super.initImage(key, width, height)
     const AnimationModule = getAnimationModule(this.spriteKey)
-    this.animationModule = AnimationModule && new AnimationModule(this.scene, key, this.image)
+    this.animationModule = AnimationModule && new AnimationModule(this.scene, this.image)
     return this
   }
   updateAnim () {
