@@ -28,7 +28,8 @@ export default class Character extends Substance {
   }
   preUpdate () {
     super.preUpdate()
-    this._walkToTargetPosition()
+    if (this.target) this.updateTargetPositionToTarget()
+    this.walkToTargetPosition()
     this._calcRotation()
     if (this.randomWalkModule) this.randomWalkModule.update()
     this._collideWall()
@@ -53,38 +54,28 @@ export default class Character extends Substance {
     return this
   }
   setTarget (target = null, leave = false) {
-    this.unsetFollowing()
     this.target = target
     this.leaveFromTarget = leave
     return this
   }
   setTargetPosition (x = null, y = null) {
-    this.unsetFollowing()
-    this._targetPositionX = x
-    this._targetPositionY = y
-    if (this._targetPositionResolve) this._targetPositionResolve()
+    this.targetPositionX = x
+    this.targetPositionY = y
+    if (this.targetPositionResolver) this.targetPositionResolver()
     return new Promise(resolve => {
-      this._targetPositionResolve = resolve
+      this.targetPositionResolver = resolve
     })
   }
-  unsetFollowing () {
-    // this.target = null
-    this._targetPositionX = null
-    this._targetPositionY = null
-  }
-  stopWalk () {
-    this.unsetFollowing()
-    this.body.setVelocity(0, 0)
+  stopWalk (immediately = false) {
+    this.targetPositionX = null
+    this.targetPositionY = null
+    if (immediately) this.body.setVelocity(0, 0)
+    if (this.targetPositionResolver) this.targetPositionResolver()
     return this
   }
   setSpeed (speed = 120) {
     this.speed = speed
     return this
-  }
-  setVelocity (x, y) {
-    this.unsetFollowing()
-    this.body.setVelocity(x, y)
-    this.body.velocity.normalize().scale(this.speed)
   }
   getBalloon () {
     return super.getBalloon('bubble_talk')
@@ -94,33 +85,17 @@ export default class Character extends Substance {
       this.tweetBubble.setText(text, resolve)
     })
   }
-  get hasTarget () {
-    return this.target !== null
-  }
   get hasTargetPosition () {
-    return this._targetPositionX !== null && this._targetPositionY !== null
+    return this.targetPositionX !== null && this.targetPositionY !== null
   }
-  get followingTarget () {
-    return this.hasTargetPosition || this.hasTarget
+  get diffToTargetPositionX () {
+    return this.hasTargetPosition ? this.targetPositionX - this.x : 0
   }
-  get followingX () {
-    if (this.hasTargetPosition) return this._targetPositionX
-    if (this.hasTarget) return this.target.x
-    return null
+  get diffToTargetPositionY () {
+    return this.hasTargetPosition ? this.targetPositionY - this.y : 0
   }
-  get followingY () {
-    if (this.hasTargetPosition) return this._targetPositionY
-    if (this.hasTarget) return this.target.y
-    return null
-  }
-  get diffToFollowingX () {
-    return this.followingTarget ? this.followingX - this.x : 0
-  }
-  get diffToFollowingY () {
-    return this.followingTarget ? this.followingY - this.y : 0
-  }
-  get diffToFollowingDistance () {
-    return Math.hypot(this.diffToFollowingX, this.diffToFollowingY)
+  get diffToTargetPositionDistance () {
+    return Math.hypot(this.diffToTargetPositionX, this.diffToTargetPositionY)
   }
   get velocity () {
     return Math.hypot(this.body.velocity.x, this.body.velocity.y)
@@ -132,24 +107,25 @@ export default class Character extends Substance {
     if (!this.walking) return
     this.r = Math.atan2(this.body.velocity.y, this.body.velocity.x)
   }
-  _walkToTargetPosition () {
-    if (!this.followingTarget) return
-    if (this.hasTarget && !this.leaveFromTarget && (this.diffToFollowingDistance < 50 || this.diffToFollowingDistance > 400)) return
-    if (this.hasTarget && this.leaveFromTarget && this.diffToFollowingDistance > 200) return
-    const diffToFollowingX = (this.hasTarget && this.leaveFromTarget) ? -this.diffToFollowingX : this.diffToFollowingX
-    const diffToFollowingY = (this.hasTarget && this.leaveFromTarget) ? -this.diffToFollowingY : this.diffToFollowingY
-    const x = (!this.body.blocked.left && !this.body.blocked.right) ? diffToFollowingX : diffToFollowingX * 0.1
-    const y = (!this.body.blocked.top && !this.body.blocked.down) ? diffToFollowingY : diffToFollowingY * 0.1
+  updateTargetPositionToTarget () {
+    const diffToTargetX = this.target.x - this.x
+    const diffToTargetY = this.target.y - this.y
+    const distance = Math.hypot(diffToTargetX, diffToTargetY)
+    if (this.leaveFromTarget ? distance > 200 : distance < 50 || distance > 400) return this.stopWalk()
+    const x = this.leaveFromTarget ? this.x - diffToTargetX : this.target.x
+    const y = this.leaveFromTarget ? this.y - diffToTargetY : this.target.y
+    this.setTargetPosition(x, y)
+  }
+  walkToTargetPosition () {
+    if (!this.hasTargetPosition) return
+    const diffX = this.diffToTargetPositionX
+    const diffY = this.diffToTargetPositionY
+    const x = (!this.body.blocked.left && !this.body.blocked.right) ? diffX : diffX * 0.1
+    const y = (!this.body.blocked.top && !this.body.blocked.down) ? diffY : diffY * 0.1
     this.body.setVelocity(x, y)
-    const speed = Math.min(this.speed, (this.diffToFollowingDistance * 10))
+    const speed = Math.min(this.speed, this.diffToTargetPositionDistance * 10)
     this.body.velocity.normalize().scale(speed)
-    if (this.diffToFollowingDistance < 5) {
-      if (this._targetPositionResolve) {
-        this._targetPositionResolve()
-        this._targetPositionResolve = null
-      }
-      this.stopWalk()
-    }
+    if (this.diffToTargetPositionDistance < 5) this.stopWalk()
   }
   setR (value) {
     this.r = typeof value === 'string' ? angleRadian[value] : value
