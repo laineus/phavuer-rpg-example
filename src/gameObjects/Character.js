@@ -1,4 +1,5 @@
 import Substance from '@/gameObjects/Substance'
+import TargetWalkModule from '@/gameObjects/TargetWalkModule'
 import RandomWalkModule from '@/gameObjects/RandomWalkModule'
 import animationModules from '@/gameObjects/animationModules'
 import TweetBubble from '@/class/TweetBubble'
@@ -19,17 +20,16 @@ const getAnimationModule = spriteKey => {
 export default class Character extends Substance {
   constructor (scene, x, y, key, option) {
     super(scene, x, y, key, option)
-    this.setTarget(null)
     this.setSpeed(40)
     this.setR('down')
     this.setFaceKey(this.key)
     this.setTalking(false)
     this.tweetBubble = new TweetBubble(scene).setDepth(210000)
+    this.targetWalkModule = new TargetWalkModule(this)
   }
   preUpdate () {
     super.preUpdate()
-    if (this.target) this.updateTargetPositionToTarget()
-    this.walkToTargetPosition()
+    this.targetWalkModule.update()
     this._calcRotation()
     if (this.randomWalkModule) this.randomWalkModule.update()
     this._collideWall()
@@ -53,24 +53,16 @@ export default class Character extends Substance {
     this.faceKey = name
     return this
   }
-  setTarget (target = null, leave = false) {
-    this.target = target
-    this.leaveFromTarget = leave
+  setTarget (target, leave) {
+    this.targetWalkModule.setTarget(target, leave)
     return this
   }
-  setTargetPosition (x = null, y = null) {
-    this.targetPositionX = x
-    this.targetPositionY = y
-    if (this.targetPositionResolver) this.targetPositionResolver()
-    return new Promise(resolve => {
-      this.targetPositionResolver = resolve
-    })
+  setTargetPosition (x, y) {
+    return this.targetWalkModule.setTargetPosition(x, y)
   }
   stopWalk (immediately = false) {
-    this.targetPositionX = null
-    this.targetPositionY = null
+    this.targetWalkModule.clearTargetPosition()
     if (immediately) this.body.setVelocity(0, 0)
-    if (this.targetPositionResolver) this.targetPositionResolver()
     return this
   }
   setSpeed (speed = 120) {
@@ -85,18 +77,6 @@ export default class Character extends Substance {
       this.tweetBubble.setText(text, resolve)
     })
   }
-  get hasTargetPosition () {
-    return this.targetPositionX !== null && this.targetPositionY !== null
-  }
-  get diffToTargetPositionX () {
-    return this.hasTargetPosition ? this.targetPositionX - this.x : 0
-  }
-  get diffToTargetPositionY () {
-    return this.hasTargetPosition ? this.targetPositionY - this.y : 0
-  }
-  get diffToTargetPositionDistance () {
-    return Math.hypot(this.diffToTargetPositionX, this.diffToTargetPositionY)
-  }
   get velocity () {
     return Math.hypot(this.body.velocity.x, this.body.velocity.y)
   }
@@ -107,34 +87,13 @@ export default class Character extends Substance {
     if (!this.walking) return
     this.r = Math.atan2(this.body.velocity.y, this.body.velocity.x)
   }
-  updateTargetPositionToTarget () {
-    const diffToTargetX = this.target.x - this.x
-    const diffToTargetY = this.target.y - this.y
-    const distance = Math.hypot(diffToTargetX, diffToTargetY)
-    if (this.leaveFromTarget ? distance > 200 : distance < 50 || distance > 400) return this.stopWalk()
-    const x = this.leaveFromTarget ? this.x - diffToTargetX : this.target.x
-    const y = this.leaveFromTarget ? this.y - diffToTargetY : this.target.y
-    this.setTargetPosition(x, y)
-  }
-  walkToTargetPosition () {
-    if (!this.hasTargetPosition) return
-    const diffX = this.diffToTargetPositionX
-    const diffY = this.diffToTargetPositionY
-    const x = (!this.body.blocked.left && !this.body.blocked.right) ? diffX : diffX * 0.1
-    const y = (!this.body.blocked.top && !this.body.blocked.down) ? diffY : diffY * 0.1
-    this.body.setVelocity(x, y)
-    const speed = Math.min(this.speed, this.diffToTargetPositionDistance * 10)
-    this.body.velocity.normalize().scale(speed)
-    if (this.diffToTargetPositionDistance < 5) this.stopWalk()
-  }
   setR (value) {
     this.r = typeof value === 'string' ? angleRadian[value] : value
     this.updateAnim()
     return this
   }
-  setRandomWalk (bool, { speed, range = 50 } = {}) {
+  setRandomWalk (bool, { range = 50 } = {}) {
     this.randomWalkModule = bool ? new RandomWalkModule(this.scene, this, range) : null
-    if (speed) this.setSpeed(speed)
     return this
   }
   setTalking (bool) {
