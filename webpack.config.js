@@ -2,6 +2,7 @@
 
 const webpack = require('webpack')
 const path = require('path')
+const { VueLoaderPlugin } = require('vue-loader')
 const WriteFilePlugin = require('write-file-webpack-plugin')
 const TileExtrudeWebpackPlugin = require('tile-extrude-webpack-plugin')
 const PhaserAssetsWebpackPlugin = require('phaser-assets-webpack-plugin')
@@ -11,7 +12,7 @@ const assetSettings = require('./assetSettings')
 module.exports = (_env, argv) => ({
   entry: {
     app: './src/index.js',
-    vendor: ['phaser']
+    vendor: ['phaser', 'vue']
   },
   output: {
     path: path.resolve(__dirname, 'public/js'),
@@ -35,13 +36,19 @@ module.exports = (_env, argv) => ({
         exclude: '/node_modules/',
         loader: 'eslint-loader',
         enforce: 'pre'
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
       }
     ]
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
+      '@': path.resolve(__dirname, 'src'),
+      // 'vue': 'vue/dist/vue.esm-bundler.js'
+    },
+    extensions: ['.js', '.vue']
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'public'),
@@ -52,13 +59,16 @@ module.exports = (_env, argv) => ({
     new webpack.DefinePlugin({
       'ENV': JSON.stringify(argv.mode),
       'typeof CANVAS_RENDERER': JSON.stringify(true),
-      'typeof WEBGL_RENDERER': JSON.stringify(true)
+      'typeof WEBGL_RENDERER': JSON.stringify(true),
+      '__VUE_OPTIONS_API__': JSON.stringify(false),
+      '__VUE_PROD_DEVTOOLS__': JSON.stringify(false)
     }),
     new TileExtrudeWebpackPlugin({ size: 32, input: './public/img/map/tilesets', output: './public/img/map/extruded_tilesets' }),
     new PhaserAssetsWebpackPlugin(assetSettings),
     new webpack.ProvidePlugin({
       t: [path.resolve(__dirname, 'src/locales/t'), 'default']
-    })
+    }),
+    new VueLoaderPlugin()
   ],
   externals: {},
   optimization: {
