@@ -45,8 +45,7 @@ module.exports = (_env, argv) => ({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-      // 'vue': 'vue/dist/vue.esm-bundler.js'
+      '@': path.resolve(__dirname, 'src')
     },
     extensions: ['.js', '.vue']
   },
