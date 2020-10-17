@@ -5,7 +5,6 @@ import setting from '@/data/setting'
 import { fadeIn, fadeOut } from '@/util/animations'
 import downloadBySource from '@/util/downloadBySource'
 import Talk from '@/class/Talk'
-import Select from '@/ui/Select'
 import Menu from '@/class/Menu'
 import Controller from '@/class/Controller'
 import AudioController from '@/class/AudioController'
@@ -77,7 +76,7 @@ export default class UIScene extends Phaser.Scene {
     return new Promise(resolve => new Talk(this, talks, option, resolve))
   }
   select (options) {
-    return new Promise(resolve => new Select(this, options, resolve))
+    // return new Promise(resolve => new Select(this, options, resolve)) //TODO
   }
   sleep (time) {
     return new Promise(resolve => setTimeout(() => resolve(), time))
