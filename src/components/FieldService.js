@@ -6,10 +6,14 @@ export const DEPTH = {
   SUN_LIGHT: 140000,
   DARKNESS: 130000
 }
-const getValueByProperties = (properties, key) => {
-  if (!Array.isArray(properties)) return null
-  const property = properties.find(v => v.name === key)
-  return property ? property.value : null
+const propertiesToObject = properties => {
+  const result = {}
+  if (properties) {
+    properties.forEach(property => {
+      result[property.name] = property.type === 'color' ? strColorToInt(property.value) : property.value
+    })
+  }
+  return result
 }
 // const parseArgb = str => {
 //   return {
@@ -27,17 +31,13 @@ const getTileSettings = (scene, tilemap) => {
 const getTilesets = tilemap => {
   return tilemap.tilesets.map(tileset => tilemap.addTilesetImage(tileset.name, `tileset/${tileset.name}`, 32, 32, 1, 2))
 }
-const getLayers = (tilemap, rawData, tileSettings) => {
+const getLayers = (tilemap, tileSettings) => {
   const animationTileIds = tileSettings.filter(v => 'animation' in v.setting).map(v => v.id)
   return tilemap.layers.map((layer, index) => {
     if (!layer.visible) return
-    const dynamicFlag = getValueByProperties(layer.properties, 'dynamic')
     const hasAnimTile = layer.data.flat().some(v => animationTileIds.includes(v.index))
-    const component = dynamicFlag || hasAnimTile ? 'DynamicTilemapLayer' : 'StaticTilemapLayer'
-    const depthSetting = getValueByProperties(layer.properties, 'depth')
-    const layerIndex = rawData.layers.findIndex(v => v.name === layer.name)
-    const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + layerIndex
-    return { index, component, depth }
+    const component = hasAnimTile ? 'DynamicTilemapLayer' : 'StaticTilemapLayer'
+    return { index, component, properties: propertiesToObject(layer.properties) }
   }).filter(Boolean)
 }
 const getUpdateEvent = (tilemap, tilesettings) => {
@@ -58,18 +58,40 @@ const getUpdateEvent = (tilemap, tilesettings) => {
     })
   }
 }
+const strColorToInt = str => parseInt(str.slice(1), 16)
+const getImage = rawData => {
+  const images = rawData.layers.filter(l => l.visible && l.type === 'imagelayer')
+  return images.map(image => {
+    return {
+      id: image.id,
+      key: image.image.split('/').slice(-1)[0].split('.')[0],
+      name: image.name,
+      x: image.offsetx,
+      y: image.offsety,
+      alpha: image.opacity,
+      tint: image.tintcolor ? strColorToInt(image.tintcolor) : null,
+      properties: propertiesToObject(image.properties)
+    }
+  })
+}
 export default class {
   constructor (scene, mapKey) {
     this.name = mapKey
     const tilemap = new Phaser.Tilemaps.ParseToTilemap(scene, mapKey)
-    const rawData = scene.cache.tilemap.get(this.name).data
+    const rawData = scene.cache.tilemap.get(mapKey).data
     const tileSettings = getTileSettings(scene, tilemap)
+    console.log(tilemap)
+    console.log(rawData)
 
     this.tilemap = tilemap
     this.width = tilemap.widthInPixels
     this.height = tilemap.heightInPixels
-    this.layers = getLayers(tilemap, rawData, tileSettings)
+    this.layers = getLayers(tilemap, tileSettings)
     this.tilesets = getTilesets(tilemap)
+    this.images = getImage(rawData)
     this.update = getUpdateEvent(tilemap, tileSettings)
+    this.getObjectsByType = type => {
+      return tilemap.objects.map(v => v.objects).flat().filter(v => v.type === type)
+    }
   }
 }
