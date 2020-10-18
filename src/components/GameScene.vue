@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field'
 export default {
@@ -14,6 +14,7 @@ export default {
   setup (props, context) {
     const scene = refScene(null)
     const field = ref(null)
+    provide('field', field)
     const create = (scene, payload) => {
     }
     const update = (scene, time) => {

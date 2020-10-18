@@ -79,25 +79,29 @@ const getObjects = rawData => {
     return result
   })
 }
-export default class {
-  constructor (scene, mapKey) {
-    this.name = mapKey
-    const tilemap = new Phaser.Tilemaps.ParseToTilemap(scene, mapKey)
-    const rawData = scene.cache.tilemap.get(mapKey).data
-    const tileSettings = getTileSettings(scene, tilemap)
-    console.log(tilemap)
-    console.log(rawData)
+export default (scene, mapKey) => {
+  const tilemap = new Phaser.Tilemaps.ParseToTilemap(scene, mapKey)
+  const rawData = scene.cache.tilemap.get(mapKey).data
+  const tileSettings = getTileSettings(scene, tilemap)
+  console.log(tilemap)
+  console.log(rawData)
+  const layers = getLayers(tilemap, tileSettings)
+  const tilesets = getTilesets(tilemap)
+  const images = getImage(rawData)
+  const objects = getObjects(rawData)
+  const update = getUpdateEvent(tilemap, tileSettings)
+  const getObjectsByType = type => objects.filter(v => v.type === type)
 
-    this.tilemap = tilemap
-    this.width = tilemap.widthInPixels
-    this.height = tilemap.heightInPixels
-    this.layers = getLayers(tilemap, tileSettings)
-    this.tilesets = getTilesets(tilemap)
-    this.images = getImage(rawData)
-    this.objects = getObjects(rawData)
-    this.update = getUpdateEvent(tilemap, tileSettings)
-    this.getObjectsByType = type => {
-      return tilemap.objects.map(v => v.objects).flat().filter(v => v.type === type)
-    }
+  return {
+    name: mapKey,
+    tilemap,
+    width: tilemap.widthInPixels,
+    height: tilemap.heightInPixels,
+    layers,
+    tilesets,
+    images,
+    objects,
+    update,
+    getObjectsByType
   }
 }
