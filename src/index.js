@@ -1,8 +1,8 @@
 import 'phaser'
+import { createPhavuerApp } from 'phavuer'
 import '@/util/extendNativeClassFunctions'
-import BootScene from '@/scenes/BootScene'
-import GameScene from '@/scenes/GameScene'
-import UIScene from '@/scenes/UIScene'
+import loadAssets from '@/util/loadAssets'
+import App from '@/components/App'
 import config from '@/data/config'
 import storage from '@/data/storage'
 
@@ -18,7 +18,14 @@ const option = {
   type: Phaser.AUTO,
   width: config.WIDTH,
   height: config.HEIGHT,
-  scene: [BootScene, GameScene, UIScene],
+  scene: {
+    create () {
+      createPhavuerApp(this.game, App)
+    },
+    preload () {
+      loadAssets(this)
+    }
+  },
   parent: 'game',
   physics: {
     default: 'arcade',
