@@ -6,14 +6,13 @@ export const DEPTH = {
   SUN_LIGHT: 140000,
   DARKNESS: 130000
 }
-const propertiesToObject = properties => {
-  const result = {}
+const mapProperties = (base, properties) => {
   if (properties) {
     properties.forEach(property => {
-      result[property.name] = property.type === 'color' ? strColorToInt(property.value) : property.value
+      base[property.name] = property.type === 'color' ? strColorToInt(property.value) : property.value
     })
   }
-  return result
+  return base
 }
 // const parseArgb = str => {
 //   return {
@@ -37,7 +36,7 @@ const getLayers = (tilemap, tileSettings) => {
     if (!layer.visible) return
     const hasAnimTile = layer.data.flat().some(v => animationTileIds.includes(v.index))
     const component = hasAnimTile ? 'DynamicTilemapLayer' : 'StaticTilemapLayer'
-    return { index, component, properties: propertiesToObject(layer.properties) }
+    return mapProperties({ index, component }, layer.properties)
   }).filter(Boolean)
 }
 const getUpdateEvent = (tilemap, tilesettings) => {
@@ -62,16 +61,22 @@ const strColorToInt = str => parseInt(str.slice(1), 16)
 const getImage = rawData => {
   const images = rawData.layers.filter(l => l.visible && l.type === 'imagelayer')
   return images.map(image => {
-    return {
+    return mapProperties({
       id: image.id,
       key: image.image.split('/').slice(-1)[0].split('.')[0],
       name: image.name,
       x: image.offsetx,
       y: image.offsety,
       alpha: image.opacity,
-      tint: image.tintcolor ? strColorToInt(image.tintcolor) : null,
-      properties: propertiesToObject(image.properties)
-    }
+      tint: image.tintcolor ? strColorToInt(image.tintcolor) : null
+    }, image.properties)
+  })
+}
+const getObjects = rawData => {
+  return rawData.layers.filter(l => l.visible && l.type === 'objectgroup').map(v => v.objects).flat().map(data => {
+    const result = mapProperties(Object.assign({}, data), data.properties)
+    delete result.properties
+    return result
   })
 }
 export default class {
@@ -89,6 +94,7 @@ export default class {
     this.layers = getLayers(tilemap, tileSettings)
     this.tilesets = getTilesets(tilemap)
     this.images = getImage(rawData)
+    this.objects = getObjects(rawData)
     this.update = getUpdateEvent(tilemap, tileSettings)
     this.getObjectsByType = type => {
       return tilemap.objects.map(v => v.objects).flat().filter(v => v.type === type)
