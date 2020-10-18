@@ -1,6 +1,6 @@
 <template>
   <Container ref="chara" :x="initX" :y="initY" @create="create" @update="update">
-    <Image :texture="`chara_sprite/${name}`" :origin="0" />
+    <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
   </Container>
 </template>
 
@@ -8,6 +8,7 @@
 import { refObj, Container, Image } from 'phavuer'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
+import { onMounted } from 'vue'
 export default {
   components: { Container, Image },
   props: {
@@ -19,17 +20,21 @@ export default {
   },
   setup (props) {
     const chara = refObj(null)
+    const image = refObj(null)
     const following = useFollowing(chara)
     const randomWalk = useRandomWalk(chara, 100)
     const create = obj => {
-      obj.scene.physics.world.enable(obj)
     }
     const update = obj => {
       randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
     }
+    onMounted(() => {
+      chara.value.setSize(image.value.width, image.value.height)
+      chara.value.scene.physics.world.enable(chara.value)
+    })
     return {
-      chara,
+      chara, image,
       create,
       update
     }

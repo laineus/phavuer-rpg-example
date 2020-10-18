@@ -27,6 +27,11 @@ const getTileSettings = (scene, tilemap) => {
     })
   }).flat()
 }
+const getTileSettingsByType = (settings, type) => {
+  return settings.filter(tile => tile.setting.type && tile.setting.type.split(',').includes(type)).map(tile => {
+    return mapProperties({ id: tile.id }, tile.setting.properties)
+  })
+}
 const getTilesets = tilemap => {
   return tilemap.tilesets.map(tileset => tilemap.addTilesetImage(tileset.name, `tileset/${tileset.name}`, 32, 32, 1, 2))
 }
@@ -102,6 +107,7 @@ export default (scene, mapKey) => {
     images,
     objects,
     update,
-    getObjectsByType
+    getObjectsByType,
+    getTileSettingsByType: type => getTileSettingsByType(tileSettings, type)
   }
 }

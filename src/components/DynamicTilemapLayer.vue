@@ -11,7 +11,7 @@ export default {
     'x', 'y',
     'width', 'height',
     'depth',
-    'tilemap', 'layerIndex', 'tileset'
+    'tilemap', 'layerIndex', 'tileset', 'collision'
   ],
   setup (props, context) {
     const scene = inject('scene')
@@ -19,6 +19,7 @@ export default {
       preUpdate () {}
     }
     const object = new DynamicTilemapLayer(scene, props.tilemap, props.layerIndex, props.tileset, props.x, props.y)
+    object.setCollision(props.collision) // TODO
     initGameObject(object, props, context)
     return { object }
   }
