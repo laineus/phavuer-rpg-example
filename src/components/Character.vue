@@ -8,6 +8,7 @@
 import { refObj, Container, Image } from 'phavuer'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
+import useFrameAnim from './modules/useFrameAnim'
 import { onMounted } from 'vue'
 export default {
   components: { Container, Image },
@@ -23,11 +24,13 @@ export default {
     const image = refObj(null)
     const following = useFollowing(chara)
     const randomWalk = useRandomWalk(chara, 100)
+    const frameAnim = useFrameAnim([{ key: 'walk', frames: [1, 0, 1, 2], duration: 20 }], image)
     const create = obj => {
     }
     const update = obj => {
       randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
+      frameAnim.play('walk')
     }
     onMounted(() => {
       chara.value.setSize(image.value.width, image.value.height)
