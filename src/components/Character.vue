@@ -1,13 +1,13 @@
 <template>
-  <Container :x="x" :y="y" @update="update">
+  <Container ref="chara" :x="initX" :y="initY" @create="create" @update="update">
     <Image :texture="`chara_sprite/${name}`" :origin="0" />
   </Container>
 </template>
 
 <script>
-import { Container, Image } from 'phavuer'
-import { reactive, toRefs } from 'vue'
+import { refObj, Container, Image } from 'phavuer'
 import useRandomWalk from './modules/useRandomWalk'
+import useFollowing from './modules/useFollowing'
 export default {
   components: { Container, Image },
   props: {
@@ -18,22 +18,19 @@ export default {
     speed: { default: 120 }
   },
   setup (props) {
-    const data = reactive({
-      x: props.initX,
-      y: props.initY,
-      r: props.initR,
-      targetX: 0,
-      targetY: 0
-    })
-    const randomWalk = useRandomWalk(data, 100)
-    const update = () => {
-      randomWalk.play(pos => {
-        data.targetX = pos.x
-        data.targetY = pos.y
-      })
+    const chara = refObj(null)
+    const following = useFollowing(chara)
+    const randomWalk = useRandomWalk(chara, 100)
+    const create = obj => {
+      obj.scene.physics.world.enable(obj)
+    }
+    const update = obj => {
+      randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
+      following.walkToTargetPosition(props.speed)
     }
     return {
-      ...toRefs(data),
+      chara,
+      create,
       update
     }
   }
