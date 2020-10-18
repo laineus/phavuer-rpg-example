@@ -7,12 +7,10 @@
 </template>
 
 <script>
-import StaticTilemapLayer from './StaticTilemapLayer'
-import DynamicTilemapLayer from './DynamicTilemapLayer'
 import fieldService from './modules/fieldService'
 import Character from './Character'
 import { inject } from 'vue'
-import { refObj, Image } from 'phavuer'
+import { refObj, Image, StaticTilemapLayer, DynamicTilemapLayer } from 'phavuer'
 export const DEPTH = {
   GROUND: 0,
   PARTICLES: 100000,
