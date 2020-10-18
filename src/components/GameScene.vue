@@ -1,10 +1,11 @@
 <template>
   <Scene :ref="scene" name="GameScene" :autoStart="true" :config="config" @create="create" @update="update">
-    <Field :mapKey="config.map" />
+    <Field ref="field" :mapKey="config.map" />
   </Scene>
 </template>
 
 <script>
+import { ref } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field'
 export default {
@@ -12,12 +13,15 @@ export default {
   props: ['config'],
   setup (props, context) {
     const scene = refScene(null)
+    const field = ref(null)
     const create = (scene, payload) => {
     }
-    const update = (scene) => {
+    const update = (scene, time) => {
+      field.value.play(time)
     }
     return {
       scene,
+      field,
       create,
       update
     }

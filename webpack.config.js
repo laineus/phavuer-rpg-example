@@ -50,8 +50,7 @@ module.exports = (_env, argv) => ({
     extensions: ['.js', '.vue']
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'public'),
-    port: 8080
+    contentBase: path.resolve(__dirname, 'public')
   },
   plugins: [
     new WriteFilePlugin(),
