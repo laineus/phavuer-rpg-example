@@ -36,13 +36,12 @@ export default {
     const layers = tilemap.layers.map((layer, index) => {
       if (!layer.visible) return
       const dynamicFlag = getValueByProperties(layer.properties, 'dynamic')
-      const hasAnimTile = true || layer.data.flat().some(v => animationTileIds.includes(v.index))
+      const hasAnimTile = true // || layer.data.flat().some(v => animationTileIds.includes(v.index))
       const component = dynamicFlag || hasAnimTile ? 'DynamicTileLayer' : 'StaticTileLayer'
       const depthSetting = getValueByProperties(layer.properties, 'depth')
       const layerIndex = data.layers.findIndex(v => v.name === layer.name)
       const depth = (DEPTH[depthSetting] || DEPTH.GROUND) + layerIndex
       return { index, component, depth }
-      return tilemap[typeName](i, tilesets, 0, 0).setDepth(depth)
     }).filter(Boolean)
     return {
       layers,
