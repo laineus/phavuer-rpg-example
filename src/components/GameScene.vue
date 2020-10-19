@@ -24,9 +24,13 @@ export default {
       fps.value = Math.round(scene.game.loop.actualFps)
       field.value.play(time)
       const controller = uiScene.value.controller
-      const x = Math.fix(field.value.player.chara.x + controller.velocityX, 0, field.value.field.width)
-      const y = Math.fix(field.value.player.chara.y + controller.velocityY, 0, field.value.field.height)
-      field.value.player.following.setTargetPosition(x, y)
+      if (controller.velocityX || controller.velocityY) {
+        const x = Math.fix(field.value.player.chara.x + controller.velocityX, 0, field.value.field.width)
+        const y = Math.fix(field.value.player.chara.y + controller.velocityY, 0, field.value.field.height)
+        field.value.player.following.setTargetPosition(x, y)
+      } else {
+        field.value.player.following.clearTargetPosition()
+      }
     }
     return {
       fps,

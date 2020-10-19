@@ -44,7 +44,7 @@ export default {
     }
     const update = obj => {
       const velocity = Math.hypot(chara.value.body.velocity.x, chara.value.body.velocity.y)
-      randomWalk?.play(pos => following.setTargetPosition(pos.x, pos.y))
+      if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
       if (velocity > 1) {
         data.directionKey = velocityToDirectionKey(chara.value.body.velocity.x, chara.value.body.velocity.y)
@@ -56,7 +56,7 @@ export default {
     onMounted(() => {
       chara.value.setSize(image.value.width, image.value.height)
       chara.value.scene.physics.world.enable(chara.value)
-      chara.value.body.setDrag(300)
+      chara.value.body.setDrag(500)
     })
     return {
       chara, image,
