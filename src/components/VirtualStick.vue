@@ -1,16 +1,16 @@
 <template>
   <Container :x="x" :y="y">
-    <Rectangle :fillColor="0x000000" :alpha="0.5" :width="80" :height="80" @pointerdown="pointerdown" />
-    <Rectangle :fillColor="0xFFFFFF" :alpha="0.25" :width="30" :height="30" :x="pad.x" :y="pad.y" />
+    <Circle :fillColor="0x000000" :alpha="0.5" :radius="80" @pointerdown="pointerdown" />
+    <Circle :fillColor="0xFFFFFF" :alpha="0.25" :radius="30" :x="pad.x" :y="pad.y" />
   </Container>
 </template>
 
 <script>
-import { Container, Rectangle } from 'phavuer'
+import { Container, Circle } from 'phavuer'
 import { inject, reactive, toRaw, toRefs } from 'vue'
 const MAX_DISTANCE = 50
 export default {
-  components: { Container, Rectangle },
+  components: { Container, Circle },
   props: ['x', 'y'],
   setup (props) {
     const scene = inject('scene')
