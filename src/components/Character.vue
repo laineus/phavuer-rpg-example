@@ -1,5 +1,5 @@
 <template>
-  <Container ref="chara" :x="initX" :y="initY" @create="create" @update="update">
+  <Container ref="object" :x="initX" :y="initY" @create="create" @update="update">
     <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
   </Container>
 </template>
@@ -32,10 +32,10 @@ export default {
     random: { default: null }
   },
   setup (props) {
-    const chara = refObj(null)
+    const object = refObj(null)
     const image = refObj(null)
-    const following = useFollowing(chara)
-    const randomWalk = props.random ? useRandomWalk(chara, 100) : null
+    const following = useFollowing(object)
+    const randomWalk = props.random ? useRandomWalk(object, 100) : null
     const frameAnim = useFrameAnim(WALK_ANIM, image)
     const data = reactive({
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
@@ -43,23 +43,23 @@ export default {
     const create = obj => {
     }
     const update = obj => {
-      const velocity = Math.hypot(chara.value.body.velocity.x, chara.value.body.velocity.y)
+      const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
       if (velocity > 1) {
-        data.directionKey = velocityToDirectionKey(chara.value.body.velocity.x, chara.value.body.velocity.y)
+        data.directionKey = velocityToDirectionKey(object.value.body.velocity.x, object.value.body.velocity.y)
         frameAnim.play(data.directionKey)
       } else {
         image.value.setFrame(BASE_FRAME[data.directionKey])
       }
     }
     onMounted(() => {
-      chara.value.setSize(image.value.width, image.value.height)
-      chara.value.scene.physics.world.enable(chara.value)
-      chara.value.body.setDrag(500)
+      object.value.setSize(image.value.width, image.value.height)
+      object.value.scene.physics.world.enable(object.value)
+      object.value.body.setDrag(500)
     })
     return {
-      chara, image,
+      object, image,
       create, update,
       following
     }

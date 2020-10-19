@@ -48,9 +48,11 @@ export default {
       group.add(obj)
     }
     return {
-      player,
       field,
+      width: field.width,
+      height: field.height,
       layers,
+      player,
       charas,
       collides,
       isCollides,

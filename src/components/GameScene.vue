@@ -6,9 +6,10 @@
 </template>
 
 <script>
-import { ref, provide, inject } from 'vue'
+import { ref, provide, inject, onMounted } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field'
+import setupCamera from './modules/setupCamera'
 export default {
   components: { Scene, Field },
   props: ['config'],
@@ -25,13 +26,18 @@ export default {
       field.value.play(time)
       const controller = uiScene.value.controller
       if (controller.velocityX || controller.velocityY) {
-        const x = Math.fix(field.value.player.chara.x + controller.velocityX, 0, field.value.field.width)
-        const y = Math.fix(field.value.player.chara.y + controller.velocityY, 0, field.value.field.height)
+        const x = Math.fix(field.value.player.object.x + controller.velocityX, 0, field.value.field.width)
+        const y = Math.fix(field.value.player.object.y + controller.velocityY, 0, field.value.field.height)
         field.value.player.following.setTargetPosition(x, y)
       } else {
         field.value.player.following.clearTargetPosition()
       }
     }
+    onMounted(() => {
+      const camera = scene.value.cameras.main
+      setupCamera(camera, field.value.width, field.value.height, field.value.player.object)
+      provide('camera', camera)
+    })
     return {
       fps,
       scene,
