@@ -79,7 +79,7 @@ const getImage = rawData => {
 }
 const getObjects = rawData => {
   return rawData.layers.filter(l => l.visible && l.type === 'objectgroup').map(v => v.objects).flat().map(data => {
-    const result = mapProperties(Object.assign({}, data), data.properties)
+    const result = mapProperties(Object.assign({}, data, { radian: (data.rotation + 90) * (Math.PI / 180) }), data.properties)
     delete result.properties
     return result
   })
