@@ -43,6 +43,7 @@ export default {
     const create = obj => {
     }
     const update = obj => {
+      obj.setDepth(obj.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
