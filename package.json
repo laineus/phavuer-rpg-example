@@ -12,7 +12,7 @@
   "dependencies": {
     "moment": "^2.24.0",
     "phaser": "^3.22",
-    "phavuer": "../phavuer",
+    "phavuer": "^0.2.4",
     "vue": "3"
   },
   "devDependencies": {
