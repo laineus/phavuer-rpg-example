@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, unref } from 'vue'
 
 export default chara => {
   const targetPosition = reactive({
@@ -19,29 +19,30 @@ export default chara => {
     if (resolver) resolver()
   }
   const hasTargetPosition = computed(() => targetPosition.x !== null && targetPosition.y !== null)
-  const diffToTargetPositionX = computed(() => hasTargetPosition.value ? targetPosition.x - chara.value.x : 0)
-  const diffToTargetPositionY = computed(() => hasTargetPosition.value ? targetPosition.y - chara.value.y : 0)
-  const diffToTargetPositionDistance = computed(() => Math.hypot(diffToTargetPositionX.value, diffToTargetPositionY.value))
+  const getDiffToTargetPositionX = () => hasTargetPosition.value ? targetPosition.x - unref(chara).x : 0
+  const getDiffToTargetPositionY = () => hasTargetPosition.value ? targetPosition.y - unref(chara).y : 0
+  const getDiffToTargetPositionDistance = (x, y) => Math.hypot(x || getDiffToTargetPositionX(), y || getDiffToTargetPositionY())
   const walkToTargetPosition = speed => {
     if (!hasTargetPosition.value) return
-    const diffX = diffToTargetPositionX.value
-    const diffY = diffToTargetPositionY.value
+    const diffX = getDiffToTargetPositionX()
+    const diffY = getDiffToTargetPositionY()
+    const distance = getDiffToTargetPositionDistance(diffX, diffY)
     const body = chara.value.body
     const x = (!body.blocked.left && !body.blocked.right) ? diffX : diffX * 0.1
     const y = (!body.blocked.top && !body.blocked.down) ? diffY : diffY * 0.1
     body.setVelocity(x, y)
-    const spd = Math.min(speed, diffToTargetPositionDistance.value * 10)
+    const spd = Math.min(speed, distance * 10)
     body.velocity.normalize().scale(spd)
-    if (diffToTargetPositionDistance.value < 5) clearTargetPosition()
+    if (distance < 5) clearTargetPosition()
   }
   return {
     targetPosition,
     setTargetPosition,
     clearTargetPosition,
     hasTargetPosition,
-    diffToTargetPositionX,
-    diffToTargetPositionY,
-    diffToTargetPositionDistance,
+    getDiffToTargetPositionX,
+    getDiffToTargetPositionY,
+    getDiffToTargetPositionDistance,
     walkToTargetPosition
   }
 }

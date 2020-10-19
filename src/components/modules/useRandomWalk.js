@@ -6,6 +6,7 @@ export default (chara, range) => {
   const setNextDelay = () => {
     delay.value = Math.randomInt(100, 200)
   }
+  setNextDelay()
   const getRandomPosition = (tryCount = 10) => {
     if (tryCount === 0) return null
     const x = chara.value.x + Math.randomInt(-radius, radius)
