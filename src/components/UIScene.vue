@@ -1,6 +1,7 @@
 <template>
   <Scene ref="scene" name="UIScene" :autoStart="true" @create="create" @update="update">
     <Controller ref="controller" />
+    <Talk />
   </Scene>
 </template>
 
@@ -8,8 +9,9 @@
 import { ref } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Controller from './Controller'
+import Talk from './Talk'
 export default {
-  components: { Scene, Controller },
+  components: { Scene, Controller, Talk },
   setup (props) {
     const scene = refScene(null)
     const create = (scene, payload) => {
