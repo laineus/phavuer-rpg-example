@@ -43,11 +43,32 @@
          "id":23,
          "image":"..\/img\/map\/images\/barrel.png",
          "name":"\u753b\u50cf\u30fb\u30ec\u30a4\u30e4\u30fc 1",
-         "offsetx":656,
-         "offsety":258.666666666667,
+         "offsetx":662.666666666667,
+         "offsety":276,
          "opacity":1,
+         "properties":[
+                {
+                 "name":"123",
+                 "type":"int",
+                 "value":123
+                }, 
+                {
+                 "name":"asd",
+                 "type":"string",
+                 "value":"asd"
+                }, 
+                {
+                 "name":"cc",
+                 "type":"color",
+                 "value":"#ff000000"
+                }, 
+                {
+                 "name":"true",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"imagelayer",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }, 
