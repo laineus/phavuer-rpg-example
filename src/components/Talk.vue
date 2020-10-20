@@ -2,34 +2,32 @@
   <Container :x="0" :y="0" v-if="current">
     <Rectangle :origin="0" :width="960" :height="540" @pointerdown="next" />
     <Container :x="current.chara.object.x - camera.scrollX" :y="current.chara.object.y - camera.scrollY - 70">
-      <Rectangle ref="bg" :origin="0.5" :fillColor="0x222222" :alpha="0.8" />
-      <Text ref="txt" :style="{ fontSize: 14, fontStyle: 'bold', color: '#FFFFFF' }" :origin="0.5" />
+      <Rectangle ref="bg" :origin="0.5" :fillColor="0x222222" :alpha="0.8" :width="data.bgWidth" :height="data.bgHeight" />
+      <Text ref="txt" :text="current.text" :style="{ fontSize: 14, fontStyle: 'bold', color: '#FFFFFF' }" :origin="0.5" />
     </Container>
   </Container>
 </template>
 
 <script>
 import { refObj, Container, Rectangle, Text } from 'phavuer'
-import { computed, ref, inject, onUpdated, onMounted } from 'vue'
+import { computed, ref, inject, onUpdated, reactive } from 'vue'
 export default {
   components: { Container, Rectangle, Text },
   setup () {
-    const list = ref([])
-    const bg = refObj()
-    const txt = refObj()
-    const current = computed(() => list.value[0])
+    // inject
     const player = inject('player')
     const camera = inject('camera')
+    // refs
+    const bg = refObj()
+    const txt = refObj()
+    // data
+    const list = ref([])
+    const current = computed(() => list.value[0])
     let resolver = null
-    const updateSize = () => {
-      if (!bg.value || !txt.value || !current.value) return
-      txt.value.setText(current.value.text)
-      const txtWidth = txt.value.width + 20
-      const txtHeight = txt.value.height + 20
-      bg.value.setSize(txtWidth, txtHeight)
-      bg.value._displayOriginX = txtWidth.half
-      bg.value._displayOriginY = txtHeight.half
-    }
+    const data = reactive({
+      bgWidth: 0,
+      bgHeight: 0
+    })
     const setTalk = array => {
       if (resolver) resolver()
       list.value.splice(0)
@@ -42,11 +40,12 @@ export default {
       list.value.splice(0, 1)
       if (!list.value.length && resolver) resolver()
     }
-    onMounted(() => {
-      updateSize()
-    })
     onUpdated(() => {
-      updateSize()
+      if (!current.value) return
+      data.bgWidth = txt.value.width + 20
+      data.bgHeight = txt.value.height + 20
+      bg.value._displayOriginX = data.bgWidth.half
+      bg.value._displayOriginY = data.bgHeight.half
     })
     setTimeout(() => {
       setTalk([
@@ -60,7 +59,8 @@ export default {
       next,
       setTalk,
       camera,
-      bg, txt
+      bg, txt,
+      data
     }
   }
 }
