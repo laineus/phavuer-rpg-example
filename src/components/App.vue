@@ -8,7 +8,7 @@
 <script>
 import GameScene from '@/components/GameScene'
 import UIScene from '@/components/UIScene'
-import { inject, provide, ref } from 'vue'
+import { inject, provide, ref, computed } from 'vue'
 export default {
   components: { GameScene, UIScene },
   setup () {
@@ -17,6 +17,9 @@ export default {
     const gameScene = ref(null)
     const uiScene = ref(null)
     provide('gameScene', gameScene)
+    provide('field', computed(() => gameScene.value?.field))
+    provide('camera', computed(() => gameScene.value?.camera))
+    provide('player', computed(() => gameScene.value?.field.player))
     provide('uiScene', uiScene)
     return {
       gameScene, uiScene

@@ -16,6 +16,7 @@ export default {
   setup (props, context) {
     const scene = refScene(null)
     const uiScene = inject('uiScene')
+    const camera = ref(null)
     const field = ref(null)
     const fps = ref(0)
     provide('field', field)
@@ -34,14 +35,14 @@ export default {
       }
     }
     onMounted(() => {
-      const camera = scene.value.cameras.main
-      setupCamera(camera, field.value.width, field.value.height, field.value.player.object)
-      provide('camera', camera)
+      camera.value = scene.value.cameras.main
+      setupCamera(camera.value, field.value.width, field.value.height, field.value.player.object)
     })
     return {
       fps,
       scene,
       field,
+      camera,
       create,
       update
     }
