@@ -1,8 +1,8 @@
 <template>
   <Container :x="0" :y="0" v-if="current">
     <Rectangle :origin="0" :width="960" :height="540" @pointerdown="next" />
-    <Container :x="current.chara.object.x - camera.scrollX" :y="current.chara.object.y - camera.scrollY - 70">
-      <Rectangle ref="bg" :origin="0.5" :fillColor="0x222222" :alpha="0.8" :width="data.bgWidth" :height="data.bgHeight" />
+    <Container :x="x" :y="y">
+      <Rectangle ref="bg" :origin="0.5" :fillColor="0x222222" :alpha="0.8" :width="bgWidth" :height="bgHeight" :displayOriginX="bgWidth.half" :displayOriginY="bgHeight.half" />
       <Text ref="txt" :text="current.text" :style="{ fontSize: 14, fontStyle: 'bold', color: '#FFFFFF' }" :origin="0.5" />
     </Container>
   </Container>
@@ -10,7 +10,7 @@
 
 <script>
 import { refObj, Container, Rectangle, Text } from 'phavuer'
-import { computed, ref, inject, onUpdated, reactive } from 'vue'
+import { computed, ref, inject, onUpdated, reactive, toRefs } from 'vue'
 export default {
   components: { Container, Rectangle, Text },
   setup () {
@@ -25,6 +25,8 @@ export default {
     const current = computed(() => list.value[0])
     let resolver = null
     const data = reactive({
+      x: computed(() => current.value?.chara.object.x - camera.value?.scrollX),
+      y: computed(() => current.value?.chara.object.y - camera.value?.scrollY - 70),
       bgWidth: 0,
       bgHeight: 0
     })
@@ -44,8 +46,6 @@ export default {
       if (!current.value) return
       data.bgWidth = txt.value.width + 20
       data.bgHeight = txt.value.height + 20
-      bg.value._displayOriginX = data.bgWidth.half
-      bg.value._displayOriginY = data.bgHeight.half
     })
     setTimeout(() => {
       setTalk([
@@ -58,9 +58,8 @@ export default {
       current,
       next,
       setTalk,
-      camera,
       bg, txt,
-      data
+      ...toRefs(data)
     }
   }
 }

@@ -55,7 +55,7 @@ export default {
       }
     }
     onMounted(() => {
-      object.value.setSize(image.value.width, image.value.height)
+      object.value.setSize(image.value.width, image.value.width)
       object.value.scene.physics.world.enable(object.value)
       object.value.body.setDrag(500)
     })

@@ -23,7 +23,7 @@ export default {
     const update = obj => {
     }
     onMounted(() => {
-      if (image.value) object.value.setSize(image.value.width, image.value.height)
+      if (image.value) object.value.setSize(image.value.width, image.value.width)
     })
     return {
       object, image,
