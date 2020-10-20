@@ -1,5 +1,5 @@
 <template>
-  <Container ref="object" :x="initX" :y="initY" @create="create" @update="update">
+  <Container ref="object" :x="initX" :y="initY" @create="create" @preUpdate="update">
     <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
   </Container>
 </template>
