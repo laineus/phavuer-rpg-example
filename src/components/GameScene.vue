@@ -1,5 +1,5 @@
 <template>
-  <Scene ref="scene" name="GameScene" :autoStart="true" :config="config" @create="create" @update="update">
+  <Scene ref="scene" name="GameScene" :autoStart="true" :config="config" @update="update">
     {{ fps }}
     <Field ref="field" :mapKey="config.map" :playerX="config.x" :playerY="config.y" :playerR="config.r" />
   </Scene>
@@ -10,6 +10,7 @@ import { ref, provide, inject, onMounted } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field'
 import setupCamera from './modules/setupCamera'
+import maps from '@/data/maps'
 export default {
   components: { Scene, Field },
   props: ['config'],
@@ -20,8 +21,12 @@ export default {
     const field = ref(null)
     const fps = ref(0)
     provide('field', field)
-    const create = (scene, payload) => {
-    }
+    const event = maps[props.config.map]
+    onMounted(() => {
+      camera.value = scene.value.cameras.main
+      setupCamera(camera.value, field.value.width, field.value.height, field.value.player.object)
+      if (event?.create) event.create()
+    })
     const update = (scene, time) => {
       fps.value = Math.round(scene.game.loop.actualFps)
       field.value.play(time)
@@ -33,17 +38,13 @@ export default {
       } else {
         field.value.player.following.clearTargetPosition()
       }
+      if (event?.update) event.update()
     }
-    onMounted(() => {
-      camera.value = scene.value.cameras.main
-      setupCamera(camera.value, field.value.width, field.value.height, field.value.player.object)
-    })
     return {
       fps,
       scene,
       field,
       camera,
-      create,
       update
     }
   }
