@@ -3,7 +3,7 @@
     <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
     </Container>
-    <Container v-if="tapEvent" ref="event" :width="imgWidth + 15" :height="imgHeight + 40" :depth="100000" @pointerdown="onTap">
+    <Container v-if="tapEvent" :visible="!event.state" ref="tapArea" :width="imgWidth + 15" :height="imgHeight + 40" :depth="100000" @pointerdown="onTap">
       <Image texture="speach_bubbles" :y="-20" :frame="1" @create="initBubbleAnim" />
     </Container>
   </div>
@@ -39,9 +39,10 @@ export default {
   emits: ['create'],
   setup (props, context) {
     const scene = inject('scene')
+    const event = inject('event')
     const object = refObj(null)
     const image = refObj(null)
-    const event = refObj(null)
+    const tapArea = refObj(null)
     const following = useFollowing(object)
     const randomWalk = props.random ? useRandomWalk(object, 100) : null
     const frameAnim = useFrameAnim(WALK_ANIM, image)
@@ -51,10 +52,16 @@ export default {
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
     })
     const tapEvent = ref(null)
-    const setTapEvent = event => tapEvent.value = event
-    const onTap = () => tapEvent.value && tapEvent.value()
+    const setTapEvent = event => {
+      tapEvent.value = event
+    }
+    const onTap = () => {
+      if (!tapEvent.value) return
+      event.exec(tapEvent.value)
+    }
     const create = obj => context.emit('create', obj)
     const update = obj => {
+      if (event.state) return
       obj.setDepth(obj.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
@@ -65,7 +72,7 @@ export default {
       } else {
         image.value.setFrame(BASE_FRAME[data.directionKey])
       }
-      if (event.value) event.value.setPosition(obj.x, obj.y - imgHeight.value.half - 10)
+      if (tapArea.value) tapArea.value.setPosition(obj.x, obj.y - imgHeight.value.half - 10)
     }
     onMounted((a) => {
       scene.physics.world.enable(object.value)
@@ -77,7 +84,8 @@ export default {
       })
     }
     return {
-      object, image, event,
+      event,
+      object, image, tapArea,
       create, update,
       onTap, tapEvent, setTapEvent,
       following,

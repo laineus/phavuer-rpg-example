@@ -8,7 +8,7 @@
 <script>
 import GameScene from '@/components/GameScene'
 import UIScene from '@/components/UIScene'
-import { inject, provide, ref, computed } from 'vue'
+import { inject, provide, ref, computed, reactive } from 'vue'
 export default {
   components: { GameScene, UIScene },
   setup () {
@@ -16,6 +16,15 @@ export default {
     Phaser.BlendModes.OVERLAY = game.renderer.addBlendMode([WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE], WebGLRenderingContext.FUNC_ADD)
     const gameScene = ref(null)
     const uiScene = ref(null)
+    const event = reactive({
+      state: false,
+      setState (bool) { this.state = bool },
+      exec (event) {
+        this.setState(true)
+        event().then(() => this.setState(false))
+      }
+    })
+    provide('event', event)
     provide('gameScene', gameScene)
     provide('field', computed(() => gameScene.value?.field))
     provide('camera', computed(() => gameScene.value?.camera))
