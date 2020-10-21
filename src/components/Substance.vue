@@ -1,14 +1,18 @@
 <template>
-  <Container ref="object" :x="initX" :y="initY" :width="32" :height="32" @create="create" @preUpdate="update">
-    <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" />
-  </Container>
+  <div>
+    <Container ref="object" :x="initX" :y="initY" :width="imgWidth" :height="imgWidth" :depth="initY">
+      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" />
+    </Container>
+    <TapArea v-if="image" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="onTap" />
+  </div>
 </template>
 
 <script>
 import { refObj, Container, Image } from 'phavuer'
-import { onMounted } from 'vue'
+import { computed } from 'vue'
+import TapArea from './TapArea'
 export default {
-  components: { Container, Image },
+  components: { Container, Image, TapArea },
   props: {
     initX: { default: 0 },
     initY: { default: 0 },
@@ -17,17 +21,16 @@ export default {
   setup (props) {
     const object = refObj(null)
     const image = refObj(null)
-    const create = obj => {
-      obj.setDepth(obj.y)
+    const imgWidth = computed(() => image.value ? image.value.width : 0)
+    const imgHeight = computed(() => image.value ? image.value.height : 0)
+    const onTap = () => {
+      console.log('tap')
     }
-    const update = obj => {
-    }
-    onMounted(() => {
-      if (image.value) object.value.setSize(image.value.width, image.value.width)
-    })
+    console.log(object)
     return {
       object, image,
-      create, update
+      imgWidth, imgHeight,
+      onTap
     }
   }
 }
