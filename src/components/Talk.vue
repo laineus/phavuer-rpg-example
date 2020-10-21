@@ -15,7 +15,6 @@ export default {
   components: { Container, Rectangle, Text },
   setup () {
     // inject
-    const player = inject('player')
     const camera = inject('camera')
     // refs
     const bg = refObj()
@@ -47,13 +46,6 @@ export default {
       data.bgWidth = txt.value.width + 20
       data.bgHeight = txt.value.height + 20
     })
-    setTimeout(() => {
-      setTalk([
-        { chara: player.value, text: 'aaaaaaaaaaaaaaaaaaa' },
-        { chara: player.value, text: 'bbbb' },
-        { chara: player.value, text: 'あいうえおか\nきくけこ' }
-      ])
-    }, 700)
     return {
       current,
       next,

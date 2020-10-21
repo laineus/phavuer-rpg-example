@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @preUpdate="update">
+    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
     </Container>
-    <Container ref="event" :width="imgWidth + 15" :height="imgHeight + 40" :depth="100000" @pointerdown="tap">
+    <Container v-if="tapEvent" ref="event" :width="imgWidth + 15" :height="imgHeight + 40" :depth="100000" @pointerdown="onTap">
       <Image texture="speach_bubbles" :y="-20" :frame="1" @create="initBubbleAnim" />
     </Container>
   </div>
@@ -14,7 +14,7 @@ import { refObj, Container, Image } from 'phavuer'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
 import useFrameAnim from './modules/useFrameAnim'
-import { computed, inject, onMounted, reactive } from 'vue'
+import { ref, computed, inject, onMounted, reactive } from 'vue'
 const WALK_ANIM = [
   { key: 'down', frames: [1, 0, 1, 2], duration: 7 },
   { key: 'left', frames: [4, 3, 4, 5], duration: 7 },
@@ -36,7 +36,8 @@ export default {
     speed: { default: 120 },
     random: { default: null }
   },
-  setup (props) {
+  emits: ['create'],
+  setup (props, context) {
     const scene = inject('scene')
     const object = refObj(null)
     const image = refObj(null)
@@ -49,9 +50,10 @@ export default {
     const data = reactive({
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
     })
-    const tap = () => {
-      console.log(999)
-    }
+    const tapEvent = ref(null)
+    const setTapEvent = event => tapEvent.value = event
+    const onTap = () => tapEvent.value && tapEvent.value()
+    const create = obj => context.emit('create', obj)
     const update = obj => {
       obj.setDepth(obj.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
@@ -63,9 +65,9 @@ export default {
       } else {
         image.value.setFrame(BASE_FRAME[data.directionKey])
       }
-      event.value.setPosition(obj.x, obj.y - imgHeight.value.half - 10)
+      if (event.value) event.value.setPosition(obj.x, obj.y - imgHeight.value.half - 10)
     }
-    onMounted(() => {
+    onMounted((a) => {
       scene.physics.world.enable(object.value)
       object.value.body.setDrag(500)
     })
@@ -76,8 +78,8 @@ export default {
     }
     return {
       object, image, event,
-      update,
-      tap,
+      create, update,
+      onTap, tapEvent, setTapEvent,
       following,
       initBubbleAnim,
       imgWidth, imgHeight

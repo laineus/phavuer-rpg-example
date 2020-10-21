@@ -21,6 +21,7 @@ export default {
     provide('camera', computed(() => gameScene.value?.camera))
     provide('player', computed(() => gameScene.value?.field.player))
     provide('uiScene', uiScene)
+    provide('talk', computed(() => uiScene.value?.talk))
     return {
       gameScene, uiScene
     }

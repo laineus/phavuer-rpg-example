@@ -1,7 +1,7 @@
 <template>
   <Scene ref="scene" name="UIScene" :autoStart="true" @create="create" @update="update">
     <Controller ref="controller" />
-    <Talk />
+    <Talk ref="talk" />
   </Scene>
 </template>
 
@@ -22,7 +22,8 @@ export default {
       scene,
       create,
       update,
-      controller: ref(null)
+      controller: ref(null),
+      talk: ref(null)
     }
   }
 }
