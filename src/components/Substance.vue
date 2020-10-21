@@ -3,7 +3,7 @@
     <Container ref="object" :x="initX" :y="initY" :width="imgWidth" :height="imgWidth" :depth="initY">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" />
     </Container>
-    <TapArea v-if="image && tapEvent.event.value" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
+    <TapArea v-if="tapEvent.event.value" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
   </div>
 </template>
 
@@ -28,8 +28,7 @@ export default {
     return {
       object, image,
       imgWidth, imgHeight,
-      tapEvent,
-      setTapEvent: tapEvent.setEvent
+      tapEvent, setTapEvent: tapEvent.setEvent
     }
   }
 }

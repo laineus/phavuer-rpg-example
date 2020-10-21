@@ -1,6 +1,6 @@
 <template>
   <Container ref="tapArea" :visible="!event.state" :depth="100000" @pointerdown="onTap" @preUpdate="update">
-    <Image texture="speach_bubbles" :y="-20" :frame="1" @create="initBubbleAnim" />
+    <Image texture="speach_bubbles" :y="-20" :frame="frame" @create="initBubbleAnim" />
   </Container>
 </template>
 
@@ -10,7 +10,8 @@ import { inject } from 'vue'
 export default {
   components: { Container, Image },
   props: {
-    follow: { default: null }
+    follow: { default: null },
+    frame: { default: 0 }
   },
   emits: ['tap'],
   setup (props, context) {

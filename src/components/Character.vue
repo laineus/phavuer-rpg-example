@@ -1,20 +1,20 @@
 <template>
   <div>
-    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
+    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" :depth="object ? object.y : 0" @create="create" @preUpdate="update">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
     </Container>
-    <Container v-if="tapEvent" :visible="!event.state" ref="tapArea" :width="imgWidth + 15" :height="imgHeight + 40" :depth="100000" @pointerdown="onTap">
-      <Image texture="speach_bubbles" :y="-20" :frame="1" @create="initBubbleAnim" />
-    </Container>
+    <TapArea v-if="tapEvent.event.value" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
   </div>
 </template>
 
 <script>
 import { refObj, Container, Image } from 'phavuer'
+import { computed, inject, onMounted, reactive } from 'vue'
+import TapArea from './TapArea'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
 import useFrameAnim from './modules/useFrameAnim'
-import { ref, computed, inject, onMounted, reactive } from 'vue'
+import useEvent from './modules/useEvent'
 const WALK_ANIM = [
   { key: 'down', frames: [1, 0, 1, 2], duration: 7 },
   { key: 'left', frames: [4, 3, 4, 5], duration: 7 },
@@ -27,7 +27,7 @@ const velocityToDirectionKey = (x, y) => {
   return y < 0 ? 'up' : 'down'
 }
 export default {
-  components: { Container, Image },
+  components: { Container, Image, TapArea },
   props: {
     initX: { default: 0 },
     initY: { default: 0 },
@@ -42,7 +42,7 @@ export default {
     const event = inject('event')
     const object = refObj(null)
     const image = refObj(null)
-    const tapArea = refObj(null)
+    const tapEvent = useEvent()
     const following = useFollowing(object)
     const randomWalk = props.random ? useRandomWalk(object, 100) : null
     const frameAnim = useFrameAnim(WALK_ANIM, image)
@@ -51,18 +51,9 @@ export default {
     const data = reactive({
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
     })
-    const tapEvent = ref(null)
-    const setTapEvent = event => {
-      tapEvent.value = event
-    }
-    const onTap = () => {
-      if (!tapEvent.value) return
-      event.exec(tapEvent.value)
-    }
     const create = obj => context.emit('create', obj)
     const update = obj => {
       if (event.state) return
-      obj.setDepth(obj.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
@@ -72,25 +63,17 @@ export default {
       } else {
         image.value.setFrame(BASE_FRAME[data.directionKey])
       }
-      if (tapArea.value) tapArea.value.setPosition(obj.x, obj.y - imgHeight.value.half - 10)
     }
     onMounted((a) => {
       scene.physics.world.enable(object.value)
       object.value.body.setDrag(500)
     })
-    const initBubbleAnim = obj => {
-      scene.add.tween({
-        targets: obj, y: -24, yoyo: true, repeat: -1, duration: 500
-      })
-    }
     return {
-      event,
-      object, image, tapArea,
+      object, image,
       create, update,
-      onTap, tapEvent, setTapEvent,
       following,
-      initBubbleAnim,
-      imgWidth, imgHeight
+      imgWidth, imgHeight,
+      tapEvent, setTapEvent: tapEvent.setEvent
     }
   }
 }
