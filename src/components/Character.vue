@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Container ref="object" :x="initX" :y="initY" @preUpdate="update">
+    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @preUpdate="update">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
     </Container>
-    <Container v-if="image" ref="event" :width="image.width + 15" :height="image.heigh + 30" :depth="100000" @pointerdown="tap" @create="initEventContainer">
+    <Container ref="event" :width="imgWidth + 15" :height="imgHeight + 40" :depth="100000" @pointerdown="tap">
       <Image texture="speach_bubbles" :y="-20" :frame="1" @create="initBubbleAnim" />
     </Container>
   </div>
@@ -14,7 +14,7 @@ import { refObj, Container, Image } from 'phavuer'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
 import useFrameAnim from './modules/useFrameAnim'
-import { inject, onMounted, reactive } from 'vue'
+import { computed, inject, onMounted, reactive } from 'vue'
 const WALK_ANIM = [
   { key: 'down', frames: [1, 0, 1, 2], duration: 7 },
   { key: 'left', frames: [4, 3, 4, 5], duration: 7 },
@@ -44,6 +44,8 @@ export default {
     const following = useFollowing(object)
     const randomWalk = props.random ? useRandomWalk(object, 100) : null
     const frameAnim = useFrameAnim(WALK_ANIM, image)
+    const imgWidth = computed(() => image.value ? image.value.width : 0)
+    const imgHeight = computed(() => image.value ? image.value.height : 0)
     const data = reactive({
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
     })
@@ -61,16 +63,12 @@ export default {
       } else {
         image.value.setFrame(BASE_FRAME[data.directionKey])
       }
-      if (event.value) event.value.setPosition(obj.x, obj.y - image.value.height.half - 10)
+      event.value.setPosition(obj.x, obj.y - imgHeight.value.half - 10)
     }
     onMounted(() => {
-      object.value.setSize(image.value.width, image.value.width)
       scene.physics.world.enable(object.value)
       object.value.body.setDrag(500)
     })
-    const initEventContainer = obj => {
-      obj.setSize(image.value.width + 15, image.value.height + 40)
-    }
     const initBubbleAnim = obj => {
       scene.add.tween({
         targets: obj, y: -24, yoyo: true, repeat: -1, duration: 500
@@ -81,7 +79,8 @@ export default {
       update,
       tap,
       following,
-      initEventContainer, initBubbleAnim
+      initBubbleAnim,
+      imgWidth, imgHeight
     }
   }
 }
