@@ -5,6 +5,7 @@
     <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" />
     <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" />
     <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" />
+    <Area :x="400" :y="400" :width="300" :height="300" />
   </div>
 </template>
 
@@ -12,6 +13,7 @@
 import fieldService from './modules/fieldService'
 import Character from './Character'
 import Substance from './Substance'
+import Area from './Area'
 import { inject, ref } from 'vue'
 import { refObj, Image, StaticTilemapLayer, DynamicTilemapLayer } from 'phavuer'
 export const DEPTH = {
@@ -23,7 +25,7 @@ export const DEPTH = {
   DARKNESS: 130000
 }
 export default {
-  components: { StaticTilemapLayer, DynamicTilemapLayer, Image, Character, Substance },
+  components: { StaticTilemapLayer, DynamicTilemapLayer, Image, Character, Substance, Area },
   props: [
     'mapKey', 'playerX', 'playerY', 'playerR'
   ],
