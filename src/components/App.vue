@@ -1,6 +1,6 @@
 <template>
   <div>
-    <GameScene ref="gameScene" :config="{ map: 'room1', x: 610, y: 340 }" />
+    <GameScene ref="gameScene" />
     <UIScene ref="uiScene" />
   </div>
 </template>
@@ -31,7 +31,7 @@ export default {
     provide('frames', frames)
     provide('gameScene', gameScene)
     provide('field', computed(() => gameScene.value?.field))
-    provide('camera', computed(() => gameScene.value?.camera))
+    provide('camera', computed(() => gameScene.value?.scene.cameras.main))
     provide('player', computed(() => gameScene.value?.field.player))
     provide('uiScene', uiScene)
     provide('talk', computed(() => uiScene.value?.talk))

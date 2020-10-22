@@ -5,7 +5,8 @@
     <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" />
     <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" />
     <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" />
-    <Area :x="400" :y="400" :width="300" :height="300" />
+    <Area :x="200" :y="300" :width="200" :height="200" />
+    <Gate :x="500" :y="400" :width="180" :height="200" :to="{ key: 'room1', x: 20, y: 20 }" />
   </div>
 </template>
 
@@ -14,8 +15,11 @@ import fieldService from './modules/fieldService'
 import Character from './Character'
 import Substance from './Substance'
 import Area from './Area'
-import { inject, ref } from 'vue'
+import Gate from './Gate'
+import { inject, onMounted, ref } from 'vue'
 import { refObj, Image, StaticTilemapLayer, DynamicTilemapLayer } from 'phavuer'
+import setupCamera from './modules/setupCamera'
+import maps from '@/data/maps'
 export const DEPTH = {
   GROUND: 0,
   PARTICLES: 100000,
@@ -25,14 +29,14 @@ export const DEPTH = {
   DARKNESS: 130000
 }
 export default {
-  components: { StaticTilemapLayer, DynamicTilemapLayer, Image, Character, Substance, Area },
+  components: { StaticTilemapLayer, DynamicTilemapLayer, Image, Character, Substance, Area, Gate },
   props: [
-    'mapKey', 'playerX', 'playerY', 'playerR'
+    'fieldKey', 'playerX', 'playerY', 'playerR'
   ],
   setup (props) {
     const scene = inject('scene')
     const player = ref(null)
-    const field = fieldService(scene, props.mapKey)
+    const field = fieldService(scene, props.fieldKey)
     console.log(field)
     const layers = field.layers.map(v => Object.assign({ ref: refObj(null) }, v))
     const images = field.images.map(v => Object.assign({ ref: refObj(null) }, v))
@@ -54,13 +58,22 @@ export default {
     const charaCreate = obj => {
       group.add(obj)
     }
+    const event = maps[props.fieldName] || {}
+    onMounted(() => {
+      setupCamera(inject('camera').value, field.width, field.height, player.value.object)
+      if (event.create) event.create()
+    })
+    const update = (time) => {
+      field.update(time)
+      if (event.update) event.update()
+    }
     return {
       field, collides,
       width: field.width, height: field.height,
       layers, images, player, objects, charas, substances,
       isCollides, getObjectById,
       layerCreate, charaCreate,
-      play: field.update
+      play: update
     }
   }
 }

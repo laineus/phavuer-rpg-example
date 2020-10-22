@@ -1,35 +1,27 @@
 <template>
   <Scene ref="scene" name="GameScene" :autoStart="true" :config="config" @update="update">
     {{ fps }}
-    <Field ref="field" :mapKey="config.map" :playerX="config.x" :playerY="config.y" :playerR="config.r" />
+    <Field ref="field" v-if="fieldData.name" :fieldKey="fieldData.name" :playerX="fieldData.x" :playerY="fieldData.y" :playerR="fieldData.r" />
   </Scene>
 </template>
 
 <script>
-import { ref, provide, inject, onMounted } from 'vue'
+import { ref, reactive, provide, inject, onMounted, nextTick } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field'
-import setupCamera from './modules/setupCamera'
-import maps from '@/data/maps'
 export default {
   components: { Scene, Field },
-  props: ['config'],
   setup (props, context) {
+    const fieldData = reactive({ name: null, x: 0, y: 0, r: 0 })
     const scene = refScene(null)
     const frames = inject('frames')
     const uiScene = inject('uiScene')
-    const camera = ref(null)
     const field = ref(null)
     const fps = ref(0)
     provide('field', field)
-    const event = maps[props.config.map]
-    onMounted(() => {
-      camera.value = scene.value.cameras.main
-      setupCamera(camera.value, field.value.width, field.value.height, field.value.player.object)
-      if (event?.create) event.create()
-    })
     const update = (scene, time) => {
       frames.game++
+      if (!field.value) return
       fps.value = Math.round(scene.game.loop.actualFps)
       field.value.play(time)
       const controller = uiScene.value.controller
@@ -40,14 +32,27 @@ export default {
       } else {
         field.value.player.following.clearTargetPosition()
       }
-      if (event?.update) event.update()
     }
+    const setField = async (name, x, y, r) => {
+      await uiScene.value.transition(200)
+      fieldData.name = null
+      nextTick(() => {
+        fieldData.name = name
+        fieldData.x = x
+        fieldData.y = y
+        fieldData.r = r
+      })
+    }
+    onMounted(() => {
+      setField('room1', 640, 310)
+    })
     return {
       fps,
       scene,
       field,
-      camera,
-      update
+      update,
+      fieldData,
+      setField
     }
   }
 }
