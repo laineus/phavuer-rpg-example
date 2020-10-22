@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" :depth="object ? object.y : 0" @create="create" @preUpdate="update">
+    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
     </Container>
     <TapArea v-if="tapEvent.event.value" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
@@ -53,7 +53,11 @@ export default {
     })
     const create = obj => context.emit('create', obj)
     const update = obj => {
-      if (event.state) return
+      if (event.state) {
+        image.value.setFrame(BASE_FRAME[data.directionKey])
+        return
+      }
+      obj.setDepth(object.value.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
