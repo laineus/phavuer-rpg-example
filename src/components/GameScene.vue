@@ -16,6 +16,7 @@ export default {
   props: ['config'],
   setup (props, context) {
     const scene = refScene(null)
+    const frames = inject('frames')
     const uiScene = inject('uiScene')
     const camera = ref(null)
     const field = ref(null)
@@ -28,6 +29,7 @@ export default {
       if (event?.create) event.create()
     })
     const update = (scene, time) => {
+      frames.game++
       fps.value = Math.round(scene.game.loop.actualFps)
       field.value.play(time)
       const controller = uiScene.value.controller

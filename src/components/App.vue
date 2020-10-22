@@ -21,10 +21,14 @@ export default {
       setState (bool) { this.state = bool },
       exec (event) {
         this.setState(true)
-        event().then(() => this.setState(false))
+        const promise = event()
+        if (!promise || typeof promise.then !== 'function') throw new Error('Event must returns Promise instance')
+        promise.then(() => this.setState(false))
       }
     })
+    const frames = reactive({ total: 0, game: 0 })
     provide('event', event)
+    provide('frames', frames)
     provide('gameScene', gameScene)
     provide('field', computed(() => gameScene.value?.field))
     provide('camera', computed(() => gameScene.value?.camera))
