@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { ref, reactive, provide, inject, onMounted, nextTick } from 'vue'
+import { ref, reactive, provide, inject, nextTick } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field'
 export default {
@@ -43,9 +43,6 @@ export default {
         fieldData.r = r
       })
     }
-    onMounted(() => {
-      setField('room1', 640, 310)
-    })
     return {
       fps,
       scene,

@@ -22,8 +22,8 @@ export default {
   setup (props) {
     const object = refObj(null)
     const image = refObj(null)
-    const imgWidth = computed(() => image.value ? image.value.width : 0)
-    const imgHeight = computed(() => image.value ? image.value.height : 0)
+    const imgWidth = computed(() => image.value ? image.value.width : 30)
+    const imgHeight = computed(() => image.value ? image.value.height : 30)
     const tapEvent = useEvent()
     return {
       object, image,
