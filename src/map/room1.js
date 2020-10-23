@@ -1,4 +1,5 @@
 import { inject } from 'vue'
+import Talker from '@/util/Talker'
 export default {
   bgm: 'town',
   create () {
@@ -6,11 +7,13 @@ export default {
     const talk = inject('talk')
     const player = inject('player')
     const npc = field.value.getObjectById(16)
+    const tNpc = new Talker('NPC', npc.object)
+    const tPlayer = new Talker('Player', player.value.object)
     npc.setTapEvent(async () => {
       await talk.value.setTalk([
-        { chara: npc, text: 'aaaaaaaaaaaaaaaaaaa' },
-        { chara: player.value, text: 'bbbb' },
-        { chara: npc, text: 'あいうえおか\nきくけこ' }
+        { chara: tNpc, text: 'aaaaaaaaaaaaaaaaaaa' },
+        { chara: tPlayer, text: 'bbbb' },
+        { chara: tNpc, text: 'あいうえおか\nきくけこ' }
       ])
     })
   }

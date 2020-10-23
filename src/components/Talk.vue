@@ -3,7 +3,8 @@
     <Rectangle :origin="0" :width="960" :height="540" @pointerdown="next" />
     <Container :x="x" :y="y">
       <Rectangle ref="bg" :origin="0.5" :fillColor="0x222222" :alpha="0.8" :width="bgWidth" :height="bgHeight" :displayOriginX="bgWidth.half" :displayOriginY="bgHeight.half" />
-      <Text ref="txt" :text="current.text" :style="{ fontSize: 14, fontStyle: 'bold', color: '#FFFFFF' }" :origin="0.5" />
+      <Text ref="name" :text="current.chara.name" :style="{ fontSize: 15, fontStyle: 'bold', color: '#FFFFFF', stroke: '#111111', strokeThickness: 3 }" :originX="0" :originY="1" :x="-bgWidth.half + 8" :y="-bgHeight.half + 8" />
+      <Text ref="txt" :text="current.text" :style="{ fontSize: 14, fontStyle: 'normal', color: '#FFFFFF' }" :origin="0.5" />
     </Container>
   </Container>
 </template>
@@ -24,8 +25,8 @@ export default {
     const current = computed(() => list.value[0])
     let resolver = null
     const data = reactive({
-      x: computed(() => current.value?.chara.object.x - camera.value?.scrollX),
-      y: computed(() => current.value?.chara.object.y - camera.value?.scrollY - 70),
+      x: computed(() => current.value?.chara.x - camera.value?.scrollX),
+      y: computed(() => current.value?.chara.y - camera.value?.scrollY - 70),
       bgWidth: 0,
       bgHeight: 0
     })
@@ -43,7 +44,7 @@ export default {
     }
     onUpdated(() => {
       if (!current.value) return
-      data.bgWidth = txt.value.width + 20
+      data.bgWidth = Math.max(txt.value.width + 20, 100)
       data.bgHeight = txt.value.height + 20
     })
     return {
