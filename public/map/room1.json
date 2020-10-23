@@ -83,12 +83,12 @@
                  "name":"town1",
                  "properties":[
                         {
-                         "name":"x",
+                         "name":"fieldX",
                          "type":"int",
                          "value":4
                         }, 
                         {
-                         "name":"y",
+                         "name":"fieldY",
                          "type":"int",
                          "value":30
                         }],

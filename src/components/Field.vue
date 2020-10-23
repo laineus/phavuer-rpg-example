@@ -5,8 +5,8 @@
     <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" />
     <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" />
     <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" />
-    <Area :x="200" :y="300" :width="200" :height="200" />
-    <Gate :x="500" :y="400" :width="180" :height="200" :to="{ key: 'room1', x: 20, y: 20 }" />
+    <Area v-for="v in areas" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" />
+    <Gate v-for="v in gates" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX * 32, y: v.fieldY * 32 }" />
   </div>
 </template>
 
@@ -43,6 +43,8 @@ export default {
     const objects = field.objects.map(v => Object.assign({ ref: ref(null) }, v))
     const charas = objects.filter(v => v.type === 'Character')
     const substances = objects.filter(v => v.type === 'Substance')
+    const areas = objects.filter(v => v.type === 'Area')
+    const gates = objects.filter(v => v.type === 'Gate')
     const isCollides = (tileX, tileY) => {
       return layers.some(layer => {
         const tile = layer.ref.value.getTileAt(tileX, tileY)
@@ -58,7 +60,7 @@ export default {
     const charaCreate = obj => {
       group.add(obj)
     }
-    const event = maps[props.fieldName] || {}
+    const event = maps[props.fieldKey] || {}
     onMounted(() => {
       setupCamera(inject('camera').value, field.width, field.height, player.value.object)
       if (event.create) event.create()
@@ -70,7 +72,7 @@ export default {
     return {
       field, collides,
       width: field.width, height: field.height,
-      layers, images, player, objects, charas, substances,
+      layers, images, player, objects, charas, substances, areas, gates,
       isCollides, getObjectById,
       layerCreate, charaCreate,
       play: update

@@ -30,7 +30,7 @@ export default {
   setup (props) {
     const scene = inject('scene')
     const virtualStick = ref(null)
-    const touchMode = true
+    const touchMode = false
     const wasd = wasdController(scene.input.keyboard)
     return {
       virtualStick,

@@ -7,7 +7,7 @@
          "target":"."
         }
     },
- "image":"..\/img\/tilesets\/original\/town.png",
+ "image":"..\/..\/img\/map\/tilesets\/town.png",
  "imageheight":416,
  "imagewidth":640,
  "margin":0,

@@ -1,5 +1,5 @@
 <template>
-  <Zone ref="object" :active="false" />
+  <Zone ref="object" :active="false" :origin="0" />
 </template>
 
 <script>
