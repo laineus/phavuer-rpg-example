@@ -15,5 +15,11 @@ export default {
     black: 0x000000,
     soy: 0xFFEEBB
   },
-  WALK_MODE_PC: 0 // 0: Tap screen to walk, 1: WASD
+  DEPTH: {
+    GROUND: 0, // + y
+    CEIL: 10000,
+    SPEACH_BUBBLE: 50000,
+    UI_BG: 100000,
+    TRANSITION: 900000
+  }
 }

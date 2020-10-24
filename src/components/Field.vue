@@ -1,12 +1,12 @@
 <template>
   <div>
-    <component v-for="v in layers" :key="v.index" :is="v.component" :ref="v.ref" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" @create="layerCreate" />
+    <component v-for="v in layers" :key="v.index" :is="v.component" :ref="v.ref" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" @create="layerCreate" />
     <Image v-for="v in images" :key="v.id" :ref="v.ref" :texture="`tileset/${v.key}`" :x="v.x" :y="v.y" :origin="0" @create="obj => obj.setDepth(obj.y + obj.height)" />
     <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" />
     <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" />
     <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" />
     <Area v-for="v in areas" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" />
-    <Gate v-for="v in gates" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX * 32, y: v.fieldY * 32 }" />
+    <Gate v-for="v in gates" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX.toPixel, y: v.fieldY.toPixel }" />
   </div>
 </template>
 
@@ -20,14 +20,7 @@ import { inject, onMounted, ref } from 'vue'
 import { refObj, Image, StaticTilemapLayer, DynamicTilemapLayer } from 'phavuer'
 import setupCamera from './modules/setupCamera'
 import maps from '@/data/maps'
-export const DEPTH = {
-  GROUND: 0,
-  PARTICLES: 100000,
-  TOP: 110000,
-  LIGHT: 120000,
-  SUN_LIGHT: 140000,
-  DARKNESS: 130000
-}
+import config from '@/data/config'
 export default {
   components: { StaticTilemapLayer, DynamicTilemapLayer, Image, Character, Substance, Area, Gate },
   props: [
@@ -70,6 +63,7 @@ export default {
       if (event.update) event.update()
     }
     return {
+      config,
       field, collides,
       width: field.width, height: field.height,
       layers, images, player, objects, charas, substances, areas, gates,

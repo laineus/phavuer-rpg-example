@@ -1,6 +1,6 @@
 <template>
   <Container :x="0" :y="0" v-if="current">
-    <Rectangle :origin="0" :width="960" :height="540" @pointerdown="next" />
+    <Rectangle :origin="0" :width="config.WIDTH" :height="config.HEIGHT" @pointerdown="next" />
     <Container :x="x" :y="y">
       <Rectangle ref="bg" :origin="0.5" :fillColor="0x222222" :alpha="0.8" :width="bgWidth" :height="bgHeight" :displayOriginX="bgWidth.half" :displayOriginY="bgHeight.half" />
       <Text ref="name" :text="current.chara.name" :style="{ fontSize: 15, fontStyle: 'bold', color: '#FFFFFF', stroke: '#111111', strokeThickness: 3 }" :originX="0" :originY="1" :x="-bgWidth.half + 8" :y="-bgHeight.half + 8" />
@@ -12,6 +12,7 @@
 <script>
 import { refObj, Container, Rectangle, Text } from 'phavuer'
 import { computed, ref, inject, onUpdated, reactive, toRefs } from 'vue'
+import config from '@/data/config'
 export default {
   components: { Container, Rectangle, Text },
   setup () {
@@ -48,6 +49,7 @@ export default {
       data.bgHeight = txt.value.height + 20
     })
     return {
+      config,
       current,
       next,
       setTalk,

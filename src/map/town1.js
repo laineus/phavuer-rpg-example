@@ -5,6 +5,6 @@ export default {
     const field = inject('field')
     const gameScene = inject('gameScene')
     const substance = field.value.getObjectById(6)
-    substance.setTapEvent(() => gameScene.value.setField('room1', 17 * 32, 17 * 32))
+    substance.setTapEvent(() => gameScene.value.setField('room1', (17).toPixel, (17).toPixel))
   }
 }
