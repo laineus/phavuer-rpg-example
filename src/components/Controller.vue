@@ -1,5 +1,5 @@
 <template>
-  <VirtualStick ref="virtualStick" :x="100" :y="(100).byBottom" />
+  <VirtualStick ref="virtualStick" :x="100" :y="(100).byBottom" v-if="mobile" />
 </template>
 
 <script>
@@ -30,15 +30,16 @@ export default {
   setup (props) {
     const scene = inject('scene')
     const virtualStick = ref(null)
-    const touchMode = false
+    const mobile = !scene.game.device.os.desktop
     const wasd = wasdController(scene.input.keyboard)
     return {
+      mobile,
       virtualStick,
       get velocityX () {
-        return (touchMode ? virtualStick.value.velocityX : wasd.velocity.x) * props.velocity
+        return (mobile ? virtualStick.value.velocityX : wasd.velocity.x) * props.velocity
       },
       get velocityY () {
-        return (touchMode ? virtualStick.value.velocityY : wasd.velocity.y) * props.velocity
+        return (mobile ? virtualStick.value.velocityY : wasd.velocity.y) * props.velocity
       },
       get activePointer () {
         return scene.input.manager.pointers.find(v => v.isDown)
