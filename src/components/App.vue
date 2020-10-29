@@ -35,7 +35,7 @@ export default {
     provide('gameScene', gameScene)
     provide('field', computed(() => gameScene.value?.field))
     provide('camera', computed(() => gameScene.value?.scene.cameras.main))
-    provide('player', computed(() => gameScene.value?.field.player))
+    provide('player', computed(() => gameScene.value?.field?.player))
     provide('uiScene', uiScene)
     provide('talk', computed(() => uiScene.value?.talk))
     provide('mobile', !game.device.os.desktop)
