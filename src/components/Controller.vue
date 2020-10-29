@@ -26,7 +26,7 @@ const wasdController = keyboard => {
 
 export default {
   components: { VirtualStick },
-  props: { velocity: { default: 50 } },
+  props: { velocity: { default: 25 } },
   setup (props) {
     const scene = inject('scene')
     const virtualStick = ref(null)

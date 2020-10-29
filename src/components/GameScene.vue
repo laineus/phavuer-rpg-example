@@ -16,6 +16,7 @@ export default {
     const scene = refScene(null)
     const frames = inject('frames')
     const uiScene = inject('uiScene')
+    const camera = inject('camera')
     const field = ref(null)
     const fps = ref(0)
     provide('field', field)
@@ -29,8 +30,11 @@ export default {
         const x = Math.fix(field.value.player.object.x + controller.velocityX, 0, field.value.field.width)
         const y = Math.fix(field.value.player.object.y + controller.velocityY, 0, field.value.field.height)
         field.value.player.following.setTargetPosition(x, y)
-      } else {
-        field.value.player.following.clearTargetPosition()
+      } else if (controller.activePointer) {
+        const worldX = controller.activePointer.x + camera.value.scrollX
+        const worldY = controller.activePointer.y + camera.value.scrollY
+        if (field.value.isCollides(worldX.toTile, worldY.toTile)) return
+        field.value.player.following.setTargetPosition(worldX, worldY)
       }
     }
     const setField = async (name, x, y, r) => {
