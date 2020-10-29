@@ -3,13 +3,13 @@
     <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
     </Container>
-    <TapArea v-if="tapEvent.event.value" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
+    <TapArea v-if="tapEvent.event.value" :visible="checkable" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
   </div>
 </template>
 
 <script>
 import { refObj, Container, Image } from 'phavuer'
-import { computed, inject, onMounted, reactive } from 'vue'
+import { computed, inject, onMounted, reactive, toRefs } from 'vue'
 import TapArea from './TapArea'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
@@ -40,6 +40,7 @@ export default {
   setup (props, context) {
     const scene = inject('scene')
     const event = inject('event')
+    const player = inject('player')
     const object = refObj(null)
     const image = refObj(null)
     const tapEvent = useEvent()
@@ -49,6 +50,7 @@ export default {
     const imgWidth = computed(() => image.value ? image.value.width : 0)
     const imgHeight = computed(() => image.value ? image.value.height : 0)
     const data = reactive({
+      distanceToPlayer: null,
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
     })
     const create = obj => context.emit('create', obj)
@@ -57,6 +59,7 @@ export default {
         image.value.setFrame(BASE_FRAME[data.directionKey])
         return
       }
+      data.distanceToPlayer = Phaser.Math.Distance.Between(object.value.x, object.value.y, player.value.object.x, player.value.object.y)
       obj.setDepth(object.value.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
@@ -73,6 +76,8 @@ export default {
       object.value.body.setDrag(500)
     })
     return {
+      ...toRefs(data),
+      checkable: computed(() => !event.state && tapEvent.event.value && data.distanceToPlayer < 150),
       object, image,
       create, update,
       following,

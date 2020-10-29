@@ -39,7 +39,8 @@ export default {
         resolver = resolve
       })
     }
-    const next = () => {
+    const next = (pointer) => {
+      pointer.isDown = false
       list.value.splice(0, 1)
       if (!list.value.length && resolver) resolver()
     }

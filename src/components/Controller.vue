@@ -30,7 +30,7 @@ export default {
   setup (props) {
     const scene = inject('scene')
     const virtualStick = ref(null)
-    const mobile = !scene.game.device.os.desktop
+    const mobile = inject('mobile')
     const wasd = wasdController(scene.input.keyboard)
     return {
       mobile,

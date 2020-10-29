@@ -23,7 +23,10 @@ export default {
         this.setState(true)
         const promise = event()
         if (!promise || typeof promise.then !== 'function') throw new Error('Event must returns Promise instance')
-        promise.then(() => this.setState(false))
+        return promise.then(result => {
+          this.setState(false)
+          return result
+        })
       }
     })
     const frames = reactive({ total: 0, game: 0 })
@@ -35,6 +38,7 @@ export default {
     provide('player', computed(() => gameScene.value?.field.player))
     provide('uiScene', uiScene)
     provide('talk', computed(() => uiScene.value?.talk))
+    provide('mobile', !game.device.os.desktop)
     return {
       gameScene, uiScene
     }

@@ -50,6 +50,28 @@ Object.defineProperty(Array.prototype, 'random', {
 Object.defineProperty(Array.prototype, 'count', {
   value (callbackfn) { return this.filter(callbackfn).length }
 })
+Object.defineProperty(Array.prototype, 'findMin', {
+  value (callbackfn) {
+    return this.reduce((result, record) => {
+      const value = callbackfn(record)
+      if (!result.record || value < result.value) {
+        Object.assign(result, { value, record })
+      }
+      return result
+    }, {}).record
+  }
+})
+Object.defineProperty(Array.prototype, 'findMax', {
+  value (callbackfn) {
+    return this.reduce((result, record) => {
+      const value = callbackfn(record)
+      if (!result.record || value > result.value) {
+        Object.assign(result, { value, record })
+      }
+      return result
+    }, {}).record
+  }
+})
 // Math class methods
 Math.sum = (...args) => args.reduce((accumulator, current) => accumulator + current)
 Math.average = (...args) => Math.sum(...args) / args.length
