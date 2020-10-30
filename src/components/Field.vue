@@ -28,6 +28,7 @@ export default {
   ],
   setup (props) {
     const scene = inject('scene')
+    const audio = inject('audio')
     const player = ref(null)
     const field = fieldService(scene, props.fieldKey)
     console.log(field)
@@ -57,6 +58,7 @@ export default {
     onMounted(() => {
       setupCamera(inject('camera').value, field.width, field.height, player.value.object)
       if (event.create) event.create()
+      audio.setBgm(event.bgm || null)
     })
     const update = (time) => {
       field.update(time)

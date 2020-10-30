@@ -8,6 +8,7 @@
 <script>
 import GameScene from '@/components/GameScene'
 import UIScene from '@/components/UIScene'
+import AudioController from '@/class/AudioController'
 import { inject, provide, ref, computed, reactive } from 'vue'
 export default {
   components: { GameScene, UIScene },
@@ -39,6 +40,7 @@ export default {
     provide('uiScene', uiScene)
     provide('talk', computed(() => uiScene.value?.talk))
     provide('mobile', !game.device.os.desktop)
+    provide('audio', new AudioController(game.sound))
     return {
       gameScene, uiScene
     }
