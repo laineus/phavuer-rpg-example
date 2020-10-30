@@ -4,15 +4,12 @@ import '@/util/extendNativeClassFunctions'
 import loadAssets from '@/util/loadAssets'
 import App from '@/components/App'
 import config from '@/data/config'
-import storage from '@/data/storage'
 
 location.query = location.search.substr(1).split('&').filter(Boolean).reduce((obj, v) => {
   const arr = v.split('=')
   obj[arr[0]] = arr[1]
   return obj
 }, {})
-
-storage.loadSetting()
 
 const option = {
   type: Phaser.AUTO,
