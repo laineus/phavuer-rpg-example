@@ -23,7 +23,7 @@ const WALK_ANIM = [
 ]
 const BASE_FRAME = { down: 1, left: 4, right: 7, up: 10 }
 const velocityToDirectionKey = (x, y) => {
-  if (Math.abs(x) > Math.abs(y)) return x < 0 ? 'left' : 'right'
+  if (Math.round(Math.abs(x)) > Math.round(Math.abs(y))) return x < 0 ? 'left' : 'right'
   return y < 0 ? 'up' : 'down'
 }
 export default {
