@@ -5,12 +5,6 @@ import loadAssets from '@/util/loadAssets'
 import App from '@/components/App'
 import config from '@/data/config'
 
-location.query = location.search.substr(1).split('&').filter(Boolean).reduce((obj, v) => {
-  const arr = v.split('=')
-  obj[arr[0]] = arr[1]
-  return obj
-}, {})
-
 const option = {
   type: Phaser.AUTO,
   width: config.WIDTH,
@@ -37,7 +31,6 @@ const option = {
   input: {
     activePointers: 3
   }
-  // fps: { target: 30, forceSetTimeOut: true }
 }
 
 const game = new Phaser.Game(option)
