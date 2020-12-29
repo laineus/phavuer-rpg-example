@@ -66,7 +66,7 @@ module.exports = (_env, argv) => ({
       '__VUE_OPTIONS_API__': JSON.stringify(false),
       '__VUE_PROD_DEVTOOLS__': JSON.stringify(false)
     }),
-    new AutoTileWebpackPlugin({ size: 32, input: './public/img/map/tilesets/autotiles', output: './public/img/map/tilesets' }),
+    new AutoTileWebpackPlugin({ size: 32, input: './public/img/map/tilesets/autotiles', output: './public/img/map/tilesets', pattern: 'pattern2' }),
     new TileExtrudeWebpackPlugin({ size: 32, input: './public/img/map/tilesets', output: './public/img/map/extruded_tilesets' }),
     new PhaserAssetsWebpackPlugin(assetSettings),
     new webpack.ProvidePlugin({
