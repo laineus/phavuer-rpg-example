@@ -1,3 +1,12 @@
 export default {
-  title: 'サンプルゲーム'
+  title: 'サンプルゲーム',
+  events: {
+    room1: {
+      npc1: [
+        'はじめましてこんにちは',
+        'こんにちは',
+        'これは#{pluginName}のサンプルゲームです'
+      ]
+    }
+  }
 }
