@@ -1747,10 +1747,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-auto-tile-webpack-plugin@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/auto-tile-webpack-plugin/-/auto-tile-webpack-plugin-0.9.1.tgz#2553cd2a5edd64cc72345c3f385a7025d4c85b65"
-  integrity sha512-rpiQHzeuKlrVTWDK/3YiGp9+PDt4vc2BvlTGvQAOF/K2WRt6e4DKxDyjtRzl7qfn4vOcPSjAmjTFkT29090iqg==
+auto-tile-webpack-plugin@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/auto-tile-webpack-plugin/-/auto-tile-webpack-plugin-0.9.3.tgz#96d8dac5897fdb8fa46fa647a3ab8cd5a5a6b32a"
+  integrity sha512-HpMmBsKJJpC6n8qoyYtj+re6XGKIBdT7KlGYtkCtX3IBNYLb8p/l+dE74n9dBmkOjhBSF+fTdLjzJgdtQWsYBA==
   dependencies:
     sharp "^0.27.0"
 
