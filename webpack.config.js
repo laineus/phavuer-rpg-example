@@ -60,11 +60,11 @@ module.exports = (_env, argv) => ({
   plugins: [
     new WriteFilePlugin(),
     new webpack.DefinePlugin({
-      'ENV': JSON.stringify(argv.mode),
+      ENV: JSON.stringify(argv.mode),
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true),
-      '__VUE_OPTIONS_API__': JSON.stringify(false),
-      '__VUE_PROD_DEVTOOLS__': JSON.stringify(false)
+      __VUE_OPTIONS_API__: JSON.stringify(false),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
     }),
     new AutoTileWebpackPlugin({ size: 32, input: './public/img/map/tilesets/autotiles', output: './public/img/map/tilesets' }),
     new TileExtrudeWebpackPlugin({ size: 32, input: './public/img/map/tilesets', output: './public/img/map/extruded_tilesets' }),
