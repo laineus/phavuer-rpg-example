@@ -18,20 +18,61 @@
  "tileheight":32,
  "tiles":[
         {
-         "animation":[
-                {
-                 "duration":100,
-                 "tileid":8
-                }, 
-                {
-                 "duration":100,
-                 "tileid":9
-                }],
+         "id":3,
+         "type":"collides"
+        }, 
+        {
+         "id":4,
+         "type":"collides"
+        }, 
+        {
          "id":8,
          "type":"collides"
         }, 
         {
          "id":9,
+         "type":"collides"
+        }, 
+        {
+         "animation":[
+                {
+                 "duration":250,
+                 "tileid":13
+                }, 
+                {
+                 "duration":250,
+                 "tileid":23
+                }, 
+                {
+                 "duration":250,
+                 "tileid":33
+                }, 
+                {
+                 "duration":250,
+                 "tileid":23
+                }],
+         "id":13,
+         "type":"collides"
+        }, 
+        {
+         "animation":[
+                {
+                 "duration":250,
+                 "tileid":14
+                }, 
+                {
+                 "duration":250,
+                 "tileid":24
+                }, 
+                {
+                 "duration":250,
+                 "tileid":34
+                }, 
+                {
+                 "duration":250,
+                 "tileid":24
+                }],
+         "id":14,
          "type":"collides"
         }, 
         {
