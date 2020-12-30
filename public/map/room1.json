@@ -182,43 +182,63 @@
          "objects":[
                 {
                  "height":0,
-                 "id":8,
-                 "name":"",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":429.632571996028,
-                 "y":416.921549155909
-                }, 
-                {
-                 "height":0,
                  "id":9,
                  "name":"",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#fff47a17"
+                        }, 
+                        {
+                         "name":"intensity",
+                         "type":"float",
+                         "value":4
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":2000
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Light",
                  "visible":true,
                  "width":0,
-                 "x":668.599801390268,
-                 "y":449.970208540219
+                 "x":606.599801390268,
+                 "y":255.970208540219
                 }, 
                 {
                  "height":0,
                  "id":10,
                  "name":"",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"color",
+                         "type":"color",
+                         "value":"#ff00bbff"
+                        }, 
+                        {
+                         "name":"intensity",
+                         "type":"float",
+                         "value":1
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
-                 "type":"",
+                 "type":"Light",
                  "visible":true,
                  "width":0,
-                 "x":592.333664349553,
-                 "y":333.028798411122
+                 "x":218.333664349553,
+                 "y":317.028798411122
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
@@ -227,9 +247,9 @@
  "orientation":"orthogonal",
  "properties":[
         {
-         "name":"darkness",
+         "name":"ambient",
          "type":"color",
-         "value":"#46352b06"
+         "value":"#ff82735c"
         }],
  "renderorder":"right-down",
  "tiledversion":"2020.08.05",

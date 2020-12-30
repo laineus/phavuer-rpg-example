@@ -1,7 +1,7 @@
 <template>
   <div>
     <Container ref="object" :x="initX" :y="initY" :width="imgWidth" :height="imgWidth" :depth="initY" @preUpdate="update">
-      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" />
+      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" :pipeline="pipeline" />
     </Container>
     <TapArea v-if="tapEvent.event.value" :visible="checkable" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
   </div>
@@ -17,7 +17,8 @@ export default {
   props: {
     initX: { default: 0 },
     initY: { default: 0 },
-    name: { default: null }
+    name: { default: null },
+    pipeline: { default: null }
   },
   setup (props) {
     const event = inject('event')

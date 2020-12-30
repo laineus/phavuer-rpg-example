@@ -1,7 +1,7 @@
 <template>
   <div>
     <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
-      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" />
+      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" :pipeline="pipeline" />
     </Container>
     <TapArea v-if="tapEvent.event.value" :visible="checkable" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
   </div>
@@ -34,7 +34,8 @@ export default {
     initR: { default: 0 },
     name: { default: null },
     speed: { default: 120 },
-    random: { default: null }
+    random: { default: null },
+    pipeline: { default: null }
   },
   emits: ['create'],
   setup (props, context) {

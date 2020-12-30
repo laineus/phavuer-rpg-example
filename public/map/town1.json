@@ -69,14 +69,9 @@
          "y":0
         }],
  "nextlayerid":24,
- "nextobjectid":54,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "properties":[
-        {
-         "name":"darkness",
-         "type":"color",
-         "value":"#78133b41"
-        }, 
         {
          "name":"sun",
          "type":"bool",

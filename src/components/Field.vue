@@ -1,12 +1,13 @@
 <template>
   <div>
-    <TilemapLayer v-for="v in layers" :key="v.index" :ref="v.ref" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" @create="layerCreate" />
-    <Image v-for="v in images" :key="v.id" :ref="v.ref" :texture="`tileset/${v.key}`" :x="v.x" :y="v.y" :origin="0" @create="obj => obj.setDepth(obj.y + obj.height)" />
-    <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" />
-    <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" />
-    <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" />
+    <TilemapLayer v-for="v in layers" :key="v.index" :ref="v.ref" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" @create="layerCreate" :pipeline="pipeline" />
+    <Image v-for="v in images" :key="v.id" :ref="v.ref" :texture="`tileset/${v.key}`" :x="v.x" :y="v.y" :origin="0" @create="obj => obj.setDepth(obj.y + obj.height)" :pipeline="pipeline" />
+    <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" :pipeline="pipeline" />
+    <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" :pipeline="pipeline" />
+    <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" :pipeline="pipeline" />
     <Area v-for="v in areas" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" />
     <Gate v-for="v in gates" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX.toPixel, y: v.fieldY.toPixel }" />
+    <Light v-for="v in lights" :key="v.id" :x="v.x" :y="v.y" :intensity="v.intensity || 1" :color="v.color" :radius="v.radius" />
   </div>
 </template>
 
@@ -16,13 +17,13 @@ import Character from './Character'
 import Substance from './Substance'
 import Area from './Area'
 import Gate from './Gate'
-import { inject, onMounted, ref } from 'vue'
-import { refObj, Image, TilemapLayer } from 'phavuer'
+import { computed, inject, onMounted, ref } from 'vue'
+import { refObj, Image, TilemapLayer, Light } from 'phavuer'
 import setupCamera from './modules/setupCamera'
 import maps from '@/data/maps'
 import config from '@/data/config'
 export default {
-  components: { TilemapLayer, Image, Character, Substance, Area, Gate },
+  components: { TilemapLayer, Image, Character, Substance, Area, Gate, Light },
   props: [
     'fieldKey', 'playerX', 'playerY', 'playerR'
   ],
@@ -39,6 +40,10 @@ export default {
     const substances = objects.filter(v => v.type === 'Substance')
     const areas = objects.filter(v => v.type === 'Area')
     const gates = objects.filter(v => v.type === 'Gate')
+    const lights = objects.filter(v => v.type === 'Light')
+    scene.lights.setAmbientColor(field.properties.ambient || 0xFFFFFF)
+    lights.length ? scene.lights.enable() : scene.lights.disable()
+    const pipeline = computed(() => lights.length ? 'Light2D' : 'TextureTintPipeline')
     const isCollides = (tileX, tileY) => {
       return layers.some(layer => {
         const tile = layer.ref.value.getTileAt(tileX, tileY)
@@ -68,7 +73,8 @@ export default {
       config,
       field, collides,
       width: field.width, height: field.height,
-      layers, images, player, objects, charas, substances, areas, gates,
+      layers, images, player, objects, charas, substances, areas, gates, lights,
+      pipeline,
       isCollides, getObjectById,
       layerCreate, charaCreate,
       play: update
