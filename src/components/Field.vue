@@ -1,9 +1,9 @@
 <template>
   <div>
-    <TilemapLayer v-for="v in layers" :key="v.index" :ref="v.ref" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" @create="layerCreate" :pipeline="pipeline" />
-    <Image v-for="v in images" :key="v.id" :ref="v.ref" :texture="`tileset/${v.key}`" :x="v.x" :y="v.y" :origin="0" @create="obj => obj.setDepth(obj.y + obj.height)" :pipeline="pipeline" />
-    <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" @create="charaCreate" :pipeline="pipeline" />
-    <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" @create="charaCreate" :pipeline="pipeline" />
+    <TilemapLayer v-for="v in layers" :key="v.index" :ref="v.ref" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" :pipeline="pipeline" @create="layerCreate" />
+    <Image v-for="v in images" :key="v.id" :ref="v.ref" :texture="`tileset/${v.key}`" :x="v.x" :y="v.y" :origin="0" :pipeline="pipeline" @create="obj => obj.setDepth(obj.y + obj.height)" />
+    <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" :pipeline="pipeline" @create="charaCreate" />
+    <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" :pipeline="pipeline" @create="charaCreate" />
     <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" :pipeline="pipeline" />
     <Area v-for="v in areas" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" />
     <Gate v-for="v in gates" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX.toPixel, y: v.fieldY.toPixel }" />

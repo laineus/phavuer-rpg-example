@@ -38,7 +38,7 @@ const getTilesets = tilemap => {
 }
 const getLayers = tilemap => {
   return tilemap.layers.map((layer, index) => {
-    if (!layer.visible) return
+    if (!layer.visible) return null
     return mapProperties({ index }, layer.properties)
   }).filter(Boolean)
 }
