@@ -8,6 +8,7 @@
     <Area v-for="v in areas" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" />
     <Gate v-for="v in gates" :key="v.id" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX.toPixel, y: v.fieldY.toPixel }" />
     <Light v-for="v in lights" :key="v.id" :x="v.x" :y="v.y" :intensity="v.intensity || 1" :color="v.color" :radius="v.radius" />
+    <Image :depth="config.DEPTH.DARKNESS" texture="darkness" :x="0" :y="0" :origin="0" />
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import Character from './Character'
 import Substance from './Substance'
 import Area from './Area'
 import Gate from './Gate'
+import Darkness from './modules/Darkness'
 import { computed, inject, onMounted, ref } from 'vue'
 import { refObj, Image, TilemapLayer, Light } from 'phavuer'
 import setupCamera from './modules/setupCamera'
@@ -60,12 +62,18 @@ export default {
       group.add(obj)
     }
     const event = maps[props.fieldKey] || {}
+    scene.textures.remove('darkness')
+    const darkness = new Darkness(scene, 'darkness', field.width, field.height)
+    darkness.fillBg(field.properties.darkness || 0x77000000).removeArcs(lights.map(l => {
+      return { x: l.x, y: l.y, radius: 120 }
+    })).save().refresh()
     onMounted(() => {
       setupCamera(inject('camera').value, field.width, field.height, player.value.object)
       if (event.create) event.create()
       audio.setBgm(event.bgm || null)
     })
     const update = (time) => {
+      darkness.restore().removeArc(player.value.object.x, player.value.object.y, 300).refresh()
       field.update(time)
       if (event.update) event.update()
     }
