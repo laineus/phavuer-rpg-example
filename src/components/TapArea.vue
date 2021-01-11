@@ -1,11 +1,11 @@
 <template>
-  <Container ref="tapArea" :depth="100000" @pointerdown="onTap" @preUpdate="update">
+  <Container ref="tapArea" :depth="100000" @pointerdown="onTap">
     <Image texture="speach_bubbles" :y="-20" :frame="frame" @create="initBubbleAnim" />
   </Container>
 </template>
 
 <script>
-import { refObj, Container, Image } from 'phavuer'
+import { refObj, Container, Image, onPreUpdate } from 'phavuer'
 import { inject } from 'vue'
 export default {
   components: { Container, Image },
@@ -21,12 +21,12 @@ export default {
     const initBubbleAnim = obj => {
       scene.add.tween({ targets: obj, y: -24, yoyo: true, repeat: -1, duration: 500 })
     }
-    const update = () => {
+    onPreUpdate(() => {
       if (props.follow) tapArea.value.setPosition(props.follow.x, props.follow.y - tapArea.value.height.half + 10)
-    }
+    })
     return {
       tapArea,
-      onTap, update, initBubbleAnim
+      onTap, initBubbleAnim
     }
   }
 }

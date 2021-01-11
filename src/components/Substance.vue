@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Container ref="object" :x="initX" :y="initY" :width="imgWidth" :height="imgWidth" :depth="initY" @preUpdate="update">
+    <Container ref="object" :x="initX" :y="initY" :width="imgWidth" :height="imgWidth" :depth="initY">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" :pipeline="pipeline" />
     </Container>
     <TapArea v-if="tapEvent.event.value" :visible="checkable" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { refObj, Container, Image } from 'phavuer'
+import { refObj, Container, Image, onPreUpdate } from 'phavuer'
 import { computed, inject, reactive, toRefs } from 'vue'
 import TapArea from './TapArea'
 import useEvent from './modules/useEvent'
@@ -31,13 +31,12 @@ export default {
     const data = reactive({
       distanceToPlayer: null
     })
-    const update = () => {
+    onPreUpdate(() => {
       data.distanceToPlayer = Phaser.Math.Distance.Between(object.value.x, object.value.y, player.value.object.x, player.value.object.y)
-    }
+    })
     return {
       ...toRefs(data),
       checkable: computed(() => !event.state && tapEvent.event.value && data.distanceToPlayer < 150),
-      update,
       object, image,
       imgWidth, imgHeight,
       tapEvent, setTapEvent: tapEvent.setEvent

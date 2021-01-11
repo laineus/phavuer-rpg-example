@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create" @preUpdate="update">
+    <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create">
       <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" :pipeline="pipeline" />
     </Container>
     <TapArea v-if="tapEvent.event.value" :visible="checkable" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { refObj, Container, Image } from 'phavuer'
+import { refObj, Container, Image, onPreUpdate } from 'phavuer'
 import { computed, inject, onMounted, reactive, toRefs } from 'vue'
 import TapArea from './TapArea'
 import useRandomWalk from './modules/useRandomWalk'
@@ -55,13 +55,13 @@ export default {
       directionKey: velocityToDirectionKey(Math.cos(props.initR), Math.sin(props.initR))
     })
     const create = obj => context.emit('create', obj)
-    const update = obj => {
+    onPreUpdate(() => {
       if (event.state) {
         image.value.setFrame(BASE_FRAME[data.directionKey])
         return
       }
       data.distanceToPlayer = Phaser.Math.Distance.Between(object.value.x, object.value.y, player.value.object.x, player.value.object.y)
-      obj.setDepth(object.value.y)
+      object.value.setDepth(object.value.y)
       const velocity = Math.hypot(object.value.body.velocity.x, object.value.body.velocity.y)
       if (randomWalk) randomWalk.play(pos => following.setTargetPosition(pos.x, pos.y))
       following.walkToTargetPosition(props.speed)
@@ -71,7 +71,7 @@ export default {
       } else {
         image.value.setFrame(BASE_FRAME[data.directionKey])
       }
-    }
+    })
     onMounted((a) => {
       scene.physics.world.enable(object.value)
       object.value.body.setDrag(500)
@@ -80,7 +80,7 @@ export default {
       ...toRefs(data),
       checkable: computed(() => !event.state && tapEvent.event.value && data.distanceToPlayer < 150),
       object, image,
-      create, update,
+      create,
       following,
       imgWidth, imgHeight,
       tapEvent, setTapEvent: tapEvent.setEvent
