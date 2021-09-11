@@ -1,6 +1,6 @@
-import useTranslate from '@/util/useTranslate'
-import textData from '@/locales/index'
-import setting from '@/data/setting'
+import useTranslate from '../util/useTranslate'
+import textData from '../locales/index'
+import setting from './setting'
 
 const translate = useTranslate(textData)
 

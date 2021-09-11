@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import defaultState from '@/data/defaultState'
-import AppStorage from '@/class/AppStorage'
+import defaultState from '../data/defaultState'
+import AppStorage from './class/AppStorage'
 const appStorage = new AppStorage()
 const STORAGE_KEY = 'data'
 // const SHIFT = 11

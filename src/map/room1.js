@@ -1,5 +1,5 @@
 import { inject } from 'vue'
-import Talker from '@/util/Talker'
+import Talker from '../util/Talker'
 export default {
   bgm: 'town',
   create () {

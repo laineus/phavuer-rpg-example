@@ -5,7 +5,7 @@
 <script>
 import { inject } from 'vue'
 import { Rectangle } from 'phavuer'
-import config from '@/data/config'
+import config from '../data/config'
 export default {
   components: { Rectangle },
   emits: ['close'],

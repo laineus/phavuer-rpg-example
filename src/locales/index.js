@@ -1,4 +1,4 @@
-import ja from '@/locales/ja/index'
+import ja from './ja/index'
 export default {
   ja
 }

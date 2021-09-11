@@ -8,7 +8,7 @@
 <script>
 import { ref, reactive, provide, inject, nextTick } from 'vue'
 import { refScene, Scene } from 'phavuer'
-import Field from './Field'
+import Field from './Field.vue'
 export default {
   components: { Scene, Field },
   setup (props, context) {

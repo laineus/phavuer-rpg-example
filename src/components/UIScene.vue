@@ -13,10 +13,10 @@
 <script>
 import { inject, ref } from 'vue'
 import { refScene, Scene, Rectangle, Circle } from 'phavuer'
-import Title from './Title'
-import Controller from './Controller'
-import Talk from './Talk'
-import config from '@/data/config'
+import Title from './Title.vue'
+import Controller from './Controller.vue'
+import Talk from './Talk.vue'
+import config from '../data/config'
 export default {
   components: { Scene, Title, Controller, Rectangle, Circle, Talk },
   setup (props) {

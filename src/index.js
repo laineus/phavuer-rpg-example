@@ -1,10 +1,10 @@
 import 'phaser'
 import { createPhavuerApp } from 'phavuer'
 import { createApp } from 'vue'
-import assets from '@/data/assets.json'
-import '@/util/extendNativeClassFunctions'
-import App from '@/components/App'
-import config from '@/data/config'
+import assets from './data/assets.json'
+import './util/extendNativeClassFunctions'
+import App from './components/App.vue'
+import config from './data/config'
 
 const option = {
   type: Phaser.AUTO,

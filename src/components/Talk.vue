@@ -12,7 +12,7 @@
 <script>
 import { refObj, Container, Rectangle, Text } from 'phavuer'
 import { computed, ref, inject, onUpdated, reactive, toRefs } from 'vue'
-import config from '@/data/config'
+import config from '../data/config'
 export default {
   components: { Container, Rectangle, Text },
   setup () {

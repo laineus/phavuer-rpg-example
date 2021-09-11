@@ -14,16 +14,16 @@
 
 <script>
 import fieldService from './modules/fieldService'
-import Character from './Character'
-import Substance from './Substance'
-import Area from './Area'
-import Gate from './Gate'
+import Character from './Character.vue'
+import Substance from './Substance.vue'
+import Area from './Area.vue'
+import Gate from './Gate.vue'
 import Darkness from './modules/Darkness'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { refObj, Image, TilemapLayer, Light } from 'phavuer'
 import setupCamera from './modules/setupCamera'
-import maps from '@/data/maps'
-import config from '@/data/config'
+import maps from '../data/maps'
+import config from '../data/config'
 export default {
   components: { TilemapLayer, Image, Character, Substance, Area, Gate, Light },
   props: [

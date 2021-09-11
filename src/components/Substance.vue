@@ -10,7 +10,7 @@
 <script>
 import { refObj, Container, Image, onPreUpdate } from 'phavuer'
 import { computed, inject, reactive, toRefs } from 'vue'
-import TapArea from './TapArea'
+import TapArea from './TapArea.vue'
 import useEvent from './modules/useEvent'
 export default {
   components: { Container, Image, TapArea },

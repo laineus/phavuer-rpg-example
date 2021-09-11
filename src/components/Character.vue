@@ -10,7 +10,7 @@
 <script>
 import { refObj, Container, Image, onPreUpdate } from 'phavuer'
 import { computed, inject, onMounted, reactive, toRefs } from 'vue'
-import TapArea from './TapArea'
+import TapArea from './TapArea.vue'
 import useRandomWalk from './modules/useRandomWalk'
 import useFollowing from './modules/useFollowing'
 import useFrameAnim from './modules/useFrameAnim'

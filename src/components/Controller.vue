@@ -4,7 +4,7 @@
 
 <script>
 import { ref, inject } from 'vue'
-import VirtualStick from './VirtualStick'
+import VirtualStick from './VirtualStick.vue'
 const wasdController = keyboard => {
   keyboard.addCapture('W,S,A,D')
   const wasd = [
