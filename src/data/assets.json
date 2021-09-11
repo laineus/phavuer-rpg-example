@@ -1,0 +1,109 @@
+{
+  "image": [
+    [
+      "focus",
+      "/img/sprites/focus.png"
+    ],
+    [
+      "chara_sprite/flower",
+      "/img/chara_sprites/flower.png"
+    ],
+    [
+      "tileset/forest",
+      "/img/map/extruded_tilesets/forest.png"
+    ],
+    [
+      "tileset/room",
+      "/img/map/extruded_tilesets/room.png"
+    ],
+    [
+      "tileset/room_ceil",
+      "/img/map/extruded_tilesets/room_ceil.png"
+    ],
+    [
+      "tileset/town",
+      "/img/map/extruded_tilesets/town.png"
+    ],
+    [
+      "tileset/barrel",
+      "/img/map/images/barrel.png"
+    ]
+  ],
+  "json": [
+    [
+      "forest",
+      "/map/tileset_settings/forest.json"
+    ],
+    [
+      "room",
+      "/map/tileset_settings/room.json"
+    ],
+    [
+      "room_ceil",
+      "/map/tileset_settings/room_ceil.json"
+    ],
+    [
+      "town",
+      "/map/tileset_settings/town.json"
+    ]
+  ],
+  "tilemapTiledJSON": [
+    [
+      "room1",
+      "/map/room1.json"
+    ],
+    [
+      "town1",
+      "/map/town1.json"
+    ]
+  ],
+  "audio": [
+    [
+      "se/cancel",
+      "/audio/se/cancel.wav"
+    ],
+    [
+      "se/click",
+      "/audio/se/click.wav"
+    ],
+    [
+      "bgm/town",
+      [
+        "/audio/bgm/town.m4a",
+        "/audio/bgm/town.ogg"
+      ]
+    ]
+  ],
+  "spritesheet": [
+    [
+      "check",
+      "/img/sprites/check.png",
+      {
+        "frameWidth": 14,
+        "frameHeight": 13,
+        "startFrame": 0,
+        "endFrame": 1
+      }
+    ],
+    [
+      "speach_bubbles",
+      "/img/sprites/speach_bubbles.png",
+      {
+        "frameWidth": 22,
+        "frameHeight": 18,
+        "startFrame": 0,
+        "endFrame": 1
+      }
+    ],
+    [
+      "chara_sprite/player",
+      "/img/chara_sprites/player.png",
+      {
+        "frameWidth": 26,
+        "frameHeight": 41,
+        "startFrame": 0,
+        "endFrame": 11
+      }
+    ]
+  ]
+}
