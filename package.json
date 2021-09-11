@@ -10,7 +10,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "moment": "^2.24.0",
+    "dayjs": "^1.10.7",
     "phaser": "^3.50.1",
     "phavuer": "^0.6.0",
     "vue": "^3.0.5"
