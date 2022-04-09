@@ -5,6 +5,9 @@ import assets from './data/assets.json'
 import './util/extendNativeClassFunctions'
 import App from './components/App.vue'
 import config from './data/config'
+import translate from './data/translate'
+
+window.t = translate
 
 const option = {
   type: Phaser.AUTO,

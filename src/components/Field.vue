@@ -48,11 +48,11 @@ export default {
     const pipeline = computed(() => lights.length ? 'Light2D' : 'TextureTintPipeline')
     const isCollides = (tileX, tileY) => {
       return layers.some(layer => {
-        const tile = layer.ref.value.getTileAt(tileX, tileY)
+        const tile = layer.ref.value?.[0].getTileAt(tileX, tileY)
         return tile && tile.collides
       })
     }
-    const getObjectById = id => objects.find(v => v.id === id)?.ref.value
+    const getObjectById = id => objects.find(v => v.id === id)?.ref.value[0]
     const collides = field.getTileSettingsByType('collides').map(v => v.id)
     const group = scene.add.group()
     const layerCreate = layer => {

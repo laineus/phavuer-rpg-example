@@ -23,6 +23,7 @@ export default defineConfig({
     vue(),
     vitePhaserAssetsLoader(assetsConfig),
     replace({
+      preventAssignment: true,
       'APP_VERSION': JSON.stringify(packageJson.version),
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true)

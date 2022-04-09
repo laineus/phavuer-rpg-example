@@ -32,7 +32,7 @@ export default {
     const update = (scene, time) => {
       frames.total++
       if (!field.value) return
-      nealestCheckable.value = field.value.charas.concat(field.value.substances).map(v => v.ref.value).filter(v => v.checkable).findMin(v => v.distanceToPlayer)
+      nealestCheckable.value = field.value.charas.concat(field.value.substances).map(v => v.ref.value[0]).filter(v => v.checkable).findMin(v => v.distanceToPlayer)
     }
     const transition = (duration = 500) => {
       return new Promise(resolve => {
