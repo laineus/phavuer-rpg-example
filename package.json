@@ -14,7 +14,7 @@
   "dependencies": {
     "dayjs": "^1.11.0",
     "phaser": "^3.55.2",
-    "phavuer": "^0.8.4",
+    "phavuer": "^0.10.0",
     "vue": "^3.2.31"
   },
   "devDependencies": {

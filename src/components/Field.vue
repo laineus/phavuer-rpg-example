@@ -20,7 +20,7 @@ import Area from './Area.vue'
 import Gate from './Gate.vue'
 import Darkness from './modules/Darkness'
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { refObj, Image, TilemapLayer, Light } from 'phavuer'
+import { refObj, Image, TilemapLayer, Light, useScene } from 'phavuer'
 import setupCamera from './modules/setupCamera'
 import maps from '../data/maps'
 import config from '../data/config'
@@ -30,7 +30,7 @@ export default {
     'fieldKey', 'playerX', 'playerY', 'playerR'
   ],
   setup (props) {
-    const scene = inject('scene')
+    const scene = useScene()
     const audio = inject('audio')
     const player = ref(null)
     const field = fieldService(scene, props.fieldKey)

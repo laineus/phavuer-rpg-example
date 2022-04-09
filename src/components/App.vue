@@ -9,11 +9,12 @@
 import GameScene from './GameScene.vue'
 import UIScene from './UIScene.vue'
 import AudioController from '../class/AudioController'
-import { inject, provide, ref, computed, reactive } from 'vue'
+import { provide, ref, computed, reactive } from 'vue'
+import { useGame } from 'phavuer'
 export default {
   components: { GameScene, UIScene },
   setup () {
-    const game = inject('game')
+    const game = useGame()
     Phaser.BlendModes.OVERLAY = game.renderer.addBlendMode([WebGLRenderingContext.SRC_ALPHA, WebGLRenderingContext.ONE], WebGLRenderingContext.FUNC_ADD)
     const gameScene = ref(null)
     const uiScene = ref(null)

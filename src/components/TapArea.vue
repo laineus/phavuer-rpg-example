@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import { refObj, Container, Image, onPreUpdate } from 'phavuer'
-import { inject } from 'vue'
+import { refObj, Container, Image, onPreUpdate, useScene } from 'phavuer'
 export default {
   components: { Container, Image },
   props: {
@@ -15,7 +14,7 @@ export default {
   },
   emits: ['tap'],
   setup (props, context) {
-    const scene = inject('scene')
+    const scene = useScene()
     const tapArea = refObj(null)
     const onTap = () => context.emit('tap')
     const initBubbleAnim = obj => {

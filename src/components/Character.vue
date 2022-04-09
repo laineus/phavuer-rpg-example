@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { refObj, Container, Image, onPreUpdate } from 'phavuer'
+import { refObj, Container, Image, onPreUpdate, useScene } from 'phavuer'
 import { computed, inject, onMounted, reactive, toRefs } from 'vue'
 import TapArea from './TapArea.vue'
 import useRandomWalk from './modules/useRandomWalk'
@@ -39,7 +39,7 @@ export default {
   },
   emits: ['create'],
   setup (props, context) {
-    const scene = inject('scene')
+    const scene = useScene()
     const event = inject('event')
     const player = inject('player')
     const object = refObj(null)

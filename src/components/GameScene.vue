@@ -1,5 +1,5 @@
 <template>
-  <Scene ref="scene" name="GameScene" :autoStart="true" @update="update">
+  <Scene ref="scene" name="GameScene" :autoStart="true" @preload="preload" @update="update">
     {{ fps }}
     <Field ref="field" v-if="fieldData.name" :fieldKey="fieldData.name" :playerX="fieldData.x" :playerY="fieldData.y" :playerR="fieldData.r" />
   </Scene>
@@ -9,6 +9,7 @@
 import { ref, reactive, provide, inject, nextTick } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field.vue'
+import assets from '../data/assets.json'
 export default {
   components: { Scene, Field },
   setup (props, context) {
@@ -20,6 +21,11 @@ export default {
     const field = ref(null)
     const fps = ref(0)
     provide('field', field)
+    const preload = (scene) => {
+      Object.entries(assets).forEach(([method, list]) => {
+        list.forEach(args => scene.load[method](...args))
+      })
+    }
     const update = (scene, time) => {
       frames.game++
       if (!field.value) return
@@ -51,6 +57,7 @@ export default {
       fps,
       scene,
       field,
+      preload,
       update,
       fieldData,
       setField

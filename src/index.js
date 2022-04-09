@@ -1,7 +1,6 @@
 import 'phaser'
 import { createPhavuerApp } from 'phavuer'
 import { createApp } from 'vue'
-import assets from './data/assets.json'
 import './util/extendNativeClassFunctions'
 import App from './components/App.vue'
 import config from './data/config'
@@ -9,22 +8,10 @@ import translate from './data/translate'
 
 window.t = translate
 
-const option = {
+const game = new Phaser.Game({
   type: Phaser.AUTO,
   width: config.WIDTH,
   height: config.HEIGHT,
-  scene: {
-    create () {
-      createPhavuerApp(this.game, createApp(App))
-    },
-    preload () {
-      Object.keys(assets).forEach(method => {
-        assets[method].forEach(args => {
-          this.load[method](...args)
-        })
-      })
-    }
-  },
   parent: 'game',
   physics: {
     default: 'arcade',
@@ -39,8 +26,7 @@ const option = {
   input: {
     activePointers: 3
   }
-}
-
-const game = new Phaser.Game(option)
+})
+createPhavuerApp(game, createApp(App))
 window.game = game
 window.addEventListener('resize', () => game.scale.refresh())
