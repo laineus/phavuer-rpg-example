@@ -5,7 +5,7 @@
   </Container>
 </template>
 
-<script>
+<script lang="ts">
 import { Container, Circle, useScene } from 'phavuer'
 import { reactive, toRaw, toRefs } from 'vue'
 const MAX_DISTANCE = 50

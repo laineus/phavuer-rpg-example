@@ -1,13 +1,14 @@
 <template>
   <div>
     <Container ref="object" :width="imgWidth" :height="imgWidth" :x="initX" :y="initY" @create="create">
-      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" :pipeline="pipeline" />
+      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" :lighting="lighting" />
     </Container>
     <TapArea v-if="tapEvent.event.value" :visible="checkable" :frame="1" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import * as Phaser from 'phaser'
 import { refObj, Container, Image, onPreUpdate, useScene } from 'phavuer'
 import { computed, inject, onMounted, reactive, toRefs } from 'vue'
 import TapArea from './TapArea.vue'
@@ -35,7 +36,7 @@ export default {
     name: { default: null },
     speed: { default: 120 },
     random: { default: null },
-    pipeline: { default: null }
+    lighting: { default: false }
   },
   emits: ['create'],
   setup (props, context) {

@@ -2,7 +2,7 @@
   <VirtualStick ref="virtualStick" :x="100" :y="(100).byBottom" v-if="mobile" />
 </template>
 
-<script>
+<script lang="ts">
 import { useScene } from 'phavuer'
 import { ref, inject } from 'vue'
 import VirtualStick from './VirtualStick.vue'

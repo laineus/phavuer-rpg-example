@@ -1,16 +1,16 @@
 <template>
-  <Scene ref="scene" name="GameScene" :autoStart="true" @preload="preload" @update="update">
+  <Scene ref="scene" name="GameScene" :autoStart="true" @preload="preload" @update="update" v-slot="{ preloaded }">
     {{ fps }}
-    <Field ref="field" v-if="fieldData.name" :fieldKey="fieldData.name" :playerX="fieldData.x" :playerY="fieldData.y" :playerR="fieldData.r" />
+    <Field ref="field" v-if="preloaded && fieldData.name" :fieldKey="fieldData.name" :playerX="fieldData.x" :playerY="fieldData.y" :playerR="fieldData.r" />
   </Scene>
 </template>
 
-<script>
-import { ref, reactive, provide, inject, nextTick } from 'vue'
+<script lang="ts">
+import { ref, reactive, provide, inject, nextTick, defineComponent } from 'vue'
 import { refScene, Scene } from 'phavuer'
 import Field from './Field.vue'
 import assets from '../data/assets.json'
-export default {
+export default defineComponent({
   components: { Scene, Field },
   setup (props, context) {
     const fieldData = reactive({ name: null, x: 0, y: 0, r: 0 })
@@ -63,5 +63,5 @@ export default {
       setField
     }
   }
-}
+})
 </script>

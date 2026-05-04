@@ -2,7 +2,7 @@
   <Zone ref="object" :active="false" :origin="0" />
 </template>
 
-<script>
+<script lang="ts">
 import { inject, onMounted, computed } from 'vue'
 import { refObj, useScene, Zone } from 'phavuer'
 import useEvent from './modules/useEvent'

@@ -1,3 +1,4 @@
+import * as Phaser from 'phaser'
 export const DEPTH = {
   GROUND: 0,
   PARTICLES: 100000,

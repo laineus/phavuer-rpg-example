@@ -9,7 +9,7 @@
   </Container>
 </template>
 
-<script>
+<script lang="ts">
 import { refObj, Container, Rectangle, Text } from 'phavuer'
 import { computed, ref, inject, onUpdated, reactive, toRefs } from 'vue'
 import config from '../data/config'

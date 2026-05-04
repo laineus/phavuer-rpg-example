@@ -199,7 +199,7 @@
                         {
                          "name":"radius",
                          "type":"int",
-                         "value":2000
+                         "value":200
                         }],
                  "rotation":0,
                  "type":"Light",

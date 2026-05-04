@@ -2,7 +2,7 @@
   <Area ref="area" />
 </template>
 
-<script>
+<script lang="ts">
 import { inject, ref, onMounted } from 'vue'
 import Area from './Area.vue'
 export default {

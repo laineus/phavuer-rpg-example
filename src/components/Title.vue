@@ -2,7 +2,7 @@
   <Rectangle :fillColor="0x333333" :origin="0" :width="config.WIDTH" :height="config.HEIGHT" @pointerdown="tap" />
 </template>
 
-<script>
+<script lang="ts">
 import { inject } from 'vue'
 import { Rectangle } from 'phavuer'
 import config from '../data/config'

@@ -4,7 +4,7 @@
   </Container>
 </template>
 
-<script>
+<script lang="ts">
 import { refObj, Container, Image, onPreUpdate, useScene } from 'phavuer'
 export default {
   components: { Container, Image },
