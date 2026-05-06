@@ -23,8 +23,6 @@ export default {
   components: { Scene, Title, Controller, Rectangle, Circle, Talk },
   setup (props) {
     const mobile = inject('mobile')
-    const frames = inject('frames')
-    const field = inject('field')
     const scene = refScene(null)
     const titleScreen = ref(true)
     const transitionAlpha = ref(0)
@@ -32,9 +30,7 @@ export default {
     const create = (scene, payload) => {
     }
     const update = (scene, time) => {
-      frames.total++
-      if (!field.value) return
-      nealestCheckable.value = field.value.charas.concat(field.value.substances).map(v => v.ref.value[0]).filter(v => v.checkable).findMin(v => v.distanceToPlayer)
+      // nealestCheckable.value = field.value.charas.concat(field.value.substances).map(v => v.ref.value[0]).filter(v => v.checkable).findMin(v => v.distanceToPlayer)
     }
     const transition = (duration = 500) => {
       return new Promise(resolve => {

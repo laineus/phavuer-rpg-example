@@ -1,95 +1,53 @@
 <template>
   <div>
-    <TilemapLayer v-for="v in layers" :key="v.index" :ref="v.ref" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" :lighting="lighting" @create="layerCreate" />
-    <Image v-for="v in images" :key="v.id" :ref="v.ref" :texture="`tileset/${v.key}`" :x="v.x" :y="v.y" :origin="0" :lighting="lighting" @create="obj => obj.setDepth(obj.y + obj.height)" />
-    <Character ref="player" :initX="playerX" :initY="playerY" :initR="playerR" :speed="200" name="player" :lighting="lighting" @create="charaCreate" />
-    <Character v-for="v in charas" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :initR="v.radian" :name="v.name" :random="100" :lighting="lighting" @create="charaCreate" />
-    <Substance v-for="v in substances" :key="v.id" :ref="v.ref" :initX="v.x" :initY="v.y" :name="v.name" :lighting="lighting" />
-    <Area v-for="v in areas" :key="v.id" :ref="v.ref" :x="v.x" :y="v.y" :width="v.width" :height="v.height" />
-    <Gate v-for="v in gates" :key="v.id" :ref="v.ref" :x="v.x" :y="v.y" :width="v.width" :height="v.height" :to="{ key: v.name, x: v.fieldX.toPixel, y: v.fieldY.toPixel }" />
-    <Light v-for="v in lights" :key="v.id" :x="v.x" :y="v.y" :intensity="v.intensity || 1" :color="v.color" :radius="v.radius" />
-    <Image :depth="config.DEPTH.DARKNESS" texture="darkness" :x="0" :y="0" :origin="0" />
+    <TilemapLayer v-for="v in field.layers" :key="v.index" :depth="config.DEPTH[v.depth] || 0" :tilemap="field.tilemap" :layerIndex="v.index" :tileset="field.tilesets" :collision="collides" :lighting="lighting" @create="layerCreate" />
+    <LayerImage v-for="v in field.images" :key="v.id" :imageLayerData="v" />
+    <Player :character="field.player" :lighting="lighting" />
+    <Character v-for="v in field.characters" :key="v.id" :character="v" :lighting="lighting" />
+    <Substance v-for="v in field.substances" :key="v.id" :substance="v" :lighting="lighting" />
+    <Area v-for="v in field.areas" :key="v.id" :area="v" />
+    <Gate v-for="v in field.gates" :key="v.id" :gate="v" />
+    <Light v-for="v in field.lights" :key="v.id" :x="v.x" :y="v.y" :intensity="getProperty(v, 'intensity') ?? 1" :color="strColorToInt(getProperty(v, 'color'))" :radius="getProperty(v, 'radius')" />
+    <Darkness />
   </div>
 </template>
 
-<script lang="ts">
-import fieldService from './modules/fieldService'
+<script lang="ts" setup>
+import fieldService, { getProperty, strColorToInt } from './modules/fieldService'
 import Character from './Character.vue'
 import Substance from './Substance.vue'
 import Area from './Area.vue'
 import Gate from './Gate.vue'
-import Darkness from './modules/Darkness'
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { refObj, Image, TilemapLayer, Light, useScene } from 'phavuer'
-import setupCamera from './modules/setupCamera'
+import Darkness from './Darkness.vue'
+import { computed, inject, onMounted, provide } from 'vue'
+import { Image, TilemapLayer, Light, useScene } from 'phavuer'
 import maps from '../data/maps'
 import config from '../data/config'
-export default {
-  components: { TilemapLayer, Image, Character, Substance, Area, Gate, Light },
-  props: [
-    'fieldKey', 'playerX', 'playerY', 'playerR'
-  ],
-  setup (props) {
-    const scene = useScene()
-    const audio = inject('audio')
-    const player = ref(null)
-    const field = fieldService(scene, props.fieldKey)
-    console.log(field)
-    const layers = field.layers.map(v => Object.assign({ ref: refObj(null) }, v))
-    const images = field.images.map(v => Object.assign({ ref: refObj(null) }, v))
-    const objects = field.objects.map(v => Object.assign({ ref: ref(null) }, v))
-    const charas = objects.filter(v => v.type === 'Character')
-    const substances = objects.filter(v => v.type === 'Substance')
-    const areas = objects.filter(v => v.type === 'Area')
-    const gates = objects.filter(v => v.type === 'Gate')
-    const lights = objects.filter(v => v.type === 'Light')
-    scene.lights.setAmbientColor(field.properties.ambient || 0xFFFFFF)
-    lights.length ? scene.lights.enable() : scene.lights.disable()
-    const lighting = computed(() => lights.length > 0)
-    const isCollides = (tileX, tileY) => {
-      return layers.some(layer => {
-        const tile = layer.ref.value?.[0].getTileAt(tileX, tileY)
-        return tile && tile.collides
-      })
-    }
-    const getObjectById = id => objects.find(v => v.id === id)?.ref.value[0]
-    const collides = field.getTileSettingsByType('collides').map(v => v.id)
-    const group = scene.add.group()
-    const layerCreate = layer => {
-      scene.physics.add.collider(layer, group)
-    }
-    const charaCreate = obj => {
-      group.add(obj)
-    }
-    const event = maps[props.fieldKey] || {}
-    scene.textures.remove('darkness')
-    const darkness = new Darkness(scene, 'darkness', field.width, field.height)
-    darkness.fillBg(field.properties.darkness || 0x77000000).removeArcs(lights.map(l => {
-      return { x: l.x, y: l.y, radius: 120 }
-    })).save().refresh()
-    onMounted(() => {
-      setupCamera(inject('camera').value, field.width, field.height, player.value.object)
-      if (event.create) event.create()
-      audio.setBgm(event.bgm || null)
-    })
-    onBeforeUnmount(() => {
-      darkness.destroy()
-    })
-    const update = (time) => {
-      darkness.restore().removeArc(player.value.object.x, player.value.object.y, 300).refresh()
-      field.update(time)
-      if (event.update) event.update()
-    }
-    return {
-      config,
-      field, collides,
-      width: field.width, height: field.height,
-      layers, images, player, objects, charas, substances, areas, gates, lights,
-      lighting,
-      isCollides, getObjectById,
-      layerCreate, charaCreate,
-      play: update
-    }
-  }
+import Player from './Player.vue'
+import LayerImage from './LayerImage.vue'
+import InjectionKeys from './modules/InjectionKeys'
+const scene = useScene()
+const audio = inject('audio')
+const fieldManager = inject(InjectionKeys.FieldManager)!
+const field = fieldService(fieldManager.key!, { x: fieldManager.initialX, y: fieldManager.initialY })
+provide(InjectionKeys.Field, field)
+console.log(field)
+scene.lights.setAmbientColor(field.properties.ambient || 0xFFFFFF)
+field.lights.length ? scene.lights.enable() : scene.lights.disable()
+const lighting = computed(() => field.lights.length > 0)
+const collides = field.getTileSettingsByType('collides').map(v => v.id)
+const group = scene.add.group()
+provide(InjectionKeys.ColliderGroup, group)
+const layerCreate = (layer: Phaser.Tilemaps.TilemapLayer) => {
+  scene.physics.add.collider(layer, group)
 }
+const event = maps[fieldManager.key!] || {}
+event?.create(field)
+onMounted(() => {
+  audio.setBgm(event.bgm || null)
+})
+// const update = (time) => {
+//   field.update(time)
+//   if (event.update) event.update()
+// }
 </script>

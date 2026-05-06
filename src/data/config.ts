@@ -23,4 +23,4 @@ export default {
     UI_BG: 100000,
     TRANSITION: 900000
   }
-}
+} as const

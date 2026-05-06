@@ -2,22 +2,16 @@
   <Rectangle :fillColor="0x333333" :origin="0" :width="config.WIDTH" :height="config.HEIGHT" @pointerdown="tap" />
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { inject } from 'vue'
 import { Rectangle } from 'phavuer'
 import config from '../data/config'
-export default {
-  components: { Rectangle },
-  emits: ['close'],
-  setup (_, context) {
-    const gameScene = inject('gameScene')
-    return {
-      config,
-      tap: async () => {
-        await gameScene.value.setField('room1', 640, 310)
-        context.emit('close')
-      }
-    }
-  }
+import InjectionKeys from './modules/InjectionKeys'
+const emit = defineEmits(['close'])
+
+const fieldManager = inject(InjectionKeys.FieldManager)!
+const tap = () => {
+  fieldManager.setField('room1', 640, 310)
+  emit('close')
 }
 </script>

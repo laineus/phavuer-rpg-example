@@ -1,40 +1,28 @@
 <template>
-  <Zone ref="object" :active="false" :origin="0" />
+  <Zone ref="object" :active="false" :origin="0" :x="area.x" :y="area.y" :width="area.width" :height="area.height" @create="onCreate" />
 </template>
 
-<script lang="ts">
-import { inject, onMounted, computed } from 'vue'
-import { refObj, useScene, Zone } from 'phavuer'
-import useEvent from './modules/useEvent'
-const FRAMES_FOR_NEW_ENTER = 10
-export default {
-  components: { Zone },
-  setup () {
-    const scene = useScene()
-    const frames = inject('frames')
-    const event = inject('event')
-    const player = inject('player')
-    const object = refObj(null)
-    const areaEvent = useEvent()
-    let lastEnteredFrame = 0
-    const active = computed(() => areaEvent.event.value && !event.state)
-    const onEnter = () => {
-      const newEntered = lastEnteredFrame < (frames.game - FRAMES_FOR_NEW_ENTER)
-      lastEnteredFrame = frames.game
-      if (active.value && newEntered) {
-        player.value.object.body.velocity.normalize().scale(70)
-        areaEvent.exec()
-      }
-    }
-    onMounted(() => {
-      scene.physics.world.enable(object.value)
-      scene.physics.add.overlap(object.value, player.value.object, onEnter)
-    })
-    return {
-      object,
-      active,
-      setEvent: areaEvent.setEvent
-    }
-  }
+<script lang="ts"setup >
+import * as Phaser from 'phaser'
+import { inject, PropType } from 'vue'
+import { useScene, Zone } from 'phavuer'
+import InjectionKeys from './modules/InjectionKeys'
+import { AreaTiledObject } from './modules/fieldService'
+// const FRAMES_FOR_NEW_ENTER = 10
+
+const props = defineProps({
+  area: { type: Object as PropType<AreaTiledObject>, required: true }
+})
+
+const scene = useScene()
+const field = inject(InjectionKeys.Field)!
+const onCreate = (zone: Phaser.GameObjects.Zone) => {
+  scene.physics.world.enable(zone)
+  const playerGameObject = field.getPlayerGameObject()
+
+  const collider = scene.physics.add.overlap(zone, playerGameObject, () => {
+    field.events.get(props.area.id)?.()
+    collider.destroy()
+  })
 }
 </script>

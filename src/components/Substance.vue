@@ -1,47 +1,33 @@
 <template>
   <div>
-    <Container ref="object" :x="initX" :y="initY" :width="imgWidth" :height="imgWidth" :depth="initY">
-      <Image ref="image" :texture="`chara_sprite/${name}`" :originX="0.5" :originY="1" v-if="name" :lighting="lighting" />
+    <Container ref="object" :x="substance.x" :y="substance.y" :depth="substance.y">
+      <Image ref="image" :texture="`chara_sprite/${substance.name}`" :originX="0.5" :originY="1" v-if="substance.name" :lighting="lighting" />
     </Container>
-    <TapArea v-if="tapEvent.event.value" :visible="checkable" :width="imgWidth + 15" :height="imgHeight + 40" :follow="object" @tap="tapEvent.exec" />
+    <TapArea v-if="event" :visible="checkable" type="check" :width="source.width + 15" :height="source.height + 40" :x="substance.x" :y="substance.y" @tap="onTap" />
   </div>
 </template>
 
-<script lang="ts">
-import * as Phaser from 'phaser'
-import { refObj, Container, Image, onPreUpdate } from 'phavuer'
-import { computed, inject, reactive, toRefs } from 'vue'
+<script lang="ts" setup>
+import { Container, Image, useScene } from 'phavuer'
+import { computed, inject, PropType } from 'vue'
+import { TiledObject } from './modules/fieldService'
+import InjectionKeys from './modules/InjectionKeys'
+import { Math } from 'phaser'
 import TapArea from './TapArea.vue'
-import useEvent from './modules/useEvent'
-export default {
-  components: { Container, Image, TapArea },
-  props: {
-    initX: { default: 0 },
-    initY: { default: 0 },
-    name: { default: null },
-    lighting: { default: false }
-  },
-  setup (props) {
-    const event = inject('event')
-    const player = inject('player')
-    const object = refObj(null)
-    const image = refObj(null)
-    const imgWidth = computed(() => image.value ? image.value.width : 30)
-    const imgHeight = computed(() => image.value ? image.value.height : 30)
-    const tapEvent = useEvent()
-    const data = reactive({
-      distanceToPlayer: null
-    })
-    onPreUpdate(() => {
-      data.distanceToPlayer = Phaser.Math.Distance.Between(object.value.x, object.value.y, player.value.object.x, player.value.object.y)
-    })
-    return {
-      ...toRefs(data),
-      checkable: computed(() => !event.state && tapEvent.event.value && data.distanceToPlayer < 150),
-      object, image,
-      imgWidth, imgHeight,
-      tapEvent, setTapEvent: tapEvent.setEvent
-    }
-  }
+const props = defineProps({
+  lighting: { type: Boolean, default: false },
+  substance: { type: Object as PropType<TiledObject>, required: true }
+})
+const scene = useScene()
+const field = inject(InjectionKeys.Field)!
+const textureKey = computed(() => `chara_sprite/${props.substance.name}`)
+const source = computed(() => scene.textures.get(textureKey.value).source[0])
+const checkable = computed(() => {
+  const player = field.player
+  return Math.Distance.Between(player.x, player.y, props.substance.x!, props.substance.y!) < 150
+})
+const event = field.events.get(props.substance.id)
+const onTap = () => {
+  event!()
 }
 </script>
