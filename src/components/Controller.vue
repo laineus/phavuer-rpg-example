@@ -1,51 +1,26 @@
 <template>
-  <VirtualStick ref="virtualStick" :x="100" :y="(100).byBottom" v-if="mobile" />
+  <VirtualStick :x="80" :y="byBottom(80)" v-if="isMobile" />
 </template>
 
-<script lang="ts">
-import { useScene } from 'phavuer'
-import { ref, inject } from 'vue'
+<script lang="ts" setup>
+import { onPreUpdate, useScene } from 'phavuer'
+import { inject } from 'vue'
 import VirtualStick from './VirtualStick.vue'
-const wasdController = keyboard => {
-  keyboard.addCapture('W,S,A,D')
-  const wasd = [
-    { key: keyboard.addKey('W'), x: 0, y: -1 },
-    { key: keyboard.addKey('A'), x: -1, y: 0 },
-    { key: keyboard.addKey('S'), x: 0, y: 1 },
-    { key: keyboard.addKey('D'), x: 1, y: 0 }
-  ]
-  return {
-    get velocity () {
-      return wasd.filter(v => v.key.isDown).reduce((position, v) => {
-        position.x += v.x
-        position.y += v.y
-        return position
-      }, { x: 0, y: 0 })
-    }
-  }
+import InjectionKeys from './modules/InjectionKeys'
+import useWasdController from './modules/useWasdController'
+import config from '../data/config'
+const byBottom = (v: number) => {
+  return config.HEIGHT - v
 }
-
-export default {
-  components: { VirtualStick },
-  props: { velocity: { default: 25 } },
-  setup (props) {
-    const scene = useScene()
-    const virtualStick = ref(null)
-    const mobile = inject('mobile')
-    const wasd = wasdController(scene.input.keyboard)
-    return {
-      mobile,
-      virtualStick,
-      get velocityX () {
-        return (mobile ? virtualStick.value.velocityX : wasd.velocity.x) * props.velocity
-      },
-      get velocityY () {
-        return (mobile ? virtualStick.value.velocityY : wasd.velocity.y) * props.velocity
-      },
-      get activePointer () {
-        return scene.input.manager.pointers.find(v => v.isDown)
-      }
-    }
-  }
+const isMobile = inject(InjectionKeys.Mobile)!
+const controller = inject(InjectionKeys.Controller)!
+const scene = useScene()
+const wasd = !isMobile && scene.input.keyboard && useWasdController(scene.input.keyboard) 
+if (wasd) {
+  onPreUpdate(() => {
+    const { x, y } = wasd.getVelocity()
+    controller.velocityX = x
+    controller.velocityY = y
+  })
 }
 </script>

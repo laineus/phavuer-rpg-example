@@ -19,6 +19,7 @@ export default {
     GROUND: 0, // + y
     CEIL: 10000,
     DARKNESS: 11000,
+    TAP_AREA: 40000,
     SPEACH_BUBBLE: 50000,
     UI_BG: 100000,
     TRANSITION: 900000

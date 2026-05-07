@@ -95,6 +95,11 @@ type GateProperty = {
   type: 'int'
   value: number
 }
+type TileLayerProperty = {
+  name: 'depth'
+  type: 'string'
+  value: string
+}
 
 export type LightTiledObject = Omit<Phaser.Types.Tilemaps.TiledObject, 'properties'> & {
   type: 'Light'
@@ -132,6 +137,10 @@ export type GateTiledObject = Omit<Phaser.Types.Tilemaps.TiledObject, 'propertie
   properties: GateProperty[]
 }
 export type TiledObject = LightTiledObject | CharacterTiledObject | SubstanceTiledObject | AreaTiledObject | GateTiledObject
+export type TileLayerData = Omit<Phaser.Tilemaps.LayerData, 'properties'> & {
+  type: 'tilelayer'
+  objects: TileLayerProperty[]
+}
 export type ObjectGroupLayerData = Phaser.Tilemaps.LayerData & {
   type: 'objectgroup'
   objects: TiledObject[]
@@ -161,6 +170,7 @@ const getObjects = (rawData: Phaser.Tilemaps.MapData): TiledObject[] => {
 }
 
 const useChara = (v: CharacterTiledObject) => {
+  const freeze = inject(InjectionKeys.Freeze)!
   const data = reactive({
     ...v,
     velocityX: 0,
@@ -169,6 +179,11 @@ const useChara = (v: CharacterTiledObject) => {
   const following = useFollowing(data)
   const randomWalk = useRandomWalk(data, 100)
   onPreUpdate(() => {
+    if (freeze.isFrozen) {
+      data.velocityX = 0
+      data.velocityY = 0
+      return
+    }
     const { x: velocityX, y: velocityY } = following.play() ?? { x: 0, y: 0 }
     data.velocityX = velocityX
     data.velocityY = velocityY
@@ -194,21 +209,31 @@ const usePlayer = (tilemap: Phaser.Tilemaps.Tilemap, x: number, y: number) => {
     velocityY: 0
   })
   const scene = useScene()
-  const uiScene = inject('uiScene')
+  const freeze = inject(InjectionKeys.Freeze)!
+  const controller = inject(InjectionKeys.Controller)!
+  const isMobile = inject(InjectionKeys.Mobile)!
   const camera = scene.cameras.main
   const following = useFollowing(data)
   const checkCollides = useCheckCollides(tilemap)
   onPreUpdate(() => {
+    if (freeze.isFrozen) {
+      data.velocityX = 0
+      data.velocityY = 0
+      return
+    }
     const { x: velocityX, y: velocityY } = following.play() ?? { x: 0, y: 0 }
     data.velocityX = velocityX
     data.velocityY = velocityY
-    // ...
-    const controller = uiScene.value.controller
-    if (controller?.activePointer) {
-      const worldX = controller.activePointer.x + camera.scrollX
-      const worldY = controller.activePointer.y + camera.scrollY
+    const pointer = scene.input.activePointer
+    if (pointer.isDown && !isMobile) {
+      const worldX = pointer.x + camera.scrollX
+      const worldY = pointer.y + camera.scrollY
       if (checkCollides(worldX, worldY)) return
       following.setTargetPosition(worldX, worldY)
+    }
+    if (controller.velocityX || controller.velocityY) {
+      data.velocityX = controller.velocityX * 150
+      data.velocityY = controller.velocityY * 150
     }
   })
   return data

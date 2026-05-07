@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import { Body, Container, Image } from 'phavuer'
 import { Player } from './modules/fieldService'
-import {  inject, PropType } from 'vue'
+import { inject, PropType } from 'vue'
 import useCharacterAnim from './modules/useCharacterAnim'
 import InjectionKeys from './modules/InjectionKeys'
 import { GameObjects } from 'phaser'

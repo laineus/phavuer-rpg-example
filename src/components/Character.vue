@@ -4,7 +4,7 @@
       <Image :texture="`chara_sprite/${character.name}`" :frame :originX="0.5" :originY="1" :lighting="lighting" />
       <Body :velocityX="character.velocityX" :velocityY="character.velocityY" />
     </Container>
-    <TapArea v-if="event" :visible="checkable" type="talk" :width="source.width + 15" :height="source.height + 40" :x="character.x" :y="character.y" @tap="onTap" />
+    <TapArea v-if="event" :visible="checkable" type="talk" :width="source.width + 15" :height="source.height + 40" :x="character.x" :y="character.y - 30" @tap="onTap" />
   </div>
 </template>
 

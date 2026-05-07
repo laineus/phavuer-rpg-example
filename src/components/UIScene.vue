@@ -4,8 +4,7 @@
       <Title @close="titleScreen = false" v-if="titleScreen" />
       <template v-else>
         <Controller ref="controller" />
-        <Circle :visible="mobile && nealestCheckable" :radius="80" :fillColor="0x000000" :alpha="0.5" :x="(100).byRight" :y="(100).byBottom" @pointerdown="check" />
-        <Talk ref="talk" />
+        <Circle :visible="isMobile && nealestCheckable" :radius="80" :fillColor="0x000000" :alpha="0.5" :x="(100).byRight" :y="(100).byBottom" @pointerdown="check" />
       </template>
       <Rectangle :fillColor="0x000000" :origin="0" :width="config.WIDTH" :height="config.HEIGHT" :depth="config.DEPTH.TRANSITION" :alpha="transitionAlpha" />
     </template>
@@ -17,12 +16,12 @@ import { inject, ref } from 'vue'
 import { refScene, Scene, Rectangle, Circle } from 'phavuer'
 import Title from './Title.vue'
 import Controller from './Controller.vue'
-import Talk from './Talk.vue'
 import config from '../data/config'
+import InjectionKeys from './modules/InjectionKeys'
 export default {
-  components: { Scene, Title, Controller, Rectangle, Circle, Talk },
+  components: { Scene, Title, Controller, Rectangle, Circle },
   setup (props) {
-    const mobile = inject('mobile')
+    const isMobile = inject(InjectionKeys.Mobile)!
     const scene = refScene(null)
     const titleScreen = ref(true)
     const transitionAlpha = ref(0)
@@ -39,7 +38,7 @@ export default {
       })
     }
     return {
-      mobile,
+      isMobile,
       config,
       create, update,
       scene, controller: ref(null), talk: ref(null),
