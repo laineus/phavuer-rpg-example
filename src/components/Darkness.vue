@@ -11,7 +11,7 @@ import InjectionKeys from './modules/InjectionKeys'
 const field = inject(InjectionKeys.Field)!
 const scene = useScene()
 scene.textures.remove('darkness')
-const darkness = useDarkness(scene, 'darkness', field.width, field.height)
+const darkness = useDarkness(scene, 'darkness', field.tilemap.widthInPixels, field.tilemap.heightInPixels)
 darkness.fillBg(field.properties.darkness || 0x77000000)
 darkness.removeArcs(field.lights.map(l => {
   return { x: l.x!, y: l.y!, radius: 120 }

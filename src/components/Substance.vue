@@ -10,10 +10,10 @@
 <script lang="ts" setup>
 import { Container, Image, useScene } from 'phavuer'
 import { computed, inject, PropType } from 'vue'
-import { TiledObject } from './modules/fieldService'
 import InjectionKeys from './modules/InjectionKeys'
 import { Math } from 'phaser'
 import TapArea from './TapArea.vue'
+import { TiledObject } from './modules/tiled'
 const props = defineProps({
   lighting: { type: Boolean, default: false },
   substance: { type: Object as PropType<TiledObject>, required: true }

@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Body, Container, Image } from 'phavuer'
-import { Player } from './modules/fieldService'
+import { Body, Container, Image, useScene } from 'phavuer'
+import { Player } from './modules/usePlayer'
 import { inject, PropType } from 'vue'
 import useCharacterAnim from './modules/useCharacterAnim'
 import InjectionKeys from './modules/InjectionKeys'
@@ -20,13 +20,15 @@ const props = defineProps({
   character: { type: Object as PropType<Player>, required: true }
 })
 
+const scene = useScene()
 const field = inject(InjectionKeys.Field)!
 
 const group = inject(InjectionKeys.ColliderGroup)!
 const frame = useCharacterAnim(props.character)
 
 const onCreate = (container: GameObjects.Container) => {
-  field.setPlayerGameObject(container)
+  field.player.gameObject = container
+  scene.cameras.main.startFollow(container, true, 0.1, 0.1)
   group.add(container)
 }
 </script>

@@ -10,12 +10,12 @@
 
 <script lang="ts" setup>
 import { Body, Container, Image, useScene } from 'phavuer'
-import { Character } from './modules/fieldService'
 import { computed, inject, PropType } from 'vue'
 import useCharacterAnim from './modules/useCharacterAnim'
 import InjectionKeys from './modules/InjectionKeys'
 import { GameObjects, Math } from 'phaser'
 import TapArea from './TapArea.vue'
+import { Character } from './modules/useCharacter'
 
 const props = defineProps({
   lighting: { type: Boolean, default: false },

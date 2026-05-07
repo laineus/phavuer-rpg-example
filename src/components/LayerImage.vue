@@ -11,8 +11,8 @@
 
 <script lang="ts" setup>
 import { computed, PropType } from 'vue'
-import { ImageLayerData } from './modules/fieldService'
 import { Image, useScene } from 'phavuer'
+import { ImageLayerData } from './modules/tiled'
 
 const props = defineProps({
   lighting: { type: Boolean, default: false },

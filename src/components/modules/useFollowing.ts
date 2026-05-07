@@ -1,5 +1,4 @@
-import { ref, reactive, Ref } from 'vue'
-import { Character } from './fieldService'
+import { ref, reactive } from 'vue'
 
 export default (chara: { x: number, y: number }) => {
   const targetPosition = reactive<{

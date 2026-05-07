@@ -7,8 +7,9 @@ import * as Phaser from 'phaser'
 import { inject, PropType } from 'vue'
 import { useScene, Zone } from 'phavuer'
 import InjectionKeys from './modules/InjectionKeys'
-import { GateTiledObject, getProperty } from './modules/fieldService'
+import { getProperty } from './modules/fieldService'
 import config from '../data/config'
+import { GateTiledObject } from './modules/tiled'
 
 const props = defineProps({
   gate: { type: Object as PropType<GateTiledObject>, required: true }
@@ -19,7 +20,8 @@ const field = inject(InjectionKeys.Field)!
 const fieldManager = inject(InjectionKeys.FieldManager)!
 const onCreate = (zone: Phaser.GameObjects.Zone) => {
   scene.physics.world.enable(zone)
-  const playerGameObject = field.getPlayerGameObject()
+  const playerGameObject = field.player.gameObject
+  if (!playerGameObject) return
   const collider = scene.physics.add.overlap(zone, playerGameObject, () => {
     const name = props.gate.name
     const fieldX = getProperty(props.gate, 'fieldX') as number

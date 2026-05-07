@@ -1,3 +1,2 @@
 - マップイベントはイベントリスナーで行う
 - checkable/talkableはtiledで設定
-- コントローラ関連

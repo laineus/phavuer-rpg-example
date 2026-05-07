@@ -1,7 +1,8 @@
 import { onPreUpdate } from 'phavuer'
 import { computed, ref } from 'vue'
 import useFrameAnim, { FrameAnimSetting } from './useFrameAnim'
-import { Character, Player } from './fieldService'
+import { Character } from './useCharacter'
+import { Player } from './usePlayer'
 const WALK_ANIM: FrameAnimSetting[] = [
   { key: 'down', frames: [1, 0, 1, 2], duration: 7 },
   { key: 'left', frames: [4, 3, 4, 5], duration: 7 },
