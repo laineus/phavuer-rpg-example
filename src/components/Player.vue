@@ -1,7 +1,7 @@
 <template>
   <div>
     <Container v-model:x="character.x" v-model:y="character.y" :width="30" :height="20" :depth="character.y" @create="onCreate">
-      <Image ref="image" texture="chara_sprite/player" :frame :originX="0.5" :originY="1" :lighting="lighting" />
+      <Image texture="chara_sprite/player" :frame :originX="0.5" :originY="1" :lighting="lighting" />
       <Body :velocityX="character.velocityX" :velocityY="character.velocityY" />
     </Container>
   </div>

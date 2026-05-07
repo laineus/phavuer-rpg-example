@@ -10,19 +10,19 @@
     ],
     [
       "tileset/forest",
-      "/img/map/extruded_tilesets/forest.png"
+      "/img/map/tilesets/forest.png"
     ],
     [
       "tileset/room",
-      "/img/map/extruded_tilesets/room.png"
+      "/img/map/tilesets/room.png"
     ],
     [
       "tileset/room_ceil",
-      "/img/map/extruded_tilesets/room_ceil.png"
+      "/img/map/tilesets/room_ceil.png"
     ],
     [
       "tileset/town",
-      "/img/map/extruded_tilesets/town.png"
+      "/img/map/tilesets/town.png"
     ],
     [
       "tileset/barrel",

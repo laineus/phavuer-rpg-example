@@ -1,6 +1,7 @@
 import { InjectionKey } from 'vue'
 import fieldService from './fieldService'
 import useFieldManager from './useFieldManager'
+import useAudio from './useAudio'
 import { GameObjects } from 'phaser'
 import useTalk from './useTalk'
 
@@ -9,4 +10,5 @@ export default {
   FieldManager: Symbol('fieldManager') as InjectionKey<ReturnType<typeof useFieldManager>>,
   ColliderGroup: Symbol('colliderGroup') as InjectionKey<GameObjects.Group>,
   Talk: Symbol('talk') as InjectionKey<ReturnType<typeof useTalk>>,
+  Audio: Symbol('audio') as InjectionKey<ReturnType<typeof useAudio>>
 }

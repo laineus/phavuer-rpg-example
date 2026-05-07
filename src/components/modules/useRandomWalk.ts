@@ -1,10 +1,9 @@
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 
 const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max + 1 - min)) + min
 const toTile = (pixel: number) => Math.floor(pixel / 32)
 
 export default (chara: { x: number, y: number }, range: number) => {
-  const field = inject('field') as any
   const radius = Math.round(range / 2)
   const delay = ref(0)
   const setNextDelay = () => {

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Container ref="object" :x="substance.x" :y="substance.y" :depth="substance.y">
-      <Image ref="image" :texture="`chara_sprite/${substance.name}`" :originX="0.5" :originY="1" v-if="substance.name" :lighting="lighting" />
+    <Container :x="substance.x" :y="substance.y" :depth="substance.y">
+      <Image :texture="`chara_sprite/${substance.name}`" :originX="0.5" :originY="1" v-if="substance.name" :lighting="lighting" />
     </Container>
     <TapArea v-if="event" :visible="checkable" type="check" :width="source.width + 15" :height="source.height + 40" :x="substance.x" :y="substance.y" @tap="onTap" />
   </div>

@@ -4,12 +4,12 @@
   </Game>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import * as Phaser from 'phaser'
 import { Game } from 'phavuer'
 import config from '../data/config'
 import Scenes from './Scenes.vue'
-const gameConfig = {
+const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: config.WIDTH,
   height: config.HEIGHT,
@@ -17,7 +17,7 @@ const gameConfig = {
     default: 'arcade',
     arcade: {
       debug: true,
-      gravity: { y: 0 }
+      gravity: { x: 0, y: 0 }
     }
   },
   audio: {

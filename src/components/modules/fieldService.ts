@@ -42,7 +42,7 @@ const getTileSettingsByType = (settings: ReturnType<typeof getTileSettings>, typ
   return settings.filter(tile => tile.setting.type && tile.setting.type.split(',').includes(type))
 }
 const getTilesets = (tilemap: Phaser.Tilemaps.Tilemap) => {
-  return tilemap.tilesets.map(tileset => tilemap.addTilesetImage(tileset.name, `tileset/${tileset.name}`, 32, 32, 1, 2))
+  return tilemap.tilesets.map(tileset => tilemap.addTilesetImage(tileset.name, `tileset/${tileset.name}`, 32, 32))
 }
 const getLayers = (tilemap: Phaser.Tilemaps.Tilemap) => {
   return tilemap.layers.map((layer, index) => {

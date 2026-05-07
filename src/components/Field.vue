@@ -20,14 +20,14 @@ import Area from './Area.vue'
 import Gate from './Gate.vue'
 import Darkness from './Darkness.vue'
 import { computed, inject, onMounted, provide } from 'vue'
-import { Image, TilemapLayer, Light, useScene } from 'phavuer'
+import { TilemapLayer, Light, useScene } from 'phavuer'
 import maps from '../data/maps'
 import config from '../data/config'
 import Player from './Player.vue'
 import LayerImage from './LayerImage.vue'
 import InjectionKeys from './modules/InjectionKeys'
 const scene = useScene()
-const audio = inject('audio')
+const audio = inject(InjectionKeys.Audio)
 const fieldManager = inject(InjectionKeys.FieldManager)!
 const field = fieldService(fieldManager.key!, { x: fieldManager.initialX, y: fieldManager.initialY })
 provide(InjectionKeys.Field, field)
@@ -44,7 +44,7 @@ const layerCreate = (layer: Phaser.Tilemaps.TilemapLayer) => {
 const event = maps[fieldManager.key!] || {}
 event?.create(field)
 onMounted(() => {
-  audio.setBgm(event.bgm || null)
+  audio?.playBgm(event.bgm || null)
 })
 // const update = (time) => {
 //   field.update(time)
