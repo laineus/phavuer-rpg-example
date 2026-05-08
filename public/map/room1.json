@@ -112,17 +112,6 @@
                  "y":576
                 }, 
                 {
-                 "height":128,
-                 "id":11,
-                 "name":"",
-                 "rotation":0,
-                 "type":"Area",
-                 "visible":true,
-                 "width":224,
-                 "x":512,
-                 "y":416
-                }, 
-                {
                  "height":192,
                  "id":12,
                  "name":"",

@@ -29,9 +29,17 @@ export default {
         ])
       }
     })
+    let flag1 = false
     field.event.on('areaEnter', ({ id }) => {
-      if (id === 11) {
-        console.log('area11enter')
+      if (id === 12) {
+        if (flag1) return
+        flag1 = true
+        const scripts = t('events.room1.npc1', { pluginName: 'Phavuer' }) as string[]
+        const tNpc: Talker = { name: 'NPC', pos: field.characters.find(v => v.id === 16)! }
+        const tPlayer: Talker = { name: 'Player', pos: field.player }
+        talk.setTalk([
+          { talker: tPlayer, message: 'ねむい' }
+        ])
       }
     })
   }

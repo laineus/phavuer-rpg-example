@@ -16,3 +16,14 @@ const update = () => {
 }
 update()
 </script>
+
+<style scoped>
+div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-family: monospace;
+  padding: 4px;
+}
+</style>
