@@ -7,12 +7,11 @@ import * as Phaser from 'phaser'
 import { inject, PropType } from 'vue'
 import { useScene, Zone } from 'phavuer'
 import InjectionKeys from './modules/InjectionKeys'
-import { getProperty } from './modules/fieldService'
 import config from '../data/config'
-import { GateTiledObject } from './modules/tiled'
+import { GateTiledObject, MappedTiledData } from './modules/tiled'
 
 const props = defineProps({
-  gate: { type: Object as PropType<GateTiledObject>, required: true }
+  gate: { type: Object as PropType<MappedTiledData<GateTiledObject>>, required: true }
 })
 
 const scene = useScene()
@@ -24,8 +23,8 @@ const onCreate = (zone: Phaser.GameObjects.Zone) => {
   if (!playerGameObject) return
   const collider = scene.physics.add.overlap(zone, playerGameObject, () => {
     const name = props.gate.name
-    const fieldX = getProperty(props.gate, 'fieldX') as number
-    const fieldY = getProperty(props.gate, 'fieldY') as number
+    const fieldX = props.gate.fieldX
+    const fieldY = props.gate.fieldY
     fieldManager.setField(name, fieldX * config.TILE_SIZE, fieldY * config.TILE_SIZE)
     collider.destroy()
   })

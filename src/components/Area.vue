@@ -7,10 +7,10 @@ import * as Phaser from 'phaser'
 import { inject, PropType } from 'vue'
 import { onPreUpdate, useScene, Zone } from 'phavuer'
 import InjectionKeys from './modules/InjectionKeys'
-import { AreaTiledObject } from './modules/tiled'
+import { AreaTiledObject, MappedTiledData } from './modules/tiled'
 
 const props = defineProps({
-  area: { type: Object as PropType<AreaTiledObject>, required: true }
+  area: { type: Object as PropType<MappedTiledData<AreaTiledObject>>, required: true }
 })
 
 const scene = useScene()
@@ -22,7 +22,7 @@ const onCreate = (zone: Phaser.GameObjects.Zone) => {
     if (scene.physics.overlap(zone, field.player.gameObject)) {
       if (!isOverlapping) {
         isOverlapping = true
-        field.events.get(props.area.id)?.()
+        field.event.emit('areaEnter', { id: props.area.id })
       }
     } else {
       isOverlapping = false

@@ -149,6 +149,12 @@
                  "height":0,
                  "id":16,
                  "name":"player",
+                 "properties":[
+                        {
+                         "name":"checkable",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "point":true,
                  "rotation":0,
                  "type":"Character",
@@ -161,6 +167,12 @@
                  "height":0,
                  "id":17,
                  "name":"flower",
+                 "properties":[
+                        {
+                         "name":"checkable",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "point":true,
                  "rotation":0,
                  "type":"Substance",

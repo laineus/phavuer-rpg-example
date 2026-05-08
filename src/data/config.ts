@@ -16,11 +16,14 @@ export default {
     soy: 0xFFEEBB
   },
   DEPTH: {
+    // Field
     GROUND: 0, // + y
     CEIL: 10000,
     DARKNESS: 11000,
+    // Field UI
     TAP_AREA: 40000,
     SPEACH_BUBBLE: 50000,
+    // UI
     UI_BG: 100000,
     TRANSITION: 900000
   }

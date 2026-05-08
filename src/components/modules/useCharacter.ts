@@ -1,11 +1,11 @@
 import { inject, reactive } from 'vue'
 import InjectionKeys from './InjectionKeys'
-import { CharacterTiledObject } from './tiled'
+import { CharacterTiledObject, MappedTiledData } from './tiled'
 import useFollowing from './useFollowing'
 import useRandomWalk from './useRandomWalk'
 import { onPreUpdate } from 'phavuer'
 
-const useCharacter = (v: CharacterTiledObject) => {
+const useCharacter = (v: MappedTiledData<CharacterTiledObject>) => {
   const freeze = inject(InjectionKeys.Freeze)!
   const data = reactive({
     ...v,

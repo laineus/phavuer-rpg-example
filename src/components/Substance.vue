@@ -3,7 +3,7 @@
     <Container :x="substance.x" :y="substance.y" :depth="substance.y">
       <Image :texture="`chara_sprite/${substance.name}`" :originX="0.5" :originY="1" v-if="substance.name" :lighting="lighting" />
     </Container>
-    <TapArea v-if="event" :visible="checkable" type="check" :width="source.width + 15" :height="source.height + 40" :x="substance.x" :y="substance.y - 30" @tap="onTap" />
+    <TapArea v-if="substance.checkable" :visible="checkable" type="check" :width="source.width + 15" :height="source.height + 40" :x="substance.x" :y="substance.y - 30" @tap="onTap" />
   </div>
 </template>
 
@@ -13,10 +13,10 @@ import { computed, inject, PropType } from 'vue'
 import InjectionKeys from './modules/InjectionKeys'
 import { Math } from 'phaser'
 import TapArea from './TapArea.vue'
-import { TiledObject } from './modules/tiled'
+import { MappedTiledData, SubstanceTiledObject } from './modules/tiled'
 const props = defineProps({
   lighting: { type: Boolean, default: false },
-  substance: { type: Object as PropType<TiledObject>, required: true }
+  substance: { type: Object as PropType<MappedTiledData<SubstanceTiledObject>>, required: true }
 })
 const scene = useScene()
 const field = inject(InjectionKeys.Field)!
@@ -26,8 +26,7 @@ const checkable = computed(() => {
   const player = field.player
   return Math.Distance.Between(player.x, player.y, props.substance.x!, props.substance.y!) < 150
 })
-const event = field.events.get(props.substance.id)
 const onTap = () => {
-  event!()
+  field.event.emit('substanceCheck', { id: props.substance.id })
 }
 </script>
