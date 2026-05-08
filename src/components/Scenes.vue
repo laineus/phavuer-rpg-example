@@ -23,6 +23,5 @@ provide(InjectionKeys.Audio, useAudio())
 provide(InjectionKeys.Freeze, useFreeze())
 provide(InjectionKeys.Talk, useTalk())
 provide(InjectionKeys.Controller, useController())
-const fieldManager = useFieldManager()
-provide(InjectionKeys.FieldManager, fieldManager)
+provide(InjectionKeys.FieldManager, useFieldManager())
 </script>

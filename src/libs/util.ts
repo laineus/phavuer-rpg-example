@@ -10,6 +10,9 @@ export const strColorToInt = (str: string) => parseInt(str.slice(1), 16)
 //   }
 // }
 
+export const byRight = (v: number) => {
+  return constants.WIDTH - v
+}
 export const byBottom = (v: number) => {
   return constants.HEIGHT - v
 }
