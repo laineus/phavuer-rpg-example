@@ -7,12 +7,12 @@
 <script lang="ts" setup>
 import * as Phaser from 'phaser'
 import { Game } from 'phavuer'
-import config from '../data/config'
+import constants from '../data/constants'
 import Scenes from './Scenes.vue'
 const gameConfig: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  width: config.WIDTH,
-  height: config.HEIGHT,
+  width: constants.WIDTH,
+  height: constants.HEIGHT,
   physics: {
     default: 'arcade',
     arcade: {

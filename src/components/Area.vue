@@ -6,8 +6,8 @@
 import * as Phaser from 'phaser'
 import { inject, PropType } from 'vue'
 import { onPreUpdate, useScene, Zone } from 'phavuer'
-import InjectionKeys from './modules/InjectionKeys'
-import { AreaTiledObject, MappedTiledData } from './modules/tiled'
+import InjectionKeys from '../libs/InjectionKeys'
+import { AreaTiledObject, MappedTiledData } from '../libs/tiled'
 
 const props = defineProps({
   area: { type: Object as PropType<MappedTiledData<AreaTiledObject>>, required: true }

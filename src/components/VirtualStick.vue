@@ -9,7 +9,7 @@
 import { Input, Math } from 'phaser'
 import { Container, Circle } from 'phavuer'
 import { inject } from 'vue'
-import InjectionKeys from './modules/InjectionKeys'
+import InjectionKeys from '../libs/InjectionKeys'
 const controller = inject(InjectionKeys.Controller)!
 const drag = (_pointer: Input.Pointer, dragX: number, dragY: number) => {
   const vec = new Math.Vector2(dragX, dragY)

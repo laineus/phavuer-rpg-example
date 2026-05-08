@@ -6,7 +6,7 @@
         <Controller ref="controller" />
         <Circle :visible="isMobile && nealestCheckable" :radius="80" :fillColor="0x000000" :alpha="0.5" :x="(100).byRight" :y="(100).byBottom" @pointerdown="check" />
       </template>
-      <Rectangle :fillColor="0x000000" :origin="0" :width="config.WIDTH" :height="config.HEIGHT" :depth="config.DEPTH.TRANSITION" :alpha="transitionAlpha" />
+      <Rectangle :fillColor="0x000000" :origin="0" :width="constants.WIDTH" :height="constants.HEIGHT" :depth="constants.DEPTH.TRANSITION" :alpha="transitionAlpha" />
     </template>
   </Scene>
 </template>
@@ -16,8 +16,8 @@ import { inject, ref } from 'vue'
 import { refScene, Scene, Rectangle, Circle } from 'phavuer'
 import Title from './Title.vue'
 import Controller from './Controller.vue'
-import config from '../data/config'
-import InjectionKeys from './modules/InjectionKeys'
+import constants from '../data/constants'
+import InjectionKeys from '../libs/InjectionKeys'
 export default {
   components: { Scene, Title, Controller, Rectangle, Circle },
   setup (props) {
@@ -39,7 +39,7 @@ export default {
     }
     return {
       isMobile,
-      config,
+      constants,
       create, update,
       scene, controller: ref(null), talk: ref(null),
       titleScreen,

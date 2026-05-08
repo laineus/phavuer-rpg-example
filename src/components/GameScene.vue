@@ -10,7 +10,7 @@ import { inject } from 'vue'
 import { Scene } from 'phavuer'
 import Field from './Field.vue'
 import assets from '../data/assets.json'
-import InjectionKeys from './modules/InjectionKeys'
+import InjectionKeys from '../libs/InjectionKeys'
 import Talk from './Talk.vue'
 
 const fieldManager = inject(InjectionKeys.FieldManager)!

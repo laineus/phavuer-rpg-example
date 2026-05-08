@@ -1,4 +1,4 @@
-import { MapConfig } from '../data/maps'
+import { MapConfig } from '../../data/maps'
 
 export default {
   bgm: 'town',

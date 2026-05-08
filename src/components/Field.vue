@@ -22,8 +22,8 @@ import { computed, inject, onMounted, provide } from 'vue'
 import { TilemapLayer, Light, useScene } from 'phavuer'
 import Player from './Player.vue'
 import LayerImage from './LayerImage.vue'
-import InjectionKeys from './modules/InjectionKeys'
-import useField from './modules/fieldService'
+import InjectionKeys from '../libs/InjectionKeys'
+import useField from '../libs/useField'
 import getMapConfig from '../data/maps'
 const scene = useScene()
 const audio = inject(InjectionKeys.Audio)

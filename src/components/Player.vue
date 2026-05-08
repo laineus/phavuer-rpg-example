@@ -9,10 +9,10 @@
 
 <script lang="ts" setup>
 import { Body, Container, Image, useScene } from 'phavuer'
-import { Player } from './modules/usePlayer'
+import { Player } from '../libs/usePlayer'
 import { inject, PropType } from 'vue'
-import useCharacterAnim from './modules/useCharacterAnim'
-import InjectionKeys from './modules/InjectionKeys'
+import useCharacterAnim from '../libs/useCharacterAnim'
+import InjectionKeys from '../libs/InjectionKeys'
 import { GameObjects } from 'phaser'
 
 const props = defineProps({

@@ -1,18 +1,18 @@
 <template>
-  <Container :x="0" :y="0" v-if="talk.current" :depth="config.DEPTH.SPEACH_BUBBLE">
+  <Container :x="0" :y="0" v-if="talk.current" :depth="constants.DEPTH.SPEACH_BUBBLE">
     <Container :x="x" :y="y">
       <Rectangle :origin="0.5" :fillColor="0x222222" :alpha="0.8" :width="bgSize.width" :height="bgSize.height" :displayOriginX="bgSize.width / 2" :displayOriginY="bgSize.height / 2" />
       <Text :text="talk.current.talker.name" :style="{ fontSize: 15, fontStyle: 'bold', color: '#FFFFFF', stroke: '#111111', strokeThickness: 3 }" :originX="0" :originY="1" :x="-(bgSize.width / 2) + 8" :y="-(bgSize.height / 2) + 8" />
       <Text :key="talk.current.message" :text="talk.current.message" :style="{ fontSize: 14, fontStyle: 'normal', color: '#FFFFFF' }" :origin="0.5" @create="onCreate" />
     </Container>
-    <Rectangle :origin="0" :scrollFactorX="0" :scrollFactorY="0" :width="config.WIDTH" :height="config.HEIGHT" @pointerdown="talk.next" />
+    <Rectangle :origin="0" :scrollFactorX="0" :scrollFactorY="0" :width="constants.WIDTH" :height="constants.HEIGHT" @pointerdown="talk.next" />
   </Container>
 </template>
 
 <script lang="ts" setup>
 import { computed, inject, reactive, watch } from 'vue'
-import InjectionKeys from './modules/InjectionKeys'
-import config from '../data/config'
+import InjectionKeys from '../libs/InjectionKeys'
+import constants from '../data/constants'
 import { Container, Rectangle, Text } from 'phavuer'
 import { GameObjects } from 'phaser'
 

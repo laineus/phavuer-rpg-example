@@ -1,5 +1,5 @@
-import useAudioManager from '../../util/useAudioManager'
-import setting from '../../data/setting'
+import useAudioManager from './useAudioManager'
+import setting from '../data/setting'
 import { useGame } from 'phavuer'
 
 export default () => {

@@ -1,9 +1,9 @@
 import { inject } from 'vue'
-import InjectionKeys from '../components/modules/InjectionKeys'
-import { Talker } from '../components/modules/useTalk'
-import { Field } from '../components/modules/fieldService'
-import t from '../data/translate'
-import { MapConfig } from '../data/maps'
+import InjectionKeys from '../../libs/InjectionKeys'
+import { Talker } from '../../libs/useTalk'
+import { Field } from '../../libs/useField'
+import t from '../../data/translate'
+import { MapConfig } from '../../data/maps'
 
 export default {
   bgm: 'town',

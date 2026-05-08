@@ -1,5 +1,5 @@
-import useTranslate, { ReplacementValues } from '../util/useTranslate'
-import translationData from '../locales/index'
+import useTranslate, { ReplacementValues } from '../libs/useTranslate'
+import translationData from './locales/index'
 import setting from './setting'
 
 const translate = useTranslate(translationData)

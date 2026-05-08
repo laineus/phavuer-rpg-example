@@ -1,6 +1,6 @@
 import { proxyRefs, reactive, readonly, toRefs } from 'vue'
 
-export default () => {
+const useFieldManager = () => {
   const data = reactive({
     key: null,
     initialX: NaN,
@@ -20,3 +20,5 @@ export default () => {
     setField
   })
 }
+export default useFieldManager
+export type FieldManager = ReturnType<typeof useFieldManager>

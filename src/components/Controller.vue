@@ -6,12 +6,9 @@
 import { onPreUpdate, useScene } from 'phavuer'
 import { inject } from 'vue'
 import VirtualStick from './VirtualStick.vue'
-import InjectionKeys from './modules/InjectionKeys'
-import useWasdController from './modules/useWasdController'
-import config from '../data/config'
-const byBottom = (v: number) => {
-  return config.HEIGHT - v
-}
+import InjectionKeys from '../libs/InjectionKeys'
+import useWasdController from '../libs/useWasdController'
+import { byBottom } from '../libs/util'
 const isMobile = inject(InjectionKeys.Mobile)!
 const controller = inject(InjectionKeys.Controller)!
 const scene = useScene()

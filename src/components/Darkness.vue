@@ -1,13 +1,13 @@
 <template>
-  <Image :depth="config.DEPTH.DARKNESS" texture="darkness" :x="0" :y="0" :origin="0" />
+  <Image :depth="constants.DEPTH.DARKNESS" texture="darkness" :x="0" :y="0" :origin="0" />
 </template>
 
 <script lang="ts" setup>
-import useDarkness from './modules/useDarkness'
+import useDarkness from '../libs/useDarkness'
 import { inject, onBeforeUnmount } from 'vue'
 import { Image, useScene, onPreUpdate } from 'phavuer'
-import config from '../data/config'
-import InjectionKeys from './modules/InjectionKeys'
+import constants from '../data/constants'
+import InjectionKeys from '../libs/InjectionKeys'
 const field = inject(InjectionKeys.Field)!
 const scene = useScene()
 scene.textures.remove('darkness')

@@ -1,4 +1,4 @@
-import config from '../../data/config'
+import constants from '../data/constants'
 import { strColorToInt } from './util'
 
 export type TileRaw = {
@@ -45,7 +45,7 @@ type SubstanceProperty = {
 type TileLayerProperty = {
   name: 'depth'
   type: 'string'
-  value: keyof typeof config.DEPTH
+  value: keyof typeof constants.DEPTH
 }
 
 export type Tilemap = Omit<Phaser.Tilemaps.Tilemap, 'properties'> & {
@@ -109,7 +109,7 @@ export type LayerData = TileLayerData | ObjectGroupLayerData | ImageLayerData
 type PropertyValue<P> = P extends { type: 'color'; value: string } 
   ? number  // strColorToIntで変換されるのでnumber
   : P extends { name: 'depth'; value: infer V }
-    ? V extends keyof typeof config.DEPTH ? number : never  // config.DEPTH[value]で変換されるのでnumber
+    ? V extends keyof typeof constants.DEPTH ? number : never  // constants.DEPTH[value]で変換されるのでnumber
   : P extends { value: infer V } 
     ? V 
     : never
@@ -128,7 +128,7 @@ export const mapProperties = <T extends { properties?: readonly any[] }>(obj: T)
     if (property.type === 'color') {
       mapped[property.name] = strColorToInt(property.value)
     } else if (property.name === 'depth') {
-      mapped[property.name] = config.DEPTH[property.value as keyof typeof config.DEPTH] ?? NaN
+      mapped[property.name] = constants.DEPTH[property.value as keyof typeof constants.DEPTH] ?? NaN
     } else {
       mapped[property.name] = property.value
     }

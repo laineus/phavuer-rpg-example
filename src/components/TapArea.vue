@@ -1,5 +1,5 @@
 <template>
-  <Container :depth="config.DEPTH.TAP_AREA" @pointerdown="onTap">
+  <Container :depth="constants.DEPTH.TAP_AREA" @pointerdown="onTap">
     <Image texture="speach_bubbles" :y="-20" :frame="type === 'talk' ? 1 : 0" :tween="tween" />
   </Container>
 </template>
@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import { Container, Image } from 'phavuer'
 import { PropType } from 'vue'
-import config from '../data/config'
+import constants from '../data/constants'
 const props = defineProps({
   type: { type: String as PropType<'talk' | 'check'> }
 })

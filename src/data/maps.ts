@@ -1,6 +1,6 @@
-import { Field } from '../components/modules/fieldService'
-import room1 from '../map/room1'
-import town1 from '../map/town1'
+import { Field } from '../libs/useField'
+import room1 from './map/room1'
+import town1 from './map/town1'
 
 export type MapConfig = {
   bgm: string

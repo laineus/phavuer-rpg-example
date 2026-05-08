@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import { computed, PropType } from 'vue'
 import { Image, useScene } from 'phavuer'
-import { ImageLayerData } from './modules/tiled'
+import { ImageLayerData } from '../libs/tiled'
 
 const props = defineProps({
   lighting: { type: Boolean, default: false },
