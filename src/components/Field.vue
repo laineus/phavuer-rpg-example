@@ -30,7 +30,6 @@ const audio = inject(InjectionKeys.Audio)
 const fieldManager = inject(InjectionKeys.FieldManager)!
 const field = useField(fieldManager.key!, { x: fieldManager.initialX, y: fieldManager.initialY })
 provide(InjectionKeys.Field, field)
-console.log(field)
 scene.lights.setAmbientColor(field.properties.ambient || 0xFFFFFF)
 field.lights.length ? scene.lights.enable() : scene.lights.disable()
 const lighting = computed(() => field.lights.length > 0)
